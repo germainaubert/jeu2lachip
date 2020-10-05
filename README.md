@@ -1,2 +1,2 @@
 # jeu2lachip
-Le jeu de la chip
+Le jeu de la chips
