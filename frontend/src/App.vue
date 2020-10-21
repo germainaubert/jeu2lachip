@@ -1,16 +1,41 @@
 <template>
   <div id="app">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div id="nav">
+      <router-link to="/Accueil">Accueil</router-link> | 
+      <router-link to="/Connexion">Connexion</router-link> |
+      <router-link to="/Inscription">Inscription</router-link>
+      <component v-bind:is="currentPage" v-on:toLink="toLink"></component>
+    </div>
+    <router-view/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Accueil from './views/Accueil.vue'
+/*import Connexion from './views/Connexion.vue'
+import Inscription from './views/Inscription.vue'*/
 
 export default {
   name: 'App',
+  data: function(){
+    return {
+      currentPage : "Accueil",
+    }
+  },
   components: {
-    HelloWorld
+    /*Accueil,
+    Connexion,
+    Inscription*/
+  },
+  methods:{
+    toLink: function(){
+      if(Accueil.connectIsClicked === true){
+        this.currentPage = "Connexion"
+      }
+      if(Accueil.registerIsClicked === true){
+        this.currentPage = "Inscription"
+      } 
+    }
   }
 }
 </script>
@@ -22,6 +47,18 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
 }
 </style>
