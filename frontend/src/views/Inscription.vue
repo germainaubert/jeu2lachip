@@ -2,7 +2,9 @@
   <div class="inscription">
     <h1>s'inscrire</h1>
     <div>
-      <div class="info_input">pseudo <input v-model="pseudo" v-on:keyup="nameValidity()"/></div>
+      <div class="info_input">pseudo <input v-model="pseudo" v-on:keyup="nameValidity(pseudo)"/>
+        <span class="error">{{errorPseudo}}</span> <span class="error">{{validityPseudo}}</span>
+      </div>
       <div class="info_input">
         password <input type="password" v-model="password" />
         <span class="error">{{ errorPw }}</span>
@@ -13,7 +15,7 @@
 </template>
 
 <script>
-const axios = require('axios').default;
+const axios = require('axios')
 //import User from '../../../backend/models/user.model.js'
 export default {
   name: "Inscription",
@@ -26,6 +28,7 @@ export default {
       password: "",
       errorPw: "",
       errorPseudo: "",
+      validityPseudo: ""
     }
   },
 
@@ -40,9 +43,13 @@ export default {
 
     },
 
-    nameValidity: function (pseudo) {
-        let res = axios.get('http://localhost:3000/api/auth/name_validity/' + pseudo)
-        console.log(res.data)
+    nameValidity: async function (pseudo) {
+        let res = await axios.get('http://localhost:3000/api/auth/nameValidity/' + pseudo)
+        if (res.data.nameValidity === true) {
+          this.validityPseudo = ""
+        } else {
+          this.validityPseudo = "Ce pseudo existe déjà"
+        }
     }
   },
 }

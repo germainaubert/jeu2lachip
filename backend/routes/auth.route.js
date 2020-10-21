@@ -8,11 +8,20 @@ router.get('/users', async (req, res) => {
     res.json(users)
 })
 
-router.get('/user/:pseudo', async (req, res) => {
+router.get('/nameValidity/:pseudo', async (req, res) => {
     const pseudo = req.params.pseudo
     const user = await User.findByPseudo(pseudo)
-    console.log(user)
-    res.send(user)
+    if (!user) {
+        res.status(200)
+        res.send({
+                nameValidity: true
+        })
+    } else {
+        res.send({
+            nameValidity: false
+        })
+        res.status(409)
+    }
 })
 
 router.post('/login', async (req, res) => {

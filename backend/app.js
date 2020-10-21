@@ -4,11 +4,13 @@ const logger = require('morgan')
 const session = require('express-session')
 const config = require('./server.config')
 const socket = require('./socket/lobby.socket.js')
+const cors = require('cors')
 
 PostgresStore.init()
 .then(() => console.log('connected'))
 
 const app = express();
+app.use(cors())
 
 socket()
 
