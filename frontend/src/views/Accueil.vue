@@ -2,10 +2,14 @@
   <div class="hello">
     <h1>Bienvenue sur le jeu de la Chips</h1>
     <div>
-      <button v-on:click="inscrire()">s'inscrire</button>
+      <button v-on:click="inscrire()">
+        <router-link to="/Inscription">Inscription</router-link>
+      </button>
       <br>
       <br>
-      <button v-on:click="connect()">se connecter</button>
+      <router-link to="/Connexion">
+        <button>se connecter</button>
+      </router-link>
     </div>
   </div>
 </template>
@@ -15,21 +19,27 @@
 export default {
   name: 'Accueil',
   props: {
-    msg: String
+    //msg: String,
+    //connectIsClicked : Boolean,
+    //registerIsClicked : Boolean
   },
   data: function (){
     return { 
-      password: "",
+      connectIsClicked : Boolean,
+      registerIsClicked : Boolean
     }
   },
   methods : {
     connect : function (){
-      this.$emit('passConnection')
-      console.log("chips")      
+      this.connectIsClicked = true
+      this.$emit('toLink')
+
+      console.log("test")      
     },
     inscrire : function(){
-      this.$emit('passInscription')
-      console.log("chips") 
+      this.registerIsClicked = true
+      this.$emit('toLink')
+      console.log("test") 
     }
   }
 }

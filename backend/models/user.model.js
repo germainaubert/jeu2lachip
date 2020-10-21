@@ -39,6 +39,18 @@ class User {
         })
     }
 
+    static async create (pseudo, password) {
+        const hashedPw = await bcrypt.hash(user.this.password, 10)
+
+        await PostgresStore.client.query({
+            text: `
+            INSERT INTO ${User.tableName} 
+                   (pseudo, password, is_admin)
+            VALUES ($1,        $2,       $3)`,
+            values: [user.pseudo, hashedPw, user.is_admin]
+        })
+    }
+
     static toSQLTable () {
         return `
             CREATE TABLE ${User.tableName} (

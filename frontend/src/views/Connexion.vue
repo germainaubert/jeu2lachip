@@ -7,6 +7,8 @@
         <br/>
         <h2> password </h2>
         <input v-model="password"/>
+        <br>
+        <button v-on:click="doConnection()">Se Connecter</button>
     </div>
   </div>
 </template>
@@ -27,7 +29,7 @@ export default {
   methods : {
     check : function (){
       console.log("test")
-      if (this.password === "covid"){
+      if (this.password === "covid" && this.pseudo === "pseudo"){
         this.$emit('pwok')
       }      
     }
