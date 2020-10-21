@@ -22,7 +22,9 @@ app.use(session({
 }))
 
 const lobbyRouter = require('./routes/lobby.route')
+const authRouter = require('./routes/auth.route')
 
 app.use('/api/lobby', lobbyRouter)
+app.use('/api/auth', authRouter)
 
 module.exports = app;

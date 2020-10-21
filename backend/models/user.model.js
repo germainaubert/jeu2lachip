@@ -15,11 +15,18 @@ class User {
      * @param {Number} userId
      * @returns {Promise<User>}
      */
-    static async getById (userId) {
+    static async getAll () {
+        const result = await PostgresStore.client.query({
+            text: `SELECT * FROM ${User.tableName}`
+        })
+        return result.rows
+    }
+
+    static async findByPseudo (pseudo) {
         const result = await PostgresStore.client.query({
             text: `SELECT * FROM ${User.tableName}
-            WHERE id=$1`,
-            values: [userId]
+            WHERE pseudo=$1`,
+            values: [pseudo]
         })
         return result.rows[0]
     }
@@ -27,27 +34,16 @@ class User {
     /**
      * @param {User} user
      */
-    static async create (user) {
-        const hashedPw = await bcrypt.hash(user.password, 10)
-
-        await PostgresStore.client.query({
-            text: `
-            INSERT INTO ${User.tableName} 
-                   (firstname, password, is_admin)
-            VALUES ($1,        $2,       $3)`,
-            values: [user.firstname, hashedPw, user.is_admin]
-        })
-    }
 
     static async create (pseudo, password) {
-        const hashedPw = await bcrypt.hash(user.this.password, 10)
+        const hashedPw = await bcrypt.hash(password, 10)
 
         await PostgresStore.client.query({
             text: `
             INSERT INTO ${User.tableName} 
                    (pseudo, password, is_admin)
             VALUES ($1,        $2,       $3)`,
-            values: [user.pseudo, hashedPw, user.is_admin]
+            values: [pseudo, hashedPw, false]
         })
     }
 
