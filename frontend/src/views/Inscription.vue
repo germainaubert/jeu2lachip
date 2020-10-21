@@ -1,79 +1,80 @@
-<template> 
+<template>
   <div class="inscription">
     <h1>s'inscrire</h1>
     <div>
-        <h2> Prenom </h2>
-        <input v-model="prenom"/>
-        <br/>
-        <h2> nom </h2>
-        <input v-model="nom"/>
-        <br/>
-        <h2> pseudo </h2>
-        <input v-model="pseudo"/>
-        <br/>
-        <h2> mail </h2>
-        <input v-model="mail"/>
-        <br/>
-        <h2> password </h2>
-        <input v-model="password"/>
-        <br>
-        <button v-on:click="doRegister()">S'inscrire</button>
-        {{pseudo}}{{mail}}{{password}}
+      <div class="info_input">pseudo <input v-model="pseudo" v-on:keyup="nameValidity()"/></div>
+      <div class="info_input">
+        password <input type="password" v-model="password" />
+        <span class="error">{{ errorPw }}</span>
+      </div>
+      <button v-on:click="checkInfo()">S'inscrire</button>
     </div>
   </div>
 </template>
 
 <script>
+const axios = require('axios').default;
 //import User from '../../../backend/models/user.model.js'
 export default {
-  name: 'Inscription',
+  name: "Inscription",
   props: {
-    msg: String
+    msg: String,
   },
-  data: function (){
-    return { 
-      password: null,
-      pseudo: null,
-      mail: null
+  data: function () {
+    return {
+      pseudo: "",
+      password: "",
+      errorPw: "",
+      errorPseudo: "",
     }
   },
-  
-  methods : {
-    send : function (){
-      console.log("test")
-      if (this.password === "covid"){
-        this.$emit('pwok')
-      }      
-    },
-    doRegister : function(){
-      if (!Object.keys(this.pseudo).length === 0 && !Object.keys(this.password).length === 0){
-        this.$emit("person-Added",
-          'pseudo: this.pseudo',
-          'password: this.password'
-        )
+
+  methods: {
+    checkInfo: function () {
+      this.errorPw = checkPw(this.password)
+      this.errorPseudo = checkPseudo(this.pseudo)
+
+      if (this.errorPw.length === 0 && this.errorPseudo.length === 0) {
+        console.log('lancer la fonction d\'ajout du compte')
       }
-      else{
-        console.log("Une erreur s'est produite. Votre pseudo est vide ou votre mot de passe est vide")
-      }
+
     },
+
+    nameValidity: function (pseudo) {
+        let res = axios.get('http://localhost:3000/api/auth/name_validity/' + pseudo)
+        console.log(res.data)
+    }
+  },
+}
+
+function checkPw(pw) {
+  if (pw.length < 5) {
+    return "Mot de passe trop court"
+  } else {
+    return ""
+  }
+}
+
+function checkPseudo(pseudo) {
+  if (pseudo.length < 5) {
+    return "Le pseudo doit faire 5 caractère minimum"
+  } else {
+    return ""
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
 a {
   color: #42b983;
+}
+.info_input {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.error {
+  color: red;
+  font-size: 10px;
 }
 </style>
