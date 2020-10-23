@@ -2,21 +2,6 @@
   <div class="inscription">
     <h1>s'inscrire</h1>
     <div>
-        <h2> Prenom </h2>
-        <input v-model="prenom"/>
-        <br/>
-        <h2> nom </h2>
-        <input v-model="nom"/>
-        <br/>
-        <h2> pseudo </h2>
-        <input v-model="pseudo"/>
-        <br/>
-        <h2> mail </h2>
-        <input v-model="mail"/>
-        <br/>
-        <h2> password </h2>
-        <input v-model="password"/>
-        <br>
       <div class="info_input">pseudo <input v-model="pseudo" v-on:keyup="nameValidity(pseudo)"/>
         <span class="error">{{errorPseudo}}</span> <span class="error">{{validityPseudo}}</span>
       </div>
@@ -25,24 +10,6 @@
         <span class="error">{{ errorPw }}</span>
       </div>
       <button v-on:click="checkInfo()">S'inscrire</button>
-        <h2> Prenom </h2>
-        <input v-model="prenom"/>
-        <br/>
-        <h2> nom </h2>
-        <input v-model="nom"/>
-        <br/>
-        <h2> pseudo </h2>
-        <input v-model="pseudo"/>
-        <br/>
-        <h2> mail </h2>
-        <input v-model="mail"/>
-        <br/>
-        <h2> password </h2>
-        <input v-model="password"/>
-        <br>
-        <router-link to="/Lobby">
-          <button v-on:click="doRegister()">S'inscrire</button>
-        </router-link>
     </div>
   </div>
 </template>
