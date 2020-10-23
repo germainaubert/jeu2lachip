@@ -1,5 +1,6 @@
 <template>
   <div class="inscription">
+    <router-link to="/Accueil">Accueil</router-link>
     <h1>s'inscrire</h1>
     <div>
       <div class="info_input">pseudo <input v-model="pseudo" v-on:keyup="nameValidity(pseudo)"/>
@@ -33,12 +34,20 @@ export default {
   },
 
   methods: {
-    checkInfo: function () {
+    checkInfo: async function () {
       this.errorPw = checkPw(this.password)
       this.errorPseudo = checkPseudo(this.pseudo)
 
       if (this.errorPw.length === 0 && this.errorPseudo.length === 0) {
-        console.log('lancer la fonction d\'ajout du compte')
+        const res = (await axios({
+          method: "post",
+          url: "http://localhost:3000/api/auth/register",
+          data: {
+            pseudo: this.pseudo,
+            password: this.password
+          }
+        })).data
+        console.log(res)
       }
 
     },
