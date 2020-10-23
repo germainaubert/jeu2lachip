@@ -1,5 +1,6 @@
 <template> 
   <div class="connexion">
+    <router-link to="/Accueil">Accueil</router-link>
     <h1>Se Connecter</h1>
     <div>
         <h2> Pseudo </h2>

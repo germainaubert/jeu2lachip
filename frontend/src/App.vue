@@ -1,42 +1,16 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/Accueil">Accueil</router-link> | 
-      <router-link to="/Connexion">Connexion</router-link> |
-      <router-link to="/Inscription">Inscription</router-link>
-      <component v-bind:is="currentPage" v-on:toLink="toLink"></component>
+      <router-view/>
     </div>
-    <router-view/>
+    
   </div>
 </template>
 
 <script>
-import Accueil from './views/Accueil.vue'
-/*import Connexion from './views/Connexion.vue'
-import Inscription from './views/Inscription.vue'*/
 
 export default {
-  name: 'App',
-  data: function(){
-    return {
-      currentPage : "Accueil",
-    }
-  },
-  components: {
-    /*Accueil,
-    Connexion,
-    Inscription*/
-  },
-  methods:{
-    toLink: function(){
-      if(Accueil.connectIsClicked === true){
-        this.currentPage = "Connexion"
-      }
-      if(Accueil.registerIsClicked === true){
-        this.currentPage = "Inscription"
-      } 
-    }
-  }
+  name: 'App'
 }
 </script>
 
