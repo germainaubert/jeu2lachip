@@ -17,7 +17,9 @@
         <h2> password </h2>
         <input v-model="password"/>
         <br>
-        <button v-on:click="doRegister()">S'inscrire</button>
+        <router-link to="/Lobby">
+          <button v-on:click="doRegister()">S'inscrire</button>
+        </router-link>
         {{pseudo}}{{mail}}{{password}}
     </div>
   </div>

@@ -8,7 +8,9 @@
         <h2> password </h2>
         <input v-model="password"/>
         <br>
-        <button v-on:click="doConnection()">Se Connecter</button>
+        <router-link to="/Lobby">
+          <button v-on:click="doConnection()">Se Connecter</button>
+        </router-link>
     </div>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <template> 
   <div class="lobby">
-    <h1>Bienvenue sur le jeu de la Chips</h1>
+    <h1>Souhaitez vous inviter vos amis</h1>
     <div>
       <button v-on:click="invite()">
         <router-link to="/Invitation">Inviter des amis</router-link>
@@ -24,16 +24,8 @@ export default {
     }
   },
   methods : {
-    connect : function (){
-      this.connectIsClicked = true
-      this.$emit('toLink')
-
-      console.log("test")      
-    },
-    inscrire : function(){
-      this.registerIsClicked = true
-      this.$emit('toLink')
-      console.log("test") 
+    invite : function(){
+      
     }
   }
 }
