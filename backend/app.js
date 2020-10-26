@@ -3,6 +3,7 @@ const express = require('express')
 const logger = require('morgan')
 const session = require('express-session')
 const config = require('./server.config')
+const ami = require('./models/amis.model')
 const socket = require('./socket/lobby.socket.js')
 const cors = require('cors')
 

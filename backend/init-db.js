@@ -1,6 +1,7 @@
 const Game = require('./models/game.model')
 const Score = require('./models/score.model')
 const User = require('./models/user.model')
+const Ami = require ('./models/amis.model')
 const PostgresStore = require('./PostgresStore')
 
 
@@ -21,7 +22,8 @@ async function createEverything () {
     const models = [
         User,
         Game,
-        Score
+        Score,
+        Ami
     ]
 
     for (const model of models) {
