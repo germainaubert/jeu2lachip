@@ -10,7 +10,10 @@ PostgresStore.init()
 .then(() => console.log('connected'))
 
 const app = express();
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:8080",
+    credentials: true        
+}))
 
 socket()
 

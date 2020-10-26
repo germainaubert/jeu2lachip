@@ -15,7 +15,6 @@
 </template>
 
 <script>
-const axios = require('axios')
 
 export default {
   name: 'Connexion',
@@ -34,7 +33,7 @@ export default {
       if (this.pseudo < 5 || this.password < 5) {
         this.error = "Identifiants incorrects"
       } else {
-        const res = (await axios({
+        const res = (await this.$axios({
           method: "post",
           url: "http://localhost:3000/api/auth/login",
           data: {

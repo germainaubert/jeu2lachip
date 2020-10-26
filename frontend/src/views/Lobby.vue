@@ -1,12 +1,8 @@
 <template> 
   <div class="lobby">
-    <h1>Souhaitez vous inviter vos amis</h1>
-    <div>
-      <button v-on:click="invite()">
-        <router-link to="/Invitation">Inviter des amis</router-link>
-      </button>
-      <br>
-    </div>
+    <h1>Lobby</h1>
+      <button v-on:click="initLobbyTest()">Initisaliser Lobby</button>
+      <button v-on:click="joinLobbyTest()">Rejoindre Lobby</button>
   </div>
 </template>
 
@@ -15,27 +11,41 @@
 export default {
   name: 'Lobby',
   props: {
-    //msg: String,
-    //connectIsClicked : Boolean,
-    //registerIsClicked : Boolean
+  
   },
   data: function (){
     return { 
+
     }
   },
   methods : {
-    invite : function(){
-      
+    initLobbyTest: async function () {
+      const res = (await this.$axios({
+          method: "post",
+          url: "http://localhost:3000/api/lobby/initTest",
+          data: {
+  
+          }
+        })).data
+      console.log('jejejej', res)
+    },
+    joinLobbyTest: async function () {
+      const res = (await this.$axios({
+        method: "post",
+        url: "http://localhost:3000/api/lobby/joinTest",
+        data: {
+
+        }
+      })).data
+      console.log('join data: ', res)
     }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
+
 ul {
   list-style-type: none;
   padding: 0;

@@ -38,8 +38,9 @@ router.post('/login', async (req, res) => {
         return
     }
 
-    req.session.userId = user.id
+    
     user.password = null
+    req.session.user = user
 
     res.json(user) // SURTOUT SANS SON MOT DE PASSE !!!!!!
 }) 
@@ -55,7 +56,14 @@ router.post('/register', async (req, res) => {
     
     else {
         const user = await User.create(pseudo, password)
-        res.json(true) 
+        user.password = null
+        req.session.user = user
+        res.json(
+            {
+            connect: true,
+            id: user.id
+            }
+        ) 
         res.status(200)
     }
     
