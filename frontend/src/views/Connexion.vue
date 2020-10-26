@@ -7,16 +7,15 @@
         <input v-model="pseudo"/>
         <br/>
         <h2> password </h2>
-        <input v-model="password"/>
+        <input type="password" v-model="password"/>
         <br>
-        <router-link to="/Lobby">
-          <button v-on:click="doConnection()">Se Connecter</button>
-        </router-link>
+        <button v-on:click="connexionRequest()">Connexion</button>
     </div>
   </div>
 </template>
 
 <script>
+const axios = require('axios')
 
 export default {
   name: 'Connexion',
@@ -27,14 +26,30 @@ export default {
     return { 
         pseudo : "",    
         password: "",
+        error: ""
     }
   },
   methods : {
-    check : function (){
-      console.log("test")
-      if (this.password === "covid" && this.pseudo === "pseudo"){
-        this.$emit('pwok')
-      }      
+    connexionRequest: async function () {
+      if (this.pseudo < 5 || this.password < 5) {
+        this.error = "Identifiants incorrects"
+      } else {
+        const res = (await axios({
+          method: "post",
+          url: "http://localhost:3000/api/auth/login",
+          data: {
+            pseudo: this.pseudo,
+            password: this.password
+          }
+        })).data
+        console.log(res)
+        if (res.flag === false) {
+          console.log("Connexion impossible")
+        } else {
+          this.$router.push('/Lobby');
+        }
+        
+      }
     }
   }
 }

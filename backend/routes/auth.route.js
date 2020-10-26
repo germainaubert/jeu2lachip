@@ -32,7 +32,8 @@ router.post('/login', async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.password))) {
         res.status(401)
         res.send({
-            message: 'Did not find any couple matching email and password'
+            message: 'Did not find any couple matching email and password',
+            flag: false
         })
         return
     }
@@ -48,13 +49,13 @@ router.post('/register', async (req, res) => {
     
     const pseudoExists = await User.findByPseudo(pseudo)
     if(pseudoExists) {
-        res.send('pseudo existant')
+        res.json(false)
         res.status(409)
     }
     
     else {
         const user = await User.create(pseudo, password)
-        res.send('inscription réussie') 
+        res.json(true) 
         res.status(200)
     }
     

@@ -48,7 +48,11 @@ export default {
           }
         })).data
         console.log(res)
+        if (res === true) {
+          this.$router.push('/Lobby');
+        }
       }
+      
 
     },
 
