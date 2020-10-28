@@ -8,13 +8,17 @@ router.get('/users', async (req, res) => {
     res.json(users)
 })
 
+router.get('/getSession', async (req, res) => {
+    res.send(req.session)
+})
+
 router.get('/nameValidity/:pseudo', async (req, res) => {
     const pseudo = req.params.pseudo
     const user = await User.findByPseudo(pseudo)
     if (!user) {
         res.status(200)
         res.send({
-                nameValidity: true
+            nameValidity: true
         })
     } else {
         res.send({
@@ -26,47 +30,50 @@ router.get('/nameValidity/:pseudo', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     const { pseudo, password } = req.body
-    
+
     const user = await User.findByPseudo(pseudo)
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-        res.status(401)
-        res.send({
+        
+        res.status(401).send({
             message: 'Did not find any couple matching email and password',
             flag: false
         })
         return
     }
+    else {
+        user.password = null
+        req.session.user = user
 
-    
-    user.password = null
-    req.session.user = user
+        res.status(200).send('connexion réussie')
+    }
 
-    res.json(user) // SURTOUT SANS SON MOT DE PASSE !!!!!!
-}) 
+
+
+})
 
 router.post('/register', async (req, res) => {
-    const {pseudo , password} = req.body
-    
+    const { pseudo, password } = req.body
+
     const pseudoExists = await User.findByPseudo(pseudo)
-    if(pseudoExists) {
+    if (pseudoExists) {
         res.json(false)
         res.status(409)
     }
-    
+
     else {
         const user = await User.create(pseudo, password)
         user.password = null
         req.session.user = user
         res.json(
             {
-            connect: true,
-            id: user.id
+                connect: true,
+                id: user.id
             }
-        ) 
+        )
         res.status(200)
     }
-    
-}) 
+
+})
 
 module.exports = router

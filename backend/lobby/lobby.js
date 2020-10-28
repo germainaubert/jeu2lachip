@@ -1,14 +1,26 @@
 class Lobby {
     /** @type {import("../models/user.model.js")[]} */
-    lobby
-    constructor () {
-        this.lobby = []
+    users
+    chat
+    is_full
+    constructor() {
+        this.users = []
+        this.chat = []
+        this.is_full = false
     }
-    
-    addUser (user) {
-        this.lobby.push({user})
-        console.log(this.lobby)
+
+    addUser(user) {
+        
+        if (user) {
+            this.users.push(user)
+        }
     }
+
+    hasUser(user) {
+        let found = this.users.find(elem => elem.id == user.id)
+        return found
+    }
+
 }
 
 module.exports = Lobby

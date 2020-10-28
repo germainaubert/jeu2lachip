@@ -3,6 +3,15 @@ import App from './App.vue'
 import router from './router'
 import VueSession from  'vue-session'
 import axios from 'axios'
+import VueSocketIO from 'vue-socket.io'
+
+
+Vue.use(
+  new VueSocketIO({
+    debug: true,
+    connection: 'http://localhost:3000',
+  })
+)
 
 Vue.use(VueSession)
 Vue.config.productionTip = false
