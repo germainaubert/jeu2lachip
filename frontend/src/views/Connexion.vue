@@ -42,9 +42,10 @@ export default {
           }
         })).data
         console.log(res)
-        if (res.flag === false) {
+        if (res.flag === false) { 
           console.log("Connexion impossible")
         } else {
+          this.$socket.emit('login')
           this.$router.push('/Lobby');
         }
         

@@ -5,13 +5,16 @@ import VueSession from  'vue-session'
 import axios from 'axios'
 import VueSocketIO from 'vue-socket.io'
 
-Vue.use(VueSession)
+
 Vue.use(
   new VueSocketIO({
     debug: true,
-    connection: 'http://localhost:3000'
+    connection: 'http://localhost:3000',
   })
 )
+
+Vue.use(VueSession)
+
 Vue.config.productionTip = false
 
 Vue.prototype.$axios = axios

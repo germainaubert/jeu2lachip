@@ -1,51 +1,51 @@
-<template> 
+<template>
   <div class="lobby">
     <h1>Lobby</h1>
-      <button v-on:click="initLobbyTest()">Initisaliser Lobby</button>
-      <button v-on:click="joinLobbyTest()">Rejoindre Lobby</button>
+    <div>
+      <h1>
+        Personnes dans le lobby :
+        <div v-for="user in users" v-bind:key="user.id">{{ user.pseudo }}</div>
+      </h1>
+
+      <button>ANAS ENEMMI</button>
+
+      <div class="chatbox">
+        <div></div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'Lobby',
-  props: {
-  
+  name: "Lobby",
+  props: {},
+  data: function () {
+    return {
+      users: [],
+    };
   },
-  data: function (){
-    return { 
-
-    }
+  created: async function () {
+    const res = await this.$axios.get(
+      "http://localhost:3000/api/auth/getSession"
+    );
+    let user = res.data.user;
+    console.log(user);
+    this.$socket.emit("logged", user);
   },
-  methods : {
-    initLobbyTest: async function () {
-      const res = (await this.$axios({
-          method: "post",
-          url: "http://localhost:3000/api/lobby/initTest",
-          data: {
-  
-          }
-        })).data
-      console.log('jejejej', res)
+  methods: {},
+  sockets: {
+    loggedEvent(data) {
+      const lobbyUsers = data;
+      console.log(lobbyUsers);
+      this.users = lobbyUsers;
     },
-    joinLobbyTest: async function () {
-      const res = (await this.$axios({
-        method: "post",
-        url: "http://localhost:3000/api/lobby/joinTest",
-        data: {
-
-        }
-      })).data
-      console.log('join data: ', res)
-    }
-  }
-}
+  },
+};
 </script>
 
 
 <style scoped>
-
 ul {
   list-style-type: none;
   padding: 0;
@@ -56,5 +56,17 @@ li {
 }
 a {
   color: #42b983;
+}
+.lobby {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.chatbox {
+  height: 250px;
+  border: 1px solid black;
+  overflow: auto;
 }
 </style>
