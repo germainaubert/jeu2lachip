@@ -1,8 +1,10 @@
 class Lobby {
     /** @type {import("../models/user.model.js")[]} */
-    lobby
+    users
+    chat
     constructor () {
-        this.lobby = []
+        this.users = []
+        this.chat = []
     }
     
     addUser (user) {
