@@ -1,6 +1,6 @@
-<template> 
+<template>
   <div class="lobby">
-    <h1>Souhaitez vous inviter vos amis</h1>
+    <h1>Lobby</h1>
     <div>
       <h1>Vos amis</h1>
             <tbody>
@@ -27,24 +27,23 @@
 </template>
 
 <script>
+//import ConnexionVue from './Connexion.vue';
 const axios = require('axios')
-
 export default {
-  name: 'Lobby',
-  props: {
-    //msg: String,
-    //connectIsClicked : Boolean,
-    //registerIsClicked : Boolean
-  },
-  data: function (){
-    return { 
-      persons: []
-    }
+  name: "Lobby",
+  props: {},
+  data: function () {
+    return {
+      persons: ["kqldsmfmdsqf","okfdmqgfhdjisq"],
+      //userId: 
+    };
   },
   mounted(){
     this.getAmis();
   },
-  methods : {
+
+  methods: {
+    
     /*newAmi :  async function(){
       
       const res = (await axios({
@@ -64,13 +63,8 @@ export default {
     },
 
     getAmis : async function(){
-      const res = (await axios({
-        method: "get",
-        url: "http://localhost:3000/api/amis/liste",
-        data: {
-          userId: this.userId
-        }
-      })).data
+      //const res = await this.$axios.get('http://localhost:3000/api/amis/liste'+ userID)
+      const res = await this.$axios.get('http://localhost:3000/api/amis/liste')
       console.log(res)
       //this.persons[res]
     },
@@ -92,11 +86,8 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
 ul {
   list-style-type: none;
   padding: 0;

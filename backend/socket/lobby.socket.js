@@ -1,29 +1,30 @@
-const socketio = require('socket.io');
-
-module.exports = function (server) {
+const socketio = require('socket.io')
+const config = require('../server.config')
+const Lobby = require('../lobby/lobby')
+const lobby = new Lobby()
+console.log(lobby)
+clients = []
+module.exports = function (server, mySession) {
     // io server
-    const io = socketio(server);
-
-    // game state (players list)
-    const players = {};
-
+    const io = socketio(server)                                                                                                           
+    sharedsession = require("express-socket.io-session")
+    io.use(sharedsession(mySession))
+     
     io.on('connection', function (socket) {
-        // register new player
-        players[socket.id] = {
-            x: 0,
-            y: 0,
-            size: 20,
-            speed: 5,
-            c: "#" + ((1 << 24) * Math.random() | 0).toString(16)
-        };
+        clients.push(socket)
 
-        // delete disconnected player
-        socket.on('disconnect', function () {
-            delete players[socket.id];
-        });
-
-    io.on('displayTest', function () {
-        console.log(players)
-    })
-    });
-};
+        socket.on("logged", function(data) {
+            if(!lobby.hasUser(data)) {
+                lobby.addUser(data)
+            }
+            
+            clients.forEach((c)=>{
+                c.emit('loggedEvent',lobby.users)
+            })
+            
+            console.log(lobby.users)
+            
+        })
+    
+})
+}

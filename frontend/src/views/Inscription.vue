@@ -16,7 +16,7 @@
 </template>
 
 <script>
-const axios = require('axios')
+
 //import User from '../../../backend/models/user.model.js'
 export default {
   name: "Inscription",
@@ -35,11 +35,12 @@ export default {
 
   methods: {
     checkInfo: async function () {
+
       this.errorPw = checkPw(this.password)
       this.errorPseudo = checkPseudo(this.pseudo)
 
       if (this.errorPw.length === 0 && this.errorPseudo.length === 0) {
-        const res = (await axios({
+        const res = (await this.$axios({
           method: "post",
           url: "http://localhost:3000/api/auth/register",
           data: {
@@ -47,9 +48,12 @@ export default {
             password: this.password
           }
         })).data
-        console.log(res)
-        if (res === true) {
+        
+        if (res.connect === true) {
+          // self.$session.start(res.id)
+          // console.log(self.$sessions.getAll())
           this.$router.push('/Lobby');
+          this.$socket.emit('login');
         }
       }
       
@@ -57,7 +61,7 @@ export default {
     },
 
     nameValidity: async function (pseudo) {
-        let res = await axios.get('http://localhost:3000/api/auth/nameValidity/' + pseudo)
+        let res = await this.$axios.get('http://localhost:3000/api/auth/nameValidity/' + pseudo)
         if (res.data.nameValidity === true) {
           this.validityPseudo = ""
         } else {

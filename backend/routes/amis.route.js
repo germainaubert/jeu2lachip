@@ -31,6 +31,7 @@ router.delete('/amis/:amitieId', async (req, res) => {
 })
 
 router.get('/amis/liste', async (req, res) => {
+    console.log("bonjour")
     const amis = await Ami.getAmi2Pseudo(userId)
     res.json(amis)
 })
