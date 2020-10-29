@@ -21,6 +21,12 @@ class Lobby {
         return found
     }
 
+    addMessage(message) {
+        if(message) {
+            this.chat.push(message)
+        }
+    }
+
 }
 
 module.exports = Lobby
