@@ -19,8 +19,10 @@
                 </td>
               </tr>
             </tbody>
-      <br>
+            <br>
+        <router-link to="/NewAmi" tag="button">Inviter un joueur a etre ami</router-link>
     </div>
+      <br>
   </div>
 </template>
 
@@ -36,14 +38,15 @@ export default {
   },
   data: function (){
     return { 
-      persons: ["mjdshfqfdqjlkdmdsq","qmklfqmglkfdqjlmjfkdq"]
+      persons: []
     }
   },
+  mounted(){
+    this.getAmis();
+  },
   methods : {
-    invite :  async function(){
-      var popup = document.getElementById("invitePopup")
-      popup.classList.toggle("show")
-
+    /*newAmi :  async function(){
+      
       const res = (await axios({
         method: "post",
         url: "http://localhost:3000/api/amis",
@@ -53,6 +56,23 @@ export default {
         }
       })).data
       console.log(res)
+    },*/
+
+    invite : function() {
+      var popup = document.getElementById("invitePopup")
+      popup.classList.toggle("show")
+    },
+
+    getAmis : async function(){
+      const res = (await axios({
+        method: "get",
+        url: "http://localhost:3000/api/amis/liste",
+        data: {
+          userId: this.userId
+        }
+      })).data
+      console.log(res)
+      //this.persons[res]
     },
 
     deletefriend: async function(){

@@ -1,4 +1,5 @@
 const PostgresStore = require("../PostgresStore")
+const User = require('./user.model')
 
 class Ami {
     /** @type {Number} */
@@ -9,14 +10,34 @@ class Ami {
     idAmi2
 
     /**
-     * @param {Number} gameId
-     * @returns {Promise<Game>}
+     * @param {Number} AmitieId
+     * @returns {Promise<Ami>}
      */
     static async getById (amitieId) {
         const result = await PostgresStore.client.query({
-            text: `SELECT * FROM ${Game.tableName}
+            text: `SELECT * FROM ${Ami.tableName}
             WHERE id=$1`,
             values: [amitieId]
+        })
+        return result.rows[0]
+    }
+
+    static async getAmi2Pseudo (userId) {
+        const result = await PostgresStore.client.query({
+            text: `SELECT
+                    u.pseudo AS pseudo 
+                    FROM ${User.tableName} AS u 
+                    LEFT JOIN ${Ami.tableName} AS ami 
+                        ON ami.idAmi2 = u.id 
+                    WHERE idAmi1=$1`,
+            values: [userId]
+        })
+        return result.rows[0]
+    }
+
+    static async getAll() {
+        const result = await PostgresStore.client.query({
+            text: `SELECT * FROM ${Ami.tableName}`
         })
         return result.rows[0]
     }
