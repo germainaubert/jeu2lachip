@@ -6,7 +6,6 @@
             <tbody>
               <tr v-for="person in persons" v-bind:key="person.id">
                 <td>{{ person.pseudo }}</td>
-                <td class="editLabel">{{person}}</td>
                 <td class="editLabel">  
                   <div class="popup" v-on:click="invite()"> INVITE 
                     <span class="popuptext" id="invitePopup">Cet ami a été invité</span>
@@ -34,12 +33,21 @@ export default {
   props: {},
   data: function () {
     return {
-      persons: ["kqldsmfmdsqf","okfdmqgfhdjisq"],
-      //userId: 
+      persons: [],
+      
     };
   },
-  mounted(){
-    this.getAmis();
+
+  mounted : async function () {
+    const res = await this.$axios.get(
+      "http://localhost:3000/api/auth/getSession"
+    )
+    let user = res.data.user
+    this.currentUser = user
+    console.log(user)
+    this.userId = user.id
+    console.log(this.userId)
+    this.getAmis(this.userId)
   },
 
   methods: {
@@ -57,17 +65,18 @@ export default {
       console.log(res)
     },*/
 
-    invite : function() {
+    invite : function () {
       var popup = document.getElementById("invitePopup")
       popup.classList.toggle("show")
     },
 
     getAmis : async function(){
-      //const res = await this.$axios.get('http://localhost:3000/api/amis/liste'+ userID)
-      const res = await this.$axios.get('http://localhost:3000/api/amis/liste')
-      console.log(res)
-      //this.persons[res]
+      const res = await this.$axios.get('http://localhost:3000/api/amis/liste/'+ this.userId)
+      console.log(res.data)
+      //this.persons.push(res.data) 
+      this.persons = res.data
     },
+
 
     deletefriend: async function(){
       var popup = document.getElementById("deletePopup");

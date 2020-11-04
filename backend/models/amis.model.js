@@ -32,7 +32,8 @@ class Ami {
                     WHERE idAmi1=$1`,
             values: [userId]
         })
-        return result.rows[0]
+        //console.log(result.rows)
+        return result.rows
     }
 
     static async getAll() {
