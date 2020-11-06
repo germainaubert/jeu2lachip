@@ -37,6 +37,20 @@ router.get('/liste/:userId', async (req, res) => {
     res.json(amis)
 })
 
+router.post('/invite/:userId', async (req, res) => {
+    console.log('route', req.params.userId)
+    const amis = await Ami.create(req.params.userId)
+    res.json(
+        {
+            ami: true,
+            id: amis.idAmitie
+        }
+    )
+    res.status(200)
+})
+
+
+
 
 
 module.exports = router

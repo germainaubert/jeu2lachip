@@ -29,8 +29,10 @@ app.use(express.urlencoded({ extended: false }))
 app.use(mySession)
 const authRouter = require('./routes/auth.route')
 const amiRouter = require('./routes/amis.route')
+const userRouter = require('./routes/users.route')
 
 app.use('/api/amis', amiRouter)
 app.use('/api/auth', authRouter)
+app.use('/api/users', userRouter)
 
 module.exports = {app, mySession}

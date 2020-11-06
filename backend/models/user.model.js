@@ -22,6 +22,13 @@ class User {
         return result.rows
     }
 
+    static async getAllPseudo () {
+        const result = await PostgresStore.client.query({
+            text: `SELECT pseudo FROM ${User.tableName}`
+        })
+        return result.rows
+    }
+
     static async findByPseudo (pseudo) {
         const result = await PostgresStore.client.query({
             text: `SELECT * FROM ${User.tableName}

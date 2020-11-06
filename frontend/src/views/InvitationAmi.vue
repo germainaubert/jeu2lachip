@@ -1,45 +1,35 @@
-<template>
-  <div class="lobby">
-    <h1>Lobby</h1>
+<template> 
+  <div class="invitationAmi">
+    <h1>Utilisateur</h1>
     <div>
-      <h1>Vos amis</h1>
-            <tbody>
-              <tr v-for="person in persons" v-bind:key="person.id">
-                <td>{{ person.pseudo }}</td>
+        <tbody>
+              <tr v-for="user in users" v-bind:key="user.id">
+                <td>{{ user.pseudo }}</td>
                 <td class="editLabel">  
                   <div class="popup" v-on:click="invite()"> INVITE 
                     <span class="popuptext" id="invitePopup">Cet ami a été invité</span>
                   </div>
                 </td>
-                <td class="editLabel">
-                  <div class="popup" v-on:click="deletefriend()"> DELETE
-                    <span class="popuptext" id="deletePopup">Cet ami a été supprimé</span>
-                  </div>
-                </td>
               </tr>
-            </tbody>
-            <br>
-        <router-link to="/InvitationAmi" tag="button">Inviter un joueur a etre ami</router-link>
+        </tbody>
     </div>
-      <br>
   </div>
 </template>
 
 <script>
 //import ConnexionVue from './Connexion.vue';
-const axios = require('axios')
+//const axios = require('axios')
 export default {
-  name: "Lobby",
+  name: "InvitationAmi",
   props: {},
   data: function () {
     return {
-      persons: [],
-      
+      users: [],
     };
   },
 
   mounted : async function () {
-    const res = await this.$axios.get(
+   /*const res = await this.$axios.get(
       "http://localhost:3000/api/auth/getSession"
     )
     let user = res.data.user
@@ -47,38 +37,43 @@ export default {
     console.log(user)
     this.userId = user.id
     console.log(this.userId)
-    this.getAmis(this.userId)
+    this.getAmis(this.userId)*/
+    this.getUsers()
   },
 
   methods: {
     
-    /*newAmi :  async function(){
-      
-      const res = (await axios({
-        method: "post",
-        url: "http://localhost:3000/api/amis",
-        data: {
-          ami1: this.ami1,
-          ami2: this.ami2
-        }
-      })).data
-      console.log(res)
-    },*/
-
-    invite : function () {
+    /*invite : async function () {
       var popup = document.getElementById("invitePopup")
       popup.classList.toggle("show")
-    },
+      const amitie = this.userId + this.users.id
+      const res = (await this.$axios({
+        method: "post",
+        url: 'http://localhost:3000/api/amis/invite' + amitie,
+        data: {
+          ami1: this.userId,
+          ami2: this.users.id
+        }
+      })).data
+      this.$router.push('/Lobby');
+    },*/
 
-    getAmis : async function(){
+   /* getAmis : async function(){
       const res = await this.$axios.get('http://localhost:3000/api/amis/liste/'+ this.userId)
       console.log(res.data)
       //this.persons.push(res.data) 
       this.persons = res.data
+    },*/
+
+    getUsers : async function(){
+        const res = await this.$axios.get('http://localhost:3000/api/users/liste')
+        console.log(res.data)
+        this.users = res.data
+        console.log(this.users)
     },
 
 
-    deletefriend: async function(){
+    /*deletefriend: async function(){
       var popup = document.getElementById("deletePopup");
       popup.classList.toggle("show");
 
@@ -90,7 +85,7 @@ export default {
         }
       })).data
       console.log(res)
-    }
+    }*/
   }
 }
 </script>

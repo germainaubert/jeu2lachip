@@ -27,6 +27,11 @@ const routes = [
     path: '/Lobby',
     name: 'Lobby',
     component: () => import('../views/Lobby.vue')
+  },
+  {
+    path: '/InvitationAmi',
+    name: 'InvitationAmi',
+    component: () => import('../views/InvitationAmi.vue')
   }
 ]
 
