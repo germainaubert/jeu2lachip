@@ -30,16 +30,18 @@ router.get('/nameValidity/:pseudo', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     const { pseudo, password } = req.body
-
+    console.log(pseudo, password)
     const user = await User.findByPseudo(pseudo)
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
-        
-        res.status(401).send({
+
+
+        res.status(401).json({
             message: 'Did not find any couple matching email and password',
             flag: false
         })
-        return
+
+
     }
     else {
         user.password = null

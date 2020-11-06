@@ -62,7 +62,7 @@ module.exports = function (server, mySession) {
         })
     }
     function whichPlayer(players, player) {
-        console.log(players, player)
+        console.log('which player', players, player)
         let found = players.find(elem => elem.id == player.currentUser.id)
         return found
     }

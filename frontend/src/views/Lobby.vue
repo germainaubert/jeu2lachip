@@ -2,18 +2,20 @@
   <div class="lobby">
     <h1>Lobby</h1>
     <h3 class="connectedAs">{{ currentUser.pseudo }}</h3>
-    <canvas 
-      v-on:keyup.down="moveDown()"
-      v-on:keyup.left="moveLeft()"
-      v-on:keyup.right="moveRight()"
-      v-on:keyup.up="moveUp()"
+    <canvas
+      v-on:keydown.down="moveDown()"
+      v-on:keydown.left="moveLeft()"
+      v-on:keydown.right="moveRight()"
+      v-on:keydown.up="moveUp()"
       tabindex="0"
       ref="canvas"
       id="canvas"
       class="bg"
       width="400"
       height="400"
-    ></canvas>
+      autofocus
+    >
+    </canvas>
     <div>
       <div class="chat">
         <div class="chatbox">
@@ -61,12 +63,12 @@ export default {
     this.currentUser = user;
     console.log(user);
     this.$socket.emit("logged", user);
-    this.canvas = this.$refs.canvas
+    this.canvas = this.$refs.canvas;
     const ctx = this.canvas.getContext("2d");
     this.vueCanvas = ctx;
-    console.log("a")
-    this.drawPlayers()
-    this.update()
+    console.log("a");
+    this.drawPlayers();
+    this.update();
   },
   methods: {
     drawPlayers() {
@@ -164,7 +166,9 @@ li {
 a {
   color: #42b983;
 }
-html { overflow-y: hidden; } 
+html {
+  overflow-y: hidden;
+}
 .lobby {
   display: flex;
   flex-direction: column;

@@ -6,6 +6,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '',
+    name: 'Default',
     component: () => import('../views/Accueil.vue')
   },
   {

@@ -10,7 +10,7 @@ class Lobby {
     }
 
     addUser(user) {
-        
+
         if (user) {
             this.users.push(user)
         }
@@ -22,7 +22,7 @@ class Lobby {
     }
 
     addMessage(message) {
-        if(message) {
+        if (message) {
             this.chat.push(message)
         }
     }
