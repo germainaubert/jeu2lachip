@@ -1,4 +1,4 @@
-class Player {
+class lobbyPlayer {
     /** @type {import("../models/user.model.js")[]} */
     id
     pseudo
@@ -14,9 +14,8 @@ class Player {
         this.y = y
         this.size = size
         this.speed = speed
-        this.c = c
+        this.c = "#" + ((1 << 24) * Math.random() | 0).toString(16)
     }
-
 }
 
-module.exports = Player
+module.exports = lobbyPlayer

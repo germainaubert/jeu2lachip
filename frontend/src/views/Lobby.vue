@@ -2,7 +2,7 @@
   <div class="lobby">
     <h1>Lobby</h1>
     <h3 class="connectedAs">{{ currentUser.pseudo }}</h3>
-    <canvas 
+    <canvas
       v-on:keyup.down="moveDown()"
       v-on:keyup.left="moveLeft()"
       v-on:keyup.right="moveRight()"
@@ -54,19 +54,19 @@ export default {
   },
 
   mounted: async function () {
-    const res = await this.$axios.get(
-      "http://localhost:3000/api/auth/getSession"
-    );
-    let user = res.data.user;
-    this.currentUser = user;
-    console.log(user);
-    this.$socket.emit("logged", user);
-    this.canvas = this.$refs.canvas
+    console.log("lobby mounted");
+    this.$socket.open();
+    this.$socket.emit("logged");
+    const res2 = (await this.$axios.get(
+          "http://localhost:3000/api/auth/getUser"
+        )).data.user
+    this.currentUser = res2
+    this.canvas = this.$refs.canvas;
     const ctx = this.canvas.getContext("2d");
     this.vueCanvas = ctx;
-    console.log("a")
-    this.drawPlayers()
-    this.update()
+    console.log("a");
+    this.drawPlayers();
+    this.update();
   },
   methods: {
     drawPlayers() {
@@ -103,18 +103,16 @@ export default {
       });
     },
     sendMessage() {
-      this.$socket.emit("sendMessage", {
-        pseudo: this.currentUser.pseudo,
-        content: this.message,
-      });
+      this.$socket.emit("sendMessage", this.message);
       this.message = "";
     },
   },
   sockets: {
     loggedEvent(data) {
+      const lobby = data.lobby
       console.log("data du log : ", data);
-      const lobbyUsers = data.users;
-      const chat = data.chat;
+      const lobbyUsers = lobby.users;
+      const chat = lobby.chat;
       const players = data.players;
 
       console.log(lobbyUsers);
@@ -164,7 +162,9 @@ li {
 a {
   color: #42b983;
 }
-html { overflow-y: hidden; } 
+html {
+  overflow-y: hidden;
+}
 .lobby {
   display: flex;
   flex-direction: column;
