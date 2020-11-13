@@ -4,6 +4,8 @@ import router from './router'
 import VueSession from  'vue-session'
 import axios from 'axios'
 import VueSocketIO from 'vue-socket.io'
+import vuetify from './plugins/vuetify'
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 
 Vue.use(
@@ -23,5 +25,6 @@ axios.defaults.withCredentials = true
 
 new Vue({
   router,
+  vuetify,
   render: h => h(App)
 }).$mount('#app')

@@ -1,5 +1,11 @@
 <template>
-  <h1>Le jeu de la chips</h1>
+    <v-layout align-center justify-center>
+      <v-img
+        src="../assets/paquet-chips.png"
+        max-height="300"
+        max-width="300"
+      ></v-img>
+    </v-layout>
 </template>
 
 <script>
@@ -16,16 +22,9 @@ export default {
       registerIsClicked: Boolean,
     };
   },
-  // mounted: function () {
-  //   this.truc = 'w3-button w3-round-large w3-indigo w3-hover-blue w3-animate-left w3-center-align'
-  // }
+
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1 {
-  text-align: center;
-  margin-top: 100px;
-}
 </style>

@@ -26,7 +26,7 @@ module.exports = function (server, mySession) {
             shareEvent(clients, 'loggedEvent', { users: lobby.users, chat: lobby.chat, players: players })
             console.log(players)
         })
-        
+
 
         socket.on("sendMessage", function (data) {
             lobby.addMessage(data)
@@ -52,7 +52,7 @@ module.exports = function (server, mySession) {
             currentPlayer.y += currentPlayer.speed
             shareEvent(clients, 'moveDownEvent', players)
         });
-        
+
 
     })
 
