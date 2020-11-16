@@ -18,7 +18,11 @@ app.use(cors({
 let mySession = session({
     secret: config.session_secret,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: true,
+    cookie : {
+        httpOnly : false,
+        secure : false
+    }
 });
 
 app.use(logger('dev'))

@@ -89,6 +89,10 @@ export default {
         ).data;
 
         if (res.connect === true) {
+          const res2 = await this.$axios.get(
+          "http://localhost:3000/api/auth/getSession"
+        );
+        console.log(res2)
           // self.$session.start(res.id)
           // console.log(self.$sessions.getAll())
           this.$router.push("/Lobby");

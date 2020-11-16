@@ -56,13 +56,13 @@ export default {
   },
 
   mounted: async function () {
-    const res = await this.$axios.get(
-      "http://localhost:3000/api/auth/getSession"
-    );
-    let user = res.data.user;
-    this.currentUser = user;
-    console.log(user);
-    this.$socket.emit("logged", user);
+    console.log("lobby mounted");
+    this.$socket.open();
+    this.$socket.emit("logged");
+    const res2 = (await this.$axios.get(
+          "http://localhost:3000/api/auth/getUser"
+        )).data.user
+    this.currentUser = res2
     this.canvas = this.$refs.canvas;
     const ctx = this.canvas.getContext("2d");
     this.vueCanvas = ctx;
@@ -105,18 +105,16 @@ export default {
       });
     },
     sendMessage() {
-      this.$socket.emit("sendMessage", {
-        pseudo: this.currentUser.pseudo,
-        content: this.message,
-      });
+      this.$socket.emit("sendMessage", this.message);
       this.message = "";
     },
   },
   sockets: {
     loggedEvent(data) {
+      const lobby = data.lobby
       console.log("data du log : ", data);
-      const lobbyUsers = data.users;
-      const chat = data.chat;
+      const lobbyUsers = lobby.users;
+      const chat = lobby.chat;
       const players = data.players;
 
       console.log(lobbyUsers);
