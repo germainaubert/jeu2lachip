@@ -1,6 +1,14 @@
 <template>
   <v-app>
-    <Navbar />
+    <template
+      v-if='
+        this.$router.history.current.name === "Default" ||
+        this.$router.history.current.name === "Inscription" ||
+        this.$router.history.current.name === "Connexion"
+      '
+    >
+      <Navbar />
+    </template>
     <router-view />
   </v-app>
 </template>

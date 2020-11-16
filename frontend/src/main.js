@@ -23,6 +23,7 @@ Vue.use(
 
 Vue.config.productionTip = false
 
+console.log(router)
 
 new Vue({
   router,
