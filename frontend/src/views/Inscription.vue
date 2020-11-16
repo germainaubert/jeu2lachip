@@ -95,7 +95,7 @@ export default {
         console.log(res2)
           // self.$session.start(res.id)
           // console.log(self.$sessions.getAll())
-          this.$router.push("/Lobby");
+          this.$router.push("/test");
           this.$socket.emit("login");
         }
       } else {
