@@ -1,13 +1,29 @@
 <template>
-  <div class="div"></div>
+  <v-stage :config="configKonva">
+    <v-layer>
+      <v-circle :config="configCircle"></v-circle>
+    </v-layer>
+  </v-stage>
 </template>
 
 <script>
-
 export default {
-  async mounted() {
-    this.$socket.open();
-    this.$socket.emit("logged");
-  },
+  data() {
+    return {
+      configKonva: {
+        width: 200,
+        height: 200
+      },
+      configCircle: {
+        x: 100,
+        y: 100,
+        radius: 70,
+        fill: "",
+        stroke: "black",
+        strokeWidth: 4
+      }
+    };
+  }
 };
+
 </script>
