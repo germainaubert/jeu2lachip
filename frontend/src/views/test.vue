@@ -1,28 +1,33 @@
 <template>
-  <v-stage :config="configKonva">
-    <v-layer>
-      <v-circle :config="configCircle"></v-circle>
-    </v-layer>
-  </v-stage>
+  <div class="div">
+    <input type="text" placeholder="entrer l'id du lobby" v-model="lobbyId" v-on:keyup.enter="searchLobby()">
+    <button v-on:click="createLobby()">Créer un lobby </button>
+    <button v-on:click="joinLobby()"> Partie rapide</button>
+  </div>
 </template>
 
 <script>
 export default {
-  data() {
+  async mounted() {
+    this.$socket.open();
+  },
+  data: function() {
     return {
-      configKonva: {
-        width: 200,
-        height: 200
-      },
-      configCircle: {
-        x: 100,
-        y: 100,
-        radius: 70,
-        fill: "",
-        stroke: "black",
-        strokeWidth: 4
-      }
-    };
+      lobbyId: ""
+    }
+  },
+  methods: {
+    createLobby() {
+      this.$socket.emit("login", "createLobby");
+    },
+    searchLobby() {
+      console.log(this.lobbyId)
+      this.$socket.emit("login", "joinByCode", this.lobbyId);
+      this.lobbyId = "";
+    },
+    joinLobby() {
+      this.$socket.emit("login", "joinRandom");
+    }
   }
 };
 
