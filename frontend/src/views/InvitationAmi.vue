@@ -53,16 +53,9 @@ export default {
       const amiInvitedId = amiInviteId.id
       //const amitie = this.userId + amiInviteId
       //console.log(amitie)
-      const res = (await this.$axios({
-        method: "post",
-        url: 'http://localhost:3000/api/amis/invite/' + this.userId + '/' + amiInvitedId,
-        /*data: {
-          userId: this.userId,
-          amiInviteId: amiInviteId,
-        }*/
-      })).data
+      const res = await this.$axios.post('http://localhost:3000/api/amis/invite/' + this.userId + '/' + amiInvitedId)
       if (res.invite === true) {
-          this.$router.push('/Lobby');
+          this.$router.push('/Amis');
       }
     },
 

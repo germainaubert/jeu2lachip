@@ -12,7 +12,7 @@
                   </div>
                 </td>
                 <td class="editLabel">
-                  <div class="popup" v-on:click="deletefriend()"> DELETE
+                  <div class="popup" v-on:click="deletefriend(person.pseudo)"> DELETE
                     <span class="popuptext" id="deletePopup">Cet ami a été supprimé</span>
                   </div>
                 </td>
@@ -27,14 +27,14 @@
 
 <script>
 //import ConnexionVue from './Connexion.vue';
-const axios = require('axios')
+//const axios = require('axios')
 export default {
   name: "Lobby",
   props: {},
   data: function () {
     return {
       persons: [],
-      
+      amiId: Number,
     };
   },
 
@@ -75,22 +75,32 @@ export default {
       console.log(res.data)
       //this.persons.push(res.data) 
       this.persons = res.data
+      console.log(this.persons)
     },
 
 
-    deletefriend: async function(){
-      var popup = document.getElementById("deletePopup");
-      popup.classList.toggle("show");
+    deletefriend: async function(pseudo){
+      var popup = document.getElementById("deletePopup")
+      popup.classList.toggle("show")
 
-      const res = (await axios({
-        method: "delete",
-        url: "http://localhost:3000/api/amis/deleteAmis",
-        data: {
-          amitieId: this.amitieId
-        }
-      })).data
-      console.log(res)
-    }
+      console.log(pseudo)
+      const amiId =  await this.findUsersId(pseudo);
+      console.log(amiId.id)
+      const ami2Id = amiId.id
+      const res = await this.$axios.delete('http://localhost:3000/api/amis/deleteAmis/' + this.userId + '/' + ami2Id)
+      //console.log(res)
+      if (res.delete === true) {
+          this.$router.push('/Amis');
+      }
+    },
+
+    findUsersId : async function(pseudo){
+      const res = await this.$axios.get('http://localhost:3000/api/users/id/' + pseudo)
+      console.log(res.data)
+      this.amiId = res.data
+      console.log(this.amiId)
+      return this.amiId
+    },
   }
 }
 </script>

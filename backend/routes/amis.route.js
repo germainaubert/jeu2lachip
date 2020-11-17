@@ -50,11 +50,16 @@ router.post('/invite/:userId/:amiInvitedId', async (req, res) => {
     res.status(200)
 })
 
-router.delete('/deleteAmis', async (req, res) => {
-    console.log('routeDelete', req.params.userId)
-    const amis = await Ami.delete(req.params.userId)
+router.delete('/deleteAmis/:userId/:ami2Id', async (req, res) => {
+    console.log('routeDelete', req.params.userId, req.params.ami2Id)
+    console.log(req.params.userId)
+    console.log(req.params.ami2Id)
+    const amis = await Ami.deleteIdAmitie(req.params.userId, req.params.ami2Id)
     //console.log(amis)
-    res.json(amis)
+    res.json({
+        delete: true
+    })
+    res.status(200)
 })
 
 

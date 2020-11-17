@@ -63,7 +63,7 @@ export default {
           ).data;
           console.log(res);
           this.$socket.emit("login");
-          this.$router.push("/Lobby");
+          this.$router.push("/Amis");
         } catch (err) {
           console.log("Cannot log user, check pseudo or password validity");
           this.error = "Pseudo ou mot de passe invalide(s)";

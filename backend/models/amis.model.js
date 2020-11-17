@@ -36,18 +36,19 @@ class Ami {
         return result.rows
     }
 
+    static async deleteIdAmitie (idAmi1, idAmi2) {
+        const result = await PostgresStore.client.query({
+            text: `DELETE FROM ${Ami.tableName}
+            WHERE idAmi1=$1 AND idAmi2=$2`,
+            values: [idAmi1, idAmi2]
+        })
+    }
+
     static async getAll() {
         const result = await PostgresStore.client.query({
             text: `SELECT * FROM ${Ami.tableName}`
         })
         return result.rows[0]
-    }
-
-    static async delete (amitieId) {
-        await PostgresStore.client.query({
-            text: `DELETE FROM ${Ami.tableName} WHERE id=$1`,
-            values: [amitieId]
-        })
     }
 
     /**
