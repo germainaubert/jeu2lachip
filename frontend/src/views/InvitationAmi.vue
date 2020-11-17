@@ -6,7 +6,7 @@
               <tr v-for="user in users" v-bind:key="user.id">
                 <td>{{ user.pseudo }}</td>
                 <td class="editLabel">  
-                  <div class="popup" v-on:click="invite()"> INVITE 
+                  <div class="popup" v-on:click="invite(user.pseudo)"> INVITE 
                     <span class="popuptext" id="invitePopup">Cet ami a été invité</span>
                   </div>
                 </td>
@@ -25,11 +25,12 @@ export default {
   data: function () {
     return {
       users: [],
+      newamiId: Number,
     };
   },
 
   mounted : async function () {
-   /*const res = await this.$axios.get(
+   const res = await this.$axios.get(
       "http://localhost:3000/api/auth/getSession"
     )
     let user = res.data.user
@@ -37,26 +38,33 @@ export default {
     console.log(user)
     this.userId = user.id
     console.log(this.userId)
-    this.getAmis(this.userId)*/
+    //this.getAmis(this.userId)
     this.getUsers()
   },
 
   methods: {
     
-    /*invite : async function () {
+    invite : async function (pseudo) {
       var popup = document.getElementById("invitePopup")
       popup.classList.toggle("show")
-      const amitie = this.userId + this.users.id
+      console.log(pseudo)
+      const amiInviteId =  await this.findUsersId(pseudo);
+      console.log(amiInviteId.id)
+      const amiInvitedId = amiInviteId.id
+      //const amitie = this.userId + amiInviteId
+      //console.log(amitie)
       const res = (await this.$axios({
         method: "post",
-        url: 'http://localhost:3000/api/amis/invite' + amitie,
-        data: {
-          ami1: this.userId,
-          ami2: this.users.id
-        }
+        url: 'http://localhost:3000/api/amis/invite/' + this.userId + '/' + amiInvitedId,
+        /*data: {
+          userId: this.userId,
+          amiInviteId: amiInviteId,
+        }*/
       })).data
-      this.$router.push('/Lobby');
-    },*/
+      if (res.invite === true) {
+          this.$router.push('/Lobby');
+      }
+    },
 
    /* getAmis : async function(){
       const res = await this.$axios.get('http://localhost:3000/api/amis/liste/'+ this.userId)
@@ -70,6 +78,14 @@ export default {
         console.log(res.data)
         this.users = res.data
         console.log(this.users)
+    },
+
+    findUsersId : async function(pseudo){
+      const res = await this.$axios.get('http://localhost:3000/api/users/id/' + pseudo)
+      console.log(res.data)
+      this.newamiId = res.data
+      console.log(this.newamiId)
+      return this.newamiId
     },
 
 

@@ -31,25 +31,31 @@ const Ami = require('../models/amis.model')
 // })
 
 router.get('/liste/:userId', async (req, res) => {
-    console.log('route', req.params.userId)
+    console.log('routeListe', req.params.userId)
     const amis = await Ami.getAmi2Pseudo(req.params.userId)
     //console.log(amis)
     res.json(amis)
 })
 
-router.post('/invite/:userId', async (req, res) => {
-    console.log('route', req.params.userId)
-    const amis = await Ami.create(req.params.userId)
-    res.json(
-        {
-            ami: true,
-            id: amis.idAmitie
-        }
-    )
+router.post('/invite/:userId/:amiInvitedId', async (req, res) => {
+    console.log('routeCreationAmitie', req.params.userId, req.params.amiInvitedId)
+    console.log(req.params.userId)
+    console.log(req.params.amiInvitedId)
+    const amis = await Ami.create(req.params.userId, req.params.amiInvitedId)
+    console.log()
+    res.json({
+        amis,
+        invite: true
+    })
     res.status(200)
 })
 
-
+router.delete('/deleteAmis', async (req, res) => {
+    console.log('routeDelete', req.params.userId)
+    const amis = await Ami.delete(req.params.userId)
+    //console.log(amis)
+    res.json(amis)
+})
 
 
 

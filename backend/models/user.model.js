@@ -38,6 +38,15 @@ class User {
         return result.rows[0]
     }
 
+    static async getIdByPseudo (pseudo) {
+        const result = await PostgresStore.client.query({
+            text: `SELECT id FROM ${User.tableName}
+            WHERE pseudo=$1`,
+            values: [pseudo]
+        })
+        return result.rows[0]
+    }
+
     /**
      * @param {User} user
      */

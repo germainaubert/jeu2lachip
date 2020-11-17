@@ -84,7 +84,7 @@ export default {
 
       const res = (await axios({
         method: "delete",
-        url: "http://localhost:3000/api/amis",
+        url: "http://localhost:3000/api/amis/deleteAmis",
         data: {
           amitieId: this.amitieId
         }

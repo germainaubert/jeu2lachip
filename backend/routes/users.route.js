@@ -8,4 +8,11 @@ router.get('/liste', async (req, res) => {
     console.log(users)
 })
 
+router.get('/id/:pseudo', async (req, res) => {
+    console.log('route', req.params.pseudo)
+    const id = await User.getIdByPseudo(req.params.pseudo)
+    res.json(id)
+    console.log(id)
+})
+
 module.exports = router

@@ -58,7 +58,7 @@ class Ami {
         await PostgresStore.client.query({
             text: `
             INSERT INTO ${Ami.tableName} 
-                   (ami1, ami2)
+                   (idAmi1, idAmi2)
             VALUES ($1,   $2)`,
             values: [ami1, ami2]
         })
