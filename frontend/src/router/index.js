@@ -24,9 +24,9 @@ const routes = [
     component: () => import('../views/Connexion.vue')
   },
   {
-    path: '/Lobby',
-    name: 'Lobby',
-    component: () => import('../views/Lobby.vue')
+    path: '/Amis',
+    name: 'Amis',
+    component: () => import('../views/Amis.vue')
   },
   {
     path: '/InvitationAmi',
