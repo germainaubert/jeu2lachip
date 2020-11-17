@@ -1,26 +1,29 @@
 const PostgresStore = require('./PostgresStore')
 const express = require('express')
 const logger = require('morgan')
-const http = require("http")
 const session = require('express-session')
 const config = require('./server.config')
 const ami = require('./models/amis.model')
 const cors = require('cors')
 
 PostgresStore.init()
-.then(() => console.log('connected'))
+    .then(() => console.log('connected'))
 
 const app = express();
 
 app.use(cors({
     origin: "http://localhost:8080",
-    credentials: true        
+    credentials: true
 }))
 
 let mySession = session({
     secret: config.session_secret,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: true,
+    cookie : {
+        httpOnly : false,
+        secure : false
+    }
 });
 
 app.use(logger('dev'))
@@ -35,4 +38,4 @@ app.use('/api/amis', amiRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/users', userRouter)
 
-module.exports = {app, mySession}
+module.exports = { app, mySession }

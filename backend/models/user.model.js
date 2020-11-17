@@ -15,7 +15,7 @@ class User {
      * @param {Number} userId
      * @returns {Promise<User>}
      */
-    static async getAll () {
+    static async getAll() {
         const result = await PostgresStore.client.query({
             text: `SELECT * FROM ${User.tableName}`
         })
@@ -29,7 +29,7 @@ class User {
         return result.rows
     }
 
-    static async findByPseudo (pseudo) {
+    static async findByPseudo(pseudo) {
         const result = await PostgresStore.client.query({
             text: `SELECT * FROM ${User.tableName}
             WHERE pseudo=$1`,
@@ -51,7 +51,7 @@ class User {
      * @param {User} user
      */
 
-    static async create (pseudo, password) {
+    static async create(pseudo, password) {
         const hashedPw = await bcrypt.hash(password, 10)
 
         const result = await PostgresStore.client.query({
@@ -65,7 +65,7 @@ class User {
         return result.rows[0]
     }
 
-    static toSQLTable () {
+    static toSQLTable() {
         return `
             CREATE TABLE ${User.tableName} (
                 id SERIAL PRIMARY KEY,

@@ -12,7 +12,7 @@ class Game {
      * @param {Number} gameId
      * @returns {Promise<Game>}
      */
-    static async getById (gameId) {
+    static async getById(gameId) {
         const result = await PostgresStore.client.query({
             text: `SELECT * FROM ${Game.tableName}
             WHERE id=$1`,
@@ -24,7 +24,7 @@ class Game {
     /**
      * @param {Game} game
      */
-    static async create (game) {
+    static async create(game) {
 
         await PostgresStore.client.query({
             text: `
@@ -35,7 +35,7 @@ class Game {
         })
     }
 
-    static toSQLTable () {
+    static toSQLTable() {
         return `
             CREATE TABLE ${Game.tableName} (
                 id SERIAL PRIMARY KEY,

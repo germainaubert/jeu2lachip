@@ -1,22 +1,50 @@
 <template>
-  <div class="inscription">
-    <router-link to="/Accueil">Accueil</router-link>
-    <h1>s'inscrire</h1>
-    <div>
-      <div class="info_input">pseudo <input v-model="pseudo" v-on:keyup="nameValidity(pseudo)"/>
-        <span class="error">{{errorPseudo}}</span> <span class="error">{{validityPseudo}}</span>
-      </div>
-      <div class="info_input">
-        password <input type="password" v-model="password" />
-        <span class="error">{{ errorPw }}</span>
-      </div>
-      <button v-on:click="checkInfo()">S'inscrire</button>
-    </div>
-  </div>
+  <v-container>
+    <v-card width="500" class="mx-auto mt-10">
+      <v-card-title>
+        <h1 class="display-1">Inscription</h1>
+      </v-card-title>
+      <v-card-text>
+        <span class="errPseudo">{{validityPseudo}}</span>
+        <v-form>
+          <v-text-field
+            label="Pseudo"
+            prepend-icon="mdi-account-circle"
+            v-model="pseudo"
+          />
+          <v-text-field
+            :type="showPassword ? 'text' : 'password'"
+            label="Mot de passe"
+            prepend-icon="mdi-lock"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="showPassword = !showPassword"
+            v-model="password"
+          />
+        </v-form>
+      </v-card-text>
+      <v-card-actions v-if="validButton">
+        <v-btn color="success" v-on:click="checkInfo">S'inscrire</v-btn>
+      </v-card-actions>
+      <v-card-actions v-else>
+        <v-btn color="success" disabled v-on:click="checkInfo">S'inscrire</v-btn>
+      </v-card-actions>
+    </v-card>
+    <v-card width="400" class="mx-auto mt-5">
+      Le mot de passe doit contenir au moins:
+      <v-row v-for="label in validPassword" :key="label.name" class="ml-2">
+        <v-icon v-if="label.state" color="green">
+          {{label.icon}}
+        </v-icon>
+        <v-icon v-else color="red">
+          {{label.icon}}
+        </v-icon>
+        {{ label.name }}
+      </v-row>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
-
 //import User from '../../../backend/models/user.model.js'
 export default {
   name: "Inscription",
@@ -27,78 +55,158 @@ export default {
     return {
       pseudo: "",
       password: "",
-      errorPw: "",
-      errorPseudo: "",
-      validityPseudo: ""
-    }
+      validityPseudo: "",
+      inputError: "",
+      showPassword: false,
+      validPassword: [
+        { name: "6 caractères minimum", icon:"clear", state: false },
+        { name: "Une majuscule", icon:"clear", state: false },
+        { name: "Un caractère spécial: ! @ # $ % ^ & * ?", icon:"clear", state: false },
+        { name: "Un chiffre", icon:"clear", state: false },
+      ],
+      validButton: false
+    };
+  },
+  watch: {
+    pseudo: "lookAtPseudo",
+    password: "passwordValidation"
   },
 
   methods: {
     checkInfo: async function () {
+      const errorPw = checkPw(this.password);
+      const errorPseudo = checkPseudo(this.pseudo);
+      if (errorPw && errorPseudo) {
+        const res = (
+          await this.$axios({
+            method: "post",
+            url: "http://localhost:3000/api/auth/register",
+            data: {
+              pseudo: this.pseudo,
+              password: this.password,
+            },
+          })
+        ).data;
 
-      this.errorPw = checkPw(this.password)
-      this.errorPseudo = checkPseudo(this.pseudo)
-
-      if (this.errorPw.length === 0 && this.errorPseudo.length === 0) {
-        const res = (await this.$axios({
-          method: "post",
-          url: "http://localhost:3000/api/auth/register",
-          data: {
-            pseudo: this.pseudo,
-            password: this.password
-          }
-        })).data
-        
         if (res.connect === true) {
+          const res2 = await this.$axios.get(
+          "http://localhost:3000/api/auth/getSession"
+        );
+        console.log(res2)
           // self.$session.start(res.id)
           // console.log(self.$sessions.getAll())
-          this.$router.push('/Lobby');
-          this.$socket.emit('login');
+          this.$router.push("/Lobby");
+          this.$socket.emit("login");
         }
-      }
-      
+      } else {
+        this.inputError =
+          "Le pseudo et le mot de passe doivent faire plus de 5 caractères";
 
+        setTimeout(function () {
+          this.inputError = "";
+        }, 10);
+      }
     },
 
-    nameValidity: async function (pseudo) {
-        let res = await this.$axios.get('http://localhost:3000/api/auth/nameValidity/' + pseudo)
-        if (res.data.nameValidity === true) {
-          this.validityPseudo = ""
-        } else {
-          this.validityPseudo = "Ce pseudo existe déjà"
-        }
+    pseudoValidity: async function () {
+      let res = await this.$axios.get(
+        "http://localhost:3000/api/auth/nameValidity/" + this.pseudo
+      );
+      if (res.data.nameValidity === true) {
+        this.validityPseudo = "";
+      } else {
+        this.validityPseudo = "Ce pseudo existe déjà";
+      }
+      console.log(this.validityPseudo)
+    },
+
+    errCleaner: function () {
+      if (this.pseudo.length === 0) {
+        this.validityPseudo = "";
+      }
+    },
+    lookAtPseudo: async function () {
+      if (this.pseudo) {
+        await this.pseudoValidity();
+      } else {
+        this.validityPseudo = "";
+      }
+    },
+    passwordValidation: function () {
+      let flag = true
+      // 6 caracatères min
+      if (this.password.length > 5) {
+        this.validPassword[0].state = true
+        this.validPassword[0].icon = "done"
+      } else {
+        this.validPassword[0].state = false
+        this.validPassword[0].icon = "clear"
+        flag = false
+      }
+      
+      // Majuscule
+      const majRegex = new RegExp('(?=.*[A-Z])')
+
+      if (majRegex.test(this.password)) {
+        this.validPassword[1].state = true
+        this.validPassword[1].icon = "done"
+      } else {
+        this.validPassword[1].state = false
+        this.validPassword[1].icon = "clear"
+        flag = false
+      }
+
+      // Caractère spécial
+      const specialRegex = new RegExp('(?=.*[!@#$%^&*?])')
+      
+      if (specialRegex.test(this.password)) {
+        this.validPassword[2].state = true
+        this.validPassword[2].icon = "done"
+      } else {
+        this.validPassword[2].state = false
+        this.validPassword[2].icon = "clear"
+        flag = false
+      }
+
+      // Chiffre
+      const digitRegex = new RegExp('(?=.*[0-9])')
+      
+      if (digitRegex.test(this.password)) {
+        this.validPassword[3].state = true
+        this.validPassword[3].icon = "done"
+      } else {
+        this.validPassword[3].state = false
+        this.validPassword[3].icon = "clear"
+        flag = false
+      }
+
+      this.validButton = flag
+
     }
   },
-}
+};
+
 
 function checkPw(pw) {
   if (pw.length < 5) {
-    return "Mot de passe trop court"
+    return false;
   } else {
-    return ""
+    return true;
   }
 }
 
 function checkPseudo(pseudo) {
   if (pseudo.length < 5) {
-    return "Le pseudo doit faire 5 caractère minimum"
+    return false;
   } else {
-    return ""
+    return true;
   }
 }
 </script>
 
 
 <style scoped>
-a {
-  color: #42b983;
-}
-.info_input {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-.error {
+.errPseudo {
   color: red;
-  font-size: 10px;
 }
 </style>

@@ -5,13 +5,14 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '',
+    path: '/',
+    name: 'Default',
     component: () => import('../views/Accueil.vue')
   },
   {
-    path: '/Accueil',
-    name: 'Accueil',
-    component: () => import('../views/Accueil.vue')
+    path: '/test',
+    name: 'test',
+    component: () => import('../views/test.vue')
   },
   {
     path: '/Inscription',

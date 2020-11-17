@@ -1,6 +1,6 @@
 class LobbyContainer {
     lobbies
-    constructor () {
+    constructor() {
         this.lobbies = []
     }
 }

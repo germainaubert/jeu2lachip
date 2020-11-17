@@ -10,7 +10,7 @@ class Lobby {
     }
 
     addUser(user) {
-        
+
         if (user) {
             this.users.push(user)
         }
@@ -19,6 +19,12 @@ class Lobby {
     hasUser(user) {
         let found = this.users.find(elem => elem.id == user.id)
         return found
+    }
+
+    addMessage(message) {
+        if (message) {
+            this.chat.push(message)
+        }
     }
 
 }

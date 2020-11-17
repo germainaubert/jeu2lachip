@@ -20,7 +20,7 @@ class Score {
     /**
      * @param {User} user
      */
-    static async addScore (score, userId, gameId) {
+    static async addScore(score, userId, gameId) {
 
         await PostgresStore.client.query({
             text: `INSERT INTO ${ArticleCart.tableName}
@@ -30,7 +30,7 @@ class Score {
         })
     }
 
-    static toSQLTable () {
+    static toSQLTable() {
         return `
              CREATE TABLE ${Score.tableName} (
                 id SERIAL PRIMARY KEY,
