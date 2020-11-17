@@ -5,7 +5,9 @@ import axios from 'axios'
 import VueSocketIO from 'vue-socket.io'
 import vuetify from './plugins/vuetify'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import VueKonva from 'vue-konva'
 
+Vue.use(VueKonva)
 
 Vue.prototype.$axios = axios
 axios.defaults.withCredentials = true
@@ -22,8 +24,6 @@ Vue.use(
 )
 
 Vue.config.productionTip = false
-
-console.log(router)
 
 new Vue({
   router,

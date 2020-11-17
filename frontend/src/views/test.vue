@@ -7,7 +7,6 @@
 </template>
 
 <script>
-
 export default {
   async mounted() {
     this.$socket.open();
@@ -31,4 +30,5 @@ export default {
     }
   }
 };
+
 </script>
