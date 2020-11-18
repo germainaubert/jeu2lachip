@@ -7,7 +7,10 @@ import vuetify from './plugins/vuetify'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import VueKonva from 'vue-konva'
 
+import { store } from './store'
+
 Vue.use(VueKonva)
+
 
 Vue.prototype.$axios = axios
 axios.defaults.withCredentials = true
@@ -26,6 +29,7 @@ Vue.use(
 Vue.config.productionTip = false
 
 new Vue({
+  store: store,
   router,
   vuetify,
   render: h => h(App)
