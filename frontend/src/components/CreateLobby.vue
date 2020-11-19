@@ -25,6 +25,16 @@ export default {
       createLobbyReq: function async () {
         this.$socket.emit("login", "createLobby")
       }
+  },
+  sockets: {
+    validCreation(flag) {
+      if (flag) {
+        this.$store.state.lobbyId = flag
+        this.$router.push("/Lobby")
+      } else {
+        this.error = "A problem has occured during lobby creation, reconnect and try again"
+      }
+    }
   }
 };
 </script>

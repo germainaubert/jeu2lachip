@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PreLobbyDisplay></PreLobbyDisplay>
+    <PreLobbyDisplay id="display"></PreLobbyDisplay>
     <JoinLobby v-if="joinLobbyComp"></JoinLobby>
     <CreateLobby v-if="createLobbyComp"></CreateLobby>
   </div>
@@ -18,7 +18,6 @@ export default {
     CreateLobby,
   },
   mounted: async function () {
-    console.log("lobby mounted");
     this.$socket.open();
     this.$socket.emit("logged");
     const res2 = (
@@ -26,7 +25,7 @@ export default {
     ).data.user;
     this.currentUser = res2;
     // focus sur lobby display
-    this.$refs.display.focus();
+    document.getElementById("display").focus()
   },
   computed: {
     joinLobbyComp() {
