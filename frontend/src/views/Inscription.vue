@@ -42,6 +42,7 @@
       </v-row>
     </v-card>
   </v-container>
+  
 </template>
 
 <script>
@@ -95,7 +96,7 @@ export default {
         console.log(res2)
           // self.$session.start(res.id)
           // console.log(self.$sessions.getAll())
-          this.$router.push("/test");
+          this.$router.push("/PreLobby");
           this.$socket.emit("login");
         }
       } else {
