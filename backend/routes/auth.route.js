@@ -76,7 +76,7 @@ router.post('/register', async (req, res) => {
         user.password = null
         req.session.user = user
         req.session.save()
-        console.log(' req session after save : ', req.session)
+        //console.log(' req session after save : ', req.session)
         res.status(200)
         res.json(
             {

@@ -4,8 +4,6 @@ const lobbyContainer = new LobbyContainer()
 const lobbyPlayer = require('../lobbyClasses/lobbyPlayer')
 const shareEvent = require('../middlewares/shareEvent')
 
-let players = []
-
 module.exports = function (socket) {
 
     socket.on("createLobby", function () {
@@ -33,12 +31,12 @@ module.exports = function (socket) {
                 if (!lobby.hasUser(currentUser)) {
                     lobby.addUser(currentUser)
                     let player = convertPlayer(currentUser)
-                    players.push(player)
+                    lobby.players.push(player)
                     created = lobby.id
                     // console.log(players)
                 }
                 socket.emit('validCreation', created)
-                console.log(lobby)
+                console.log(lobby.users)
                 break
             case "joinRandom":
                 let openLobby = lobbyContainer.lobbies.findIndex(lobby => lobby.is_full == false) 
@@ -46,28 +44,27 @@ module.exports = function (socket) {
                     if (!lobbyContainer.lobbies[openLobby].hasUser(currentUser)) {
                         lobbyContainer.lobbies[openLobby].addUser(currentUser)
                         let player = convertPlayer(currentUser)
-                        players.push(player)
+                        lobby.players.push(player)
                         console.log(players)
                     }
                 }
                 break
             case "joinByCode":
-                console.log("sent by user ",idLobby)
+                //console.log("sent by user ",idLobby)
                 let codedLobby = lobbyContainer.lobbies.findIndex(lobby => lobby.id == idLobby)
                 let validation = null
                 if(codedLobby >= 0) {
                     if (!lobbyContainer.lobbies[codedLobby].hasUser(currentUser)) {
                         lobbyContainer.lobbies[codedLobby].addUser(currentUser)
                         let player = convertPlayer(currentUser)
-                        players.push(player)
-                        console.log(players)
+                        lobbyContainer.lobbies[codedLobby].players.push(player) 
+                        //console.log(players)
                         validation = lobbyContainer.lobbies[codedLobby].id
                     }
                 }
                 socket.emit('validJoin', validation)
-                let sendInfo = lobbyContainer.lobbies[codedLobby].users
-                sendInfo.socket = null
-                shareEvent(socketList(lobbyContainer.lobbies[codedLobby].users), 'playerList', sendInfo)
+                console.log(" JE CRAQUE LISTE DES UTIILISTAEURS DU LOBBY : ",lobbyContainer.lobbies[codedLobby].users)
+                shareEvent(socketList(lobbyContainer.lobbies[codedLobby].users), 'playerList', lobbyContainer.lobbies[codedLobby].players)
                 break
 
         }
@@ -121,8 +118,20 @@ function whichPlayer(players, player) {
 
 function socketList (users) {
     let sockets = []
+    console.log(users)
     for (user of users) {
         sockets.push(user.socket)
     }
+    console.log(' socket LISTE : ', sockets)
     return sockets
+}
+
+function socketNullifier (users) {
+    let usersInfos = []
+    
+    for (user of users) {
+        usersInfos.push(user.id, user.pseudo)
+    }
+    
+    return usersInfos
 }
