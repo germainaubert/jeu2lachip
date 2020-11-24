@@ -1,17 +1,27 @@
-<template> 
+<template>
   <div class="invitationAmi">
     <h1>Utilisateur</h1>
     <div>
+      <div>
+        <label for="researchInput">Pseudo:</label>
+        <input type="text" id="researchInput" v-model="researchPseudo" />
+        <button v-on:click="research(researchPseudo)">Rechercher</button>
+      </div>
+      <table>
         <tbody>
-              <tr v-for="user in users" v-bind:key="user.id">
-                <td>{{ user.pseudo }}</td>
-                <td class="editLabel">  
-                  <div class="popup" v-on:click="invite(user.pseudo)"> INVITE 
-                    <span class="popuptext" id="invitePopup">Cet ami a été invité</span>
-                  </div>
-                </td>
-              </tr>
+          <tr v-for="user in users" v-bind:key="user.id">
+            <td>{{ user.pseudo }}</td>
+            <td class="editLabel">
+              <div class="popup" v-on:click="invite(user.pseudo)">
+                INVITE
+                <span class="popuptext" id="invitePopup"
+                  >Cet ami a été invité</span
+                >
+              </div>
+            </td>
+          </tr>
         </tbody>
+      </table>
     </div>
   </div>
 </template>
@@ -26,77 +36,97 @@ export default {
     return {
       users: [],
       newamiId: Number,
+      researchPseudo: null,
     };
   },
 
-  mounted : async function () {
-   const res = await this.$axios.get(
+  mounted: async function () {
+    const res = await this.$axios.get(
       "http://localhost:3000/api/auth/getSession"
-    )
-    let user = res.data.user
-    this.currentUser = user
-    console.log(user)
-    this.userId = user.id
-    console.log(this.userId)
+    );
+    let user = res.data.user;
+    this.currentUser = user;
+    console.log(user);
+    this.userId = user.id;
+    console.log(this.userId);
     //this.getAmis(this.userId)
-    this.getUsers()
+    this.getUsers();
   },
 
   methods: {
-    
-    invite : async function (pseudo) {
-      var popup = document.getElementById("invitePopup")
-      popup.classList.toggle("show")
-      console.log(pseudo)
-      const amiInviteId =  await this.findUsersId(pseudo);
-      console.log(amiInviteId.id)
-      const amiInvitedId = amiInviteId.id
+    async invite(pseudo) {
+      var popup = document.getElementById("invitePopup");
+      popup.classList.toggle("show");
+      console.log(pseudo);
+      const amiInviteId = await this.findUsersId(pseudo);
+      console.log(amiInviteId.id);
+      const amiInvitedId = amiInviteId.id;
       //const amitie = this.userId + amiInviteId
       //console.log(amitie)
-      const res = await this.$axios.post('http://localhost:3000/api/amis/invite/' + this.userId + '/' + amiInvitedId)
+      const res = await this.$axios.post(
+        "http://localhost:3000/api/amis/invite/" +
+          this.userId +
+          "/" +
+          amiInvitedId
+      );
       if (res.invite === true) {
-          this.$router.push('/Amis');
+        this.$router.push("/Amis");
       }
     },
 
-   /* getAmis : async function(){
+    /* getAmis : async function(){
       const res = await this.$axios.get('http://localhost:3000/api/amis/liste/'+ this.userId)
       console.log(res.data)
       //this.persons.push(res.data) 
       this.persons = res.data
     },*/
 
-    getUsers : async function(){
-        const res = await this.$axios.get('http://localhost:3000/api/users/liste')
-        console.log(res.data)
-        this.users = res.data
-        console.log(this.users)
+    async getUsers() {
+      const res = await this.$axios.get(
+        "http://localhost:3000/api/users/liste"
+      );
+      console.log(res.data);
+      this.users = res.data;
+      console.log(this.users);
     },
 
-    findUsersId : async function(pseudo){
-      const res = await this.$axios.get('http://localhost:3000/api/users/id/' + pseudo)
-      console.log(res.data)
-      this.newamiId = res.data
-      console.log(this.newamiId)
-      return this.newamiId
+    async findUsersId(pseudo) {
+      const res = await this.$axios.get(
+        "http://localhost:3000/api/users/id/" + pseudo
+      );
+      console.log(res.data);
+      this.newamiId = res.data;
+      console.log(this.newamiId);
+      return this.newamiId;
     },
 
-
-    /*deletefriend: async function(){
-      var popup = document.getElementById("deletePopup");
-      popup.classList.toggle("show");
-
-      const res = (await axios({
-        method: "delete",
-        url: "http://localhost:3000/api/amis",
-        data: {
-          amitieId: this.amitieId
+    async research() {
+      await this.getUsers();
+      const foundUser = this.users.find(
+        (user) => user.pseudo == this.researchPseudo
+      );
+      this.users = [foundUser];
+      /*for(var user of this.users){
+        console.log(user)
+        if(user.pseudo == this.researchPseudo){
+          console.log(2)
+          this.users = this.researchPseudo;
+          console.log(this.users)
         }
-      })).data
-      console.log(res)
+      }*/
+      
+    },
+
+    /*async research(researchPseudo){
+      const res = await this.$axios.get(
+        "http://localhost:3000/api/users/research" + researchPseudo
+      );
+      console.log(res.data);
+      this.users = res.data;
+      console.log(this.users);
     }*/
-  }
-}
+  },
+};
 </script>
 
 
@@ -160,12 +190,20 @@ a {
 
 /* Add animation (fade in the popup) */
 @-webkit-keyframes fadeIn {
-  from {opacity: 0;} 
-  to {opacity: 1;}
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity:1 ;}
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 </style>

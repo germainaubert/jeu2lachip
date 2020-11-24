@@ -47,6 +47,15 @@ class User {
         return result.rows[0]
     }
 
+    static async getPseudoResearch (researchPseudo){
+        const result = await PostgresStore.client.query({
+            text: `SELECT pseudo FROM  ${User.tableName}
+            WHERE pseudo = $1`,
+            values: [researchPseudo]
+        })
+        return result.rows[0]
+    }
+
     /**
      * @param {User} user
      */

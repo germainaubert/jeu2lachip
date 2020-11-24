@@ -15,4 +15,11 @@ router.get('/id/:pseudo', async (req, res) => {
     console.log(id)
 })
 
+router.get('/research/:researchPseudo', async (req, res) => {
+    console.log('routeResearch', req.params.routeResearch)
+    const user = await User.getPseudoResearch(req.params.routeResearch)
+    res.json(user)
+    console.log(user)
+})
+
 module.exports = router

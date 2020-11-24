@@ -1,6 +1,6 @@
 <template>
   <div class="lobby">
-    <h1>Amis</h1>
+    <h1>Lobby</h1>
     <div>
       <h1>Vos amis</h1>
             <tbody>
