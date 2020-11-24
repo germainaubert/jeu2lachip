@@ -12,8 +12,6 @@ module.exports = function (server, mySession) {
         })
         clients.push(socket)
         lobby(socket)
-        // socket.on("logged", logged())
-        // socket.on("sendMessage", sendMessage())
 
 
     })

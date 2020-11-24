@@ -6,17 +6,6 @@ const shareEvent = require('../middlewares/shareEvent')
 
 module.exports = function (socket) {
 
-    socket.on("createLobby", function () {
-
-        console.log(lobbyContainer.lobbies)
-        console.log(lobbyContainer.lobbies)
-    })
-
-    socket.on("searchLobby", function (data) {
-        console.log(data)
-        let found = lobbyContainer.lobbies.find(lobby => lobby.id == data)
-        console.log(found)
-    })
 
     socket.on("login", function (command, idLobby) {
 
@@ -30,13 +19,14 @@ module.exports = function (socket) {
                 let created = null // mettre false si probleme pendant création lobby
                 if (!lobby.hasUser(currentUser)) {
                     lobby.addUser(currentUser)
+                    lobby.hasJoin(currentUser)
                     let player = convertPlayer(currentUser)
                     lobby.players.push(player)
                     created = lobby.id
                     // console.log(players)
                 }
                 socket.emit('validCreation', created)
-                console.log(lobby.users)
+                //console.log(lobby.users)
                 break
             case "joinRandom":
                 let openLobby = lobbyContainer.lobbies.findIndex(lobby => lobby.is_full == false) 
@@ -45,7 +35,7 @@ module.exports = function (socket) {
                         lobbyContainer.lobbies[openLobby].addUser(currentUser)
                         let player = convertPlayer(currentUser)
                         lobby.players.push(player)
-                        console.log(players)
+                        //console.log(players)
                     }
                 }
                 break
@@ -56,6 +46,7 @@ module.exports = function (socket) {
                 if(codedLobby >= 0) {
                     if (!lobbyContainer.lobbies[codedLobby].hasUser(currentUser)) {
                         lobbyContainer.lobbies[codedLobby].addUser(currentUser)
+                        lobbyContainer.lobbies[codedLobby].hasJoin(currentUser)
                         let player = convertPlayer(currentUser)
                         lobbyContainer.lobbies[codedLobby].players.push(player) 
                         //console.log(players)
@@ -63,20 +54,25 @@ module.exports = function (socket) {
                     }
                 }
                 socket.emit('validJoin', validation)
-                console.log(" JE CRAQUE LISTE DES UTIILISTAEURS DU LOBBY : ",lobbyContainer.lobbies[codedLobby].users)
+                //console.log(" JE CRAQUE LISTE DES UTIILISTAEURS DU LOBBY : ",lobbyContainer.lobbies[codedLobby].users)
                 shareEvent(socketList(lobbyContainer.lobbies[codedLobby].users), 'playerList', lobbyContainer.lobbies[codedLobby].players)
                 break
 
         }
-        console.log(lobbyContainer.lobbies)
+        //console.log(lobbyContainer.lobbies)
     })
 
-
-    socket.on("sendMessage", function (data) {
+    socket.on("initChat", function (idLobby) {
+        console.log(idLobby)
+        let targetLobby = lobbyContainer.lobbies.find(lobby => lobby.id == idLobby)
+        shareEvent(socketList(targetLobby.users), 'initChat', targetLobby.chat)
+    })
+    socket.on("sendMessage", function (data, idLobby) {
         let currentUser = socket.request.session.user
-        const message = { pseudo: currentUser.pseudo, content: data }
-        lobby.addMessage(message)
-        shareEvent(clients, 'sendMessageEvent', lobby.chat)
+        const message = { pseudo: currentUser.pseudo, message: data }
+        let targetLobby = lobbyContainer.lobbies.find(lobby => lobby.id == idLobby)
+        targetLobby.addMessage(message)
+        shareEvent(socketList(targetLobby.users), 'sendMessageEvent', targetLobby.chat)
     })
 
     socket.on('moveLeft', function () {
@@ -111,18 +107,16 @@ function convertPlayer(user) {
 }
 
 function whichPlayer(players, player) {
-    console.log('which player', players, player)
+    // console.log('which player', players, player)
     let found = players.find(elem => elem.id == player.id)
     return found
 }
 
 function socketList (users) {
     let sockets = []
-    console.log(users)
     for (user of users) {
         sockets.push(user.socket)
     }
-    console.log(' socket LISTE : ', sockets)
     return sockets
 }
 

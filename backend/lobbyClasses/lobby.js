@@ -24,18 +24,9 @@ class Lobby {
         let found = this.users.find(elem => elem.id == user.id)
         return found
     }
-    addSocket(socket) {
-
-        if (socket) {
-            this.sockets.push(socket)
-        }
+    hasJoin(user) {
+        this.chat.push({ message : user.pseudo + 'est arrivé ! '})
     }
-
-    hasSocket(socket) {
-        let found = this.sockets.find(elem => elem == socket)
-        return found
-    }
-
     addMessage(message) {
         if (message) {
             this.chat.push(message)
