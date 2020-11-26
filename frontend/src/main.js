@@ -5,11 +5,11 @@ import axios from 'axios'
 import VueSocketIO from 'vue-socket.io'
 import vuetify from './plugins/vuetify'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
-import VueKonva from 'vue-konva'
+import vb from 'vue-babylonjs';
 
 import { store } from './store'
 
-Vue.use(VueKonva)
+Vue.use(vb)
 
 
 Vue.prototype.$axios = axios

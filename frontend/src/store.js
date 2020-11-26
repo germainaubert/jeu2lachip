@@ -5,8 +5,6 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
     state: {
-        joinLobbyComp: false,
-        createLobbyComp: false,
         lobbyId: null,
     }
 })
