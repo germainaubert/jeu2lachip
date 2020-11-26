@@ -1,20 +1,17 @@
 <template>
   <div>
-    <PreLobbyDisplay id="display"></PreLobbyDisplay>
-    <JoinLobby v-if="joinLobbyComp"></JoinLobby>
-    <CreateLobby v-if="createLobbyComp"></CreateLobby>
+      <JoinLobby></JoinLobby>
+      <CreateLobby></CreateLobby>
   </div>
 </template>
 
 <script>
 import JoinLobby from "../components/JoinLobby";
-import PreLobbyDisplay from "../components/PreLobbyDisplay";
-import CreateLobby from "../components/CreateLobby"
+import CreateLobby from "../components/CreateLobby";
 
 export default {
   components: {
     JoinLobby,
-    PreLobbyDisplay,
     CreateLobby,
   },
   mounted: async function () {
@@ -25,24 +22,10 @@ export default {
     ).data.user;
     this.currentUser = res2;
     // focus sur lobby display
-    document.getElementById("display").focus()
-  },
-  computed: {
-    joinLobbyComp() {
-      return this.$store.state.joinLobbyComp;
-    },
-    createLobbyComp() {
-      return this.$store.state.createLobbyComp;
-    }
   },
 };
 </script>
 
 <style>
-.box {
-  position: absolute;
-  top: 33%;
-  left: 35%;
-  z-index: 20;
-}
+
 </style>

@@ -7,7 +7,6 @@ const players = []
 for (let i = 0; i < PLAYERSNUMBER; i++) {
     console.log('J' + (i + 1), ': ')
     const name = prompt('Quel est ton nom? ')
-    
     players.push(new Player(name))
 }
 
@@ -17,7 +16,7 @@ while (game.playerAlive) {
     console.log("NOUVELLE MANCHE: ")
     game.players.forEach(player => {
         console.log(player.name, ' : ')
-        let bet = prompt('Combien de points de vie mise tu sur ton cheval ?')
+        let bet = prompt('Combien de points de vie mises-tu sur ton cheval ?')
         player.bet = Number(bet)
     });
     
