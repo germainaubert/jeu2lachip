@@ -1,19 +1,42 @@
-let Deck = require('./gameClasses/deck.js')
-let deck = new Deck()
-console.log(deck)
-deck.createHorses()
-deck.shuffle()
-deck.setupMalus()
+const PLAYERSNUMBER = 4
+const Player = require('./gameClasses/pmu/player.js')
+const prompt = require('prompt-sync')({
+    sigint: true
+})
+const players = []
+for (let i = 0; i < PLAYERSNUMBER; i++) {
+    console.log('J' + (i + 1), ': ')
+    const name = prompt('Quel est ton nom? ')
+    
+    players.push(new Player(name))
+}
 
-deck.drawCard()
-deck.drawCard()
-deck.drawCard()
-deck.drawCard()
-deck.drawCard()
-console.log(deck)
-// console.log(deck)
-// for (let i = 0; i < 60; i++) {
-//     deck.drawCard()
-//     console.log(deck.cards.length)
-// }
-// console.log(deck)
+const Game = require('./gameClasses/pmu/game.js')
+const game = new Game(players)
+while (game.playerAlive) {
+    console.log("NOUVELLE MANCHE: ")
+    game.players.forEach(player => {
+        console.log(player.name, ' : ')
+        let bet = prompt('Combien de points de vie mise tu sur ton cheval ?')
+        player.bet = Number(bet)
+    });
+    
+    game.play()
+    game.checkDeadPlayers()
+    game.players.forEach(player => {
+        while (player.bullets > 0) {
+            console.log(player.name)
+
+            const shoot = prompt('Sur qui veux tu tirer? ')
+            const bullets = prompt('Combien de balles veux-tu tirer? ')
+            game.shootAction(shoot, bullets)
+            player.bullets -= bullets
+        }
+    });
+    game.checkDeadPlayers()
+    game.resetPlayers()
+    game.resetDeck()
+    
+} 
+
+//console.log(game.deck)
