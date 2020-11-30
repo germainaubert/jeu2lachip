@@ -1,5 +1,5 @@
 const PLAYERSNUMBER = 4
-const Player = require('./gameClasses/pmu/player.js')
+const Player = require('../gameClasses/pmu/player.js')
 const prompt = require('prompt-sync')({
     sigint: true
 })
@@ -10,7 +10,7 @@ for (let i = 0; i < PLAYERSNUMBER; i++) {
     players.push(new Player(name))
 }
 
-const Game = require('./gameClasses/pmu/game.js')
+const Game = require('../gameClasses/pmu/game.js')
 const game = new Game(players)
 while (game.playerAlive) {
     console.log("NOUVELLE MANCHE: ")
