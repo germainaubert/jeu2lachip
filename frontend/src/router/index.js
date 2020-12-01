@@ -15,11 +15,6 @@ const routes = [
     component: () => import('../views/test.vue')
   },
   {
-    path: '/testChat',
-    name: 'testChat',
-    component: () => import('../views/testChat.vue')
-  },
-  {
     path: '/Inscription',
     name: 'Inscription',
     component: () => import('../views/Inscription.vue')
@@ -38,7 +33,12 @@ const routes = [
     path: '/PreLobby',
     name: 'PreLobby',
     component: () => import('../views/PreLobby.vue')
-  }
+  },
+  {
+    path: '/Game',
+    name: 'Game',
+    component: () => import('../views/Game.vue')
+  },
 ]
 
 const router = new VueRouter({

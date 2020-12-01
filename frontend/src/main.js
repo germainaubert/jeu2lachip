@@ -5,17 +5,14 @@ import axios from 'axios'
 import VueSocketIO from 'vue-socket.io'
 import vuetify from './plugins/vuetify'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
-import vb from 'vue-babylonjs';
+
 
 import { store } from './store'
-
-Vue.use(vb)
-
 
 Vue.prototype.$axios = axios
 axios.defaults.withCredentials = true
 
-console.log('main.js : ', document.cookie)
+// console.log('main.js : ', document.cookie)
 Vue.use(
   new VueSocketIO({
     debug: true,

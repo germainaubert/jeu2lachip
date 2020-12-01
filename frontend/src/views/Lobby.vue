@@ -1,32 +1,38 @@
 <template>
   <div class="lobbyIdContainer">
     <Chat></Chat>
-    <span>Vos amis peuvent vous rejoindre grâce à ce code: </span>{{lobbyId}}
-  </div>
-  
-  
-    
+    <div>
+      <span>Vos amis peuvent vous rejoindre grâce à ce code: </span
+      >{{ lobbyId }}
+    </div>
 
+    <v-btn color="success" v-on:click="goToGame">Commencer</v-btn>
+  </div>
 </template>
 
 <script>
 import Chat from "../components/Chat";
 export default {
   components: {
-    Chat
+    Chat,
   },
   computed: {
-    lobbyId () {
-      return this.$store.state.lobbyId
-    }
+    lobbyId() {
+      return this.$store.state.lobbyId;
+    },
   },
   sockets: {
-    playerList (players) {
-      console.log("hello")
-      console.log(players)
-    }
-  }
-}
+    playerList(players) {
+      console.log("hello");
+      console.log(players);
+    },
+  },
+  methods: {
+    goToGame: function () {
+      this.$router.push("/Game");
+    },
+  },
+};
 </script>
 
   
