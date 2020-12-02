@@ -56,8 +56,6 @@ class InteractiveElem {
 
 }
 
-
-
 class Player extends InteractiveElem {
     constructor(name, src, x, y) {
         super(name, src, x, y)

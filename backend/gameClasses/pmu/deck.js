@@ -20,7 +20,6 @@ class Deck {
                 this.cards.push(new Card(element, i + 1, Deck.noms[i]))
             });
         }
-        
     }
     setupMalus() {
         for (let i = 0; i < MALUSLENGTH; i++) {

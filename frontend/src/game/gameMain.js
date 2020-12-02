@@ -1,17 +1,19 @@
 import * as BABYLON from "@babylonjs/core/Legacy/legacy"
-
-// let state = {
-//     start: true,
-//     pmu: false,
-//     purple: false,
-//     des: false
-// }
+import { Chasse } from "./chasse"
+import { Purple } from "./purple.js"
 
 export class Game {
     constructor(canvas) {
         this.canvas = canvas
         this.engine = new BABYLON.Engine(this.canvas, true)
-        this.scene = new BABYLON.Scene(this.engine)
+        
+        // this.chasse = new Chasse(this.canvas, this.engine)
+        // this.purple = new Purple(this.canvas, this.engine)
+        this._currentSceneIndex = 0
+        this.scenes = new Array()
+        this.scenes.push(new Chasse(this.canvas, this.engine))
+        this.scenes.push(new Purple(this.canvas, this.engine))
+
 
         // débogueur babylon
         window.addEventListener("keydown", (ev) => {
@@ -24,24 +26,32 @@ export class Game {
                 }
             }
         });
-
-        this.testElement()
+        window.addEventListener("keydown", () => {
+            console.log("chgment state into purple")
+            this._currentSceneIndex++
+        })
+        // this.testElement()
 
         this.main()
     }
 
     main() {
         this.engine.runRenderLoop(() => {
-            this.scene.render()
+            this.currentScene.scene.render()
         })
     }
 
-    testElement() {
-        BABYLON.MeshBuilder.CreateCylinder("bébé", {}, this.scene);
-        const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 3, new BABYLON.Vector3(0, 0, 0));
-        camera.attachControl(this.canvas, true);
-        new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), this.scene);
+    get currentScene () {
+        return this.scenes[this._currentSceneIndex]
     }
+
+    // testElement() {
+    //     BABYLON.MeshBuilder.CreateCylinder("bébé", {}, this.scene);
+    //     const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 3, new BABYLON.Vector3(0, 0, 0));
+    //     camera.attachControl(this.canvas, true);
+    //     new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, 0), this.scene);
+    // }
+
 
 
 }
