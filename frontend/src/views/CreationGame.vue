@@ -1,11 +1,15 @@
 <template>
-  <div class="administrationAccueil">
-    <h1>Administration</h1>
+  <div class="creationGames">
+    <h1>Ajout d'un jeu</h1>
     <div>
-      <h1>Vos Actions</h1>
-      <router-link to="/GestionUsers" tag="button">Gérer utilisateurs</router-link>
-      <br />
-      <router-link to="/GestionGames" tag="button">Gérer jeux</router-link>
+        <label for="nameInput">Nom du jeu:</label>
+        <input type="text" id="nameInput" v-model="ajoutNom" />
+        <label for="logoInput">Logo du jeu:</label>
+        <input type="text" id="logoInput" v-model="ajoutLogo" />
+        <div class="popup" v-on:click="addGame()">
+            AJOUTER LE JEU
+            <span class="popuptext" id="addPopup">Ce jeu a été ajouté</span>
+        </div>
     </div>
     <br />
   </div>
@@ -15,28 +19,32 @@
 //import ConnexionVue from './Connexion.vue';
 //const axios = require('axios')
 export default {
-  name: "administrationAccueil",
+  name: "creationGames",
   props: {},
   data: function () {
     return {
-      persons: [],
-      amiId: Number,
+      ajoutNom : null,
+      ajoutLogo : null
     };
   },
 
- mounted: async function () {
-    /*const res = await this.$axios.get(
-      "http://localhost:3000/api/auth/getSession"
-    );
-    let user = res.data.user;
-    this.currentUser = user;
-    console.log(user);
-    this.userId = user.id;
-    console.log(this.userId);
-    this.getAmis(this.userId);*/
+  mounted: async function () {
+    
   },
 
-  methods: {},
+  methods: {
+
+    async addGame() {
+      var popup = document.getElementById("addPopup")
+      popup.classList.toggle("show")
+      const res = await this.$axios.post(
+        "http://localhost:3000/api/games/addGames/" + this.ajoutNom + "/" + this.ajoutLogo
+      );
+      if (res.data.ajouter === true) {
+        this.$router.push("/GestionGames");
+      }
+    },
+  },
 };
 </script>
 

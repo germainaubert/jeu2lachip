@@ -21,17 +21,33 @@ class Game {
         return result.rows[0]
     }
 
+    static async getAllGameName () {
+        const result = await PostgresStore.client.query({
+            text: `SELECT name FROM ${Game.tableName}`
+        })
+        return result.rows
+    }
+
+    static async deleteGame (gameName) {
+        const result = await PostgresStore.client.query({
+            text: `DELETE FROM ${Game.tableName}
+            WHERE name=$1`,
+            values: [gameName]
+        })
+    }
+
+
     /**
      * @param {Game} game
      */
-    static async create(game) {
+    static async create(ajoutNom, ajoutLogo) {
 
         await PostgresStore.client.query({
             text: `
             INSERT INTO ${Game.tableName} 
                    (name, logo)
             VALUES ($1,   $2)`,
-            values: [game.name, game.logo]
+            values: [ajoutNom, ajoutLogo]
         })
     }
 

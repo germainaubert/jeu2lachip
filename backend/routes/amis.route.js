@@ -42,7 +42,7 @@ router.post('/invite/:userId/:amiInvitedId', async (req, res) => {
     console.log(req.params.userId)
     console.log(req.params.amiInvitedId)
     const amis = await Ami.create(req.params.userId, req.params.amiInvitedId)
-    console.log()
+    //console.log()
     res.json({
         amis,
         invite: true

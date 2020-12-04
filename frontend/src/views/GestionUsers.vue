@@ -1,28 +1,35 @@
 <template>
-  <div class="invitationAmi">
-    <h1>Utilisateur</h1>
+  <div class="gestionUsers">
+    <h1>Gestion des utilisateurs</h1>
     <div>
-      <div>
-        <label for="researchInput">Pseudo:</label>
-        <input type="text" id="researchInput" v-model="researchPseudo" />
-        <button v-on:click="research()">Rechercher</button>
-      </div>
-      <table>
-        <tbody>
-          <tr v-for="user in users" v-bind:key="user.id">
-            <td>{{ user.pseudo }}</td>
-            <td class="editLabel">
-              <div class="popup" v-on:click="invite(user.pseudo)">
-                INVITE
-                <span class="popuptext" id="invitePopup"
-                  >Cet ami a été invité</span
-                >
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <label for="researchInput">Pseudo:</label>
+      <input type="text" id="researchInput" v-model="researchPseudo" />
+      <button v-on:click="research(researchPseudo)">Rechercher</button>
     </div>
+    <table>
+      <tbody>
+        <tr v-for="user in users" v-bind:key="user.id">
+          <td>{{ user.pseudo }}</td>
+          <td class="editLabel">
+            <div class="popup" v-on:click="deleteUser(user.pseudo)">
+              SUPPRIMER
+              <span class="popuptext" id="suppressionPopup"
+                >Cet utilisateur a été supprimé</span
+              >
+            </div>
+          </td>
+          <td class="editLabel">
+            <div class="popup" v-on:click="becomeAdmin(user.pseudo)">
+              BECOMEADMIN
+              <span class="popuptext" id="adminPopup"
+                >Cet utilisateur est devenu administrateur</span
+              >
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
   </div>
 </template>
 
@@ -30,12 +37,11 @@
 //import ConnexionVue from './Connexion.vue';
 //const axios = require('axios')
 export default {
-  name: "InvitationAmi",
+  name: "GestionUsers",
   props: {},
   data: function () {
     return {
       users: [],
-      newamiId: Number,
       researchPseudo: null,
     };
   },
@@ -54,41 +60,37 @@ export default {
   },
 
   methods: {
-    async invite(pseudo) {
-      var popup = document.getElementById("invitePopup");
+    async deleteUser(pseudo) {
+      var popup = document.getElementById("suppressionPopup");
       popup.classList.toggle("show");
+
       console.log(pseudo);
-      const amiInviteId = await this.findUsersId(pseudo);
-      console.log(amiInviteId.id);
-      const amiInvitedId = amiInviteId.id;
-      //const amitie = this.userId + amiInviteId
-      //console.log(amitie)
-      const res = await this.$axios.post(
-        "http://localhost:3000/api/amis/invite/" +
-          this.userId +
-          "/" +
-          amiInvitedId
+      const deletedUserId = await this.findUsersId(pseudo);
+      console.log(deletedUserId.id);
+      const deleteUserId = deletedUserId.id;
+      const res = await this.$axios.delete(
+        "http://localhost:3000/api/users/suppression/" + deleteUserId
       );
-      if (res.data.invite === true) {
-        this.$router.push("/Amis");
+      if (res.data.delete === true) {
+        this.$router.push("/GestionUsers");
       }
     },
 
-    /* getAmis : async function(){
-      const res = await this.$axios.get('http://localhost:3000/api/amis/liste/'+ this.userId)
-      console.log(res.data)
-      //this.persons.push(res.data) 
-      this.persons = res.data
-    },*/
-
-    async getUsers() {
-      const res = await this.$axios.get(
-        "http://localhost:3000/api/users/liste"
+    async becomeAdmin(pseudo){
+      var popup = document.getElementById("adminPopup");
+      popup.classList.toggle("show");
+      console.log(pseudo);
+      const newAdminUserId = await this.findUsersId(pseudo);
+      console.log(newAdminUserId.id);
+      const newAdminId = newAdminUserId.id;
+      const res = await this.$axios.put(
+        "http://localhost:3000/api/users/becomeAdmin/" + newAdminId
       );
-      console.log(res.data);
-      this.users = res.data;
-      console.log(this.users);
+      if (res.data.isAdmin === true) {
+        this.$router.push("/GestionUsers");
+      }
     },
+    
 
     async findUsersId(pseudo) {
       const res = await this.$axios.get(
@@ -100,21 +102,21 @@ export default {
       return this.newamiId;
     },
 
-    async research() {
+    async getUsers() {
+      const res = await this.$axios.get(
+        "http://localhost:3000/api/users/liste"
+      );
+      console.log(res.data);
+      this.users = res.data;
+      console.log(this.users);
+    },
+
+     async research() {
       const res = await this.$axios.get(
         "http://localhost:3000/api/users/research/" + this.researchPseudo
       );
       this.users = res.data; 
     },
-
-    /*async research(researchPseudo){
-      const res = await this.$axios.get(
-        "http://localhost:3000/api/users/research" + researchPseudo
-      );
-      console.log(res.data);
-      this.users = res.data;
-      console.log(this.users);
-    }*/
   },
 };
 </script>

@@ -1,11 +1,21 @@
 <template>
-  <div class="administrationAccueil">
-    <h1>Administration</h1>
+  <div class="gestionGames">
+    <h1>Gestion des jeux</h1>
     <div>
-      <h1>Vos Actions</h1>
-      <router-link to="/GestionUsers" tag="button">Gérer utilisateurs</router-link>
-      <br />
-      <router-link to="/GestionGames" tag="button">Gérer jeux</router-link>
+      <router-link to="/CreationGame" tag="button">Ajouter un jeu</router-link>
+      <table>
+      <tbody>
+        <tr v-for="game in games" v-bind:key="game.id">
+          <td>{{ game.name }}</td>
+          <td class="editLabel">
+            <div class="popup" v-on:click="deleteGame(game.name)">
+              SUPPRIMER
+              <span class="popuptext" id="suppressionPopup">Ce jeu a été supprimé</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
     </div>
     <br />
   </div>
@@ -15,28 +25,41 @@
 //import ConnexionVue from './Connexion.vue';
 //const axios = require('axios')
 export default {
-  name: "administrationAccueil",
+  name: "gestionGames",
   props: {},
   data: function () {
     return {
-      persons: [],
-      amiId: Number,
+      games: [],
     };
   },
 
- mounted: async function () {
-    /*const res = await this.$axios.get(
-      "http://localhost:3000/api/auth/getSession"
-    );
-    let user = res.data.user;
-    this.currentUser = user;
-    console.log(user);
-    this.userId = user.id;
-    console.log(this.userId);
-    this.getAmis(this.userId);*/
+  mounted: async function () {
+    this.getGames();
   },
 
-  methods: {},
+  methods: {
+
+    async getGames() {
+      const res = await this.$axios.get(
+        "http://localhost:3000/api/games/liste"
+      );
+      console.log(res.data);
+      this.games = res.data;
+      console.log(this.games);
+    },
+
+    async deleteGame(gameName) {
+      var popup = document.getElementById("suppressionPopup")
+      popup.classList.toggle("show")
+
+      const res = await this.$axios.delete(
+        "http://localhost:3000/api/games/deleteGames/" + gameName 
+      );
+      if (res.data.supprimer === true) {
+        this.$router.push("/GestionGames");
+      }
+    },
+  },
 };
 </script>
 

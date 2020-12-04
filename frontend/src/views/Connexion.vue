@@ -63,7 +63,8 @@ export default {
           ).data;
           console.log(res);
           this.$socket.emit("login");
-          this.$router.push("/Amis");
+          //this.$router.push("/Amis");
+          await this.checkAdmin()
         } catch (err) {
           console.log("Cannot log user, check pseudo or password validity");
           this.error = "Pseudo ou mot de passe invalide(s)";
@@ -71,6 +72,19 @@ export default {
         }
       }
     },
+
+    async checkAdmin(){
+      const res = await this.$axios.get(
+        "http://localhost:3000/api/users/checkAdmin/" + this.pseudo 
+      );
+      console.log(res.data)
+      if (res.data.is_admin == true) {
+        this.$router.push("/AdministrationAccueil");
+      }
+      else {
+        this.$router.push("/Amis");
+      }
+    }
   },
 };
 </script>

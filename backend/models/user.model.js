@@ -41,7 +41,7 @@ class User {
     static async getIdByPseudo (pseudo) {
         const result = await PostgresStore.client.query({
             text: `SELECT id FROM ${User.tableName}
-            WHERE pseudo=$1`,
+            WHERE pseudo =$1`,
             values: [pseudo]
         })
         return result.rows[0]
@@ -49,9 +49,18 @@ class User {
 
     static async getPseudoResearch (researchPseudo){
         const result = await PostgresStore.client.query({
-            text: `SELECT pseudo FROM  ${User.tableName}
+            text: `SELECT id, pseudo FROM  ${User.tableName}
+            WHERE pseudo LIKE $1`,
+            values: [researchPseudo + '%']
+        })
+        return result.rows
+    }
+
+    static async checkAdmin (pseudo){
+        const result = await PostgresStore.client.query({
+            text: `SELECT is_admin FROM ${User.tableName}
             WHERE pseudo = $1`,
-            values: [researchPseudo]
+            values: [pseudo]
         })
         return result.rows[0]
     }
@@ -70,6 +79,26 @@ class User {
             VALUES ($1,        $2,       $3)
             RETURNING *`,
             values: [pseudo, hashedPw, false]
+        })
+        return result.rows[0]
+    }
+
+    static async deleteUser(deleteUserId){
+        const result = await PostgresStore.client.query({
+            text: `DELETE FROM ${User.tableName}
+            WHERE id=$1`,
+            values: [deleteUserId]
+        })
+    }
+
+    static async newAdmin(newAdminId){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${User.tableName}
+            SET is_admin = true
+            WHERE id=$1 
+            RETURNING *
+            `,
+            values:[newAdminId]
         })
         return result.rows[0]
     }

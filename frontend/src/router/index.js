@@ -33,7 +33,27 @@ const routes = [
     path: '/InvitationAmi',
     name: 'InvitationAmi',
     component: () => import('../views/InvitationAmi.vue')
-  }
+  },
+  {
+    path: '/GestionGames',
+    name: 'GestionGames',
+    component: () => import('../views/GestionGames.vue')
+  },
+  {
+    path: '/GestionUsers',
+    name: 'GestionUsers',
+    component: () => import('../views/GestionUsers.vue')
+  },
+  {
+    path: '/CreationGame',
+    name: 'CreationGame',
+    component: () => import('../views/CreationGame.vue')
+  },
+  {
+    path: '/AdministrationAccueil',
+    name: 'AdministrationAccueil',
+    component: () => import('../views//AdministrationAccueil.vue')
+  },
 ]
 
 const router = new VueRouter({
