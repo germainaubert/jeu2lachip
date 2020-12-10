@@ -1,10 +1,13 @@
 import * as BABYLON from "@babylonjs/core/Legacy/legacy"
 
 export class Purple {
-    constructor(canvas, engine) {
+    constructor(canvas, engine, socket, localPlayer, lobbyId) {
         this.canvas = canvas
         this.engine = engine
+        this.socket = socket
         this.scene = new BABYLON.Scene(this.engine)
+        this.localPlayer = localPlayer
+        this.lobbyId = lobbyId
         
         this.testElement()
     }

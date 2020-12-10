@@ -6,7 +6,7 @@
       >{{ lobbyId }}
     </div>
 
-    <v-btn color="success" v-on:click="goToGame">Commencer</v-btn>
+    <v-btn v-if="gameLeader" color="success" v-on:click="goToGame">Commencer</v-btn>
   </div>
 </template>
 
@@ -20,16 +20,22 @@ export default {
     lobbyId() {
       return this.$store.state.lobbyId;
     },
+    gameLeader () {
+      return this.$store.state.gameLeader
+    }
   },
   sockets: {
-    playerList(players) {
-      console.log("hello");
-      console.log(players);
-    },
+    // playerList(users) {
+    //   this.$store.state.users = users // 
+    //   console.log("list users + sockets", this.$store.state.users)
+    // },
+    startGame() {
+      this.$router.push("/Game");
+    }
   },
   methods: {
     goToGame: function () {
-      this.$router.push("/Game");
+      this.$socket.emit("notifyInitGame", this.lobbyId);
     },
   },
 };
