@@ -6,7 +6,7 @@ const config = require('./server.config')
 const cors = require('cors')
 
 PostgresStore.init()
-    .then(() => console.log('connected'))
+    // .then(() => console.log('connected'))
 
 const app = express();
 

@@ -9,7 +9,6 @@ class Lobby {
         this.id = Math.random().toString(36).substr(2, 9)
         this.users = []
         this.chat = []
-        this.players = []
         this.is_full = false
     }
 

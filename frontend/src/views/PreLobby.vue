@@ -20,7 +20,8 @@ export default {
     const res2 = (
       await this.$axios.get("http://localhost:3000/api/auth/getUser")
     ).data.user;
-    this.currentUser = res2;
+    console.log(res2)
+    this.$store.state.localPlayer = res2;
     // focus sur lobby display
   },
 };

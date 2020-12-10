@@ -23,11 +23,12 @@ export default {
   },
   methods: {
       createLobbyReq: function async () {
-        this.$socket.emit("login", "createLobby")
+        this.$socket.emit("createLobby")
       }
   },
   sockets: {
     validCreation(flag) {
+      this.$store.state.gameLeader = true
       if (flag) {
         this.$store.state.lobbyId = flag
         this.$router.push("/Lobby")

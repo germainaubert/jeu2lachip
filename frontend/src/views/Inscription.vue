@@ -97,7 +97,7 @@ export default {
           // self.$session.start(res.id)
           // console.log(self.$sessions.getAll())
           this.$router.push("/PreLobby");
-          this.$socket.emit("login");
+          // this.$socket.emit("login");
         }
       } else {
         this.inputError =

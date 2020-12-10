@@ -33,7 +33,7 @@ export default {
   methods: {
     joinLobbyReq: function async() {
       console.log(this.idLobby);
-      this.$socket.emit("login", "joinByCode", this.idLobby);
+      this.$socket.emit("joinByCode", this.idLobby);
     },
   },
   sockets: {

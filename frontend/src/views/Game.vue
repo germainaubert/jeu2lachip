@@ -4,15 +4,35 @@
 
 <script>
 import { Game } from "../game/gameMain.js"
+
 export default {
 
   data: function () {
     return {
+      game: null
     };
   },
 
   mounted: function () {
-    new Game(this.$refs.renderCanvas)
+    this.game = new Game(this.$refs.renderCanvas, this.$socket, this.playerList, this.lobbyId, this.localPlayer)
+  },
+  computed: {
+    playerList () {
+      return this.$store.state.playerList
+    },
+    lobbyId() {
+      return this.$store.state.lobbyId;
+    },
+    localPlayer() {
+      return this.$store.state.localPlayer;
+    },
+  },
+  sockets: {
+    chasseInitiated (players) {
+      this.game.currentScene.players = players
+      this.game.currentScene.displayPlayers()
+      
+    }
   },
   methods: {
 

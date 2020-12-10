@@ -62,7 +62,7 @@ export default {
             })
           ).data;
           console.log(res);
-          this.$socket.emit("login");
+          // this.$socket.emit("login");
           this.$router.push("/PreLobby");
         } catch (err) {
           console.log("Cannot log user, check pseudo or password validity");
