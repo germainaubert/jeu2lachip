@@ -57,15 +57,7 @@ export class Chasse {
         this.scene.createDefaultCameraOrLight(true, true, true);
         this.scene.createDefaultEnvironment();
 
-        window.addEventListener("keydown", (e) => {
-            this.downHandler(e)
-        })
-        window.addEventListener("keyup", (e) => {
-            this.upHandler(e)
-        })
-
-        console.log(interval)
-        setInterval(() => { this.movement() }, interval)
+        
 
     }
 
@@ -106,17 +98,31 @@ export class Chasse {
         //     console.log('pas input')
         // }
         this.localPlayer.updateVelocity(timeRatio, this.inputState)
-        this.localPlayer.updatePos(timeRatio)
+        // this.localPlayer.updatePos(timeRatio)
     }
 
     displayPlayers() {
         for (let player of this.players) {
-            let box = BABYLON.MeshBuilder.CreateBox(player.pseudo, {}, this.scene);
-            box.position = new Vector3(player.coords.x, player.coords.y, player.coords.z)
-            if (player.name === this.localPlayer.pseudo) {
-                this.localPlayer.mesh = box
+            
+            if (player.name !== this.localPlayer.pseudo) {
+                let box = BABYLON.MeshBuilder.CreateBox(player.pseudo, {}, this.scene)
+                box.position = new Vector3(player.coords.x, player.coords.y, player.coords.z)
+            }
+            else if (player.name === this.localPlayer.pseudo) {
+                this.localPlayer.coords = {x: player.coords.x, y: player.coords.y, z: player.coords.y}
+                this.localPlayer.mesh = new BABYLON.MeshBuilder.CreateBox(player.pseudo, {}, this.scene)
+                this.localPlayer.mesh.position = this.localPlayer.coords
             }
         }
+        
+        window.addEventListener("keydown", (e) => {
+            this.downHandler(e)
+        })
+        window.addEventListener("keyup", (e) => {
+            this.upHandler(e)
+        })
+
+        setInterval(() => { this.movement() }, interval)
 
     }
 
