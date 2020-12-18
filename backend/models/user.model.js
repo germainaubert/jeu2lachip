@@ -22,10 +22,11 @@ class User {
         return result.rows
     }
 
-    static async getAllPseudo () {
+    static async getAllPseudoAndisAdmin () {
         const result = await PostgresStore.client.query({
-            text: `SELECT pseudo FROM ${User.tableName}`
-        })
+            text: `SELECT pseudo, is_admin FROM ${User.tableName}`
+        }) 
+        console.log(result.rows)
         return result.rows
     }
 

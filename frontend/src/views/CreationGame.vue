@@ -8,7 +8,7 @@
         <input type="text" id="logoInput" v-model="ajoutLogo" />
         <div class="popup" v-on:click="addGame()">
             AJOUTER LE JEU
-            <span class="popuptext" id="addPopup">Ce jeu a été ajouté</span>
+            <span class="popuptext" id="addPopup" v-bind:class="{show:showAddPopup}">Ce jeu a été ajouté</span>
         </div>
     </div>
     <br />
@@ -24,7 +24,8 @@ export default {
   data: function () {
     return {
       ajoutNom : null,
-      ajoutLogo : null
+      ajoutLogo : null,
+      showAddPopup : false
     };
   },
 
@@ -35,8 +36,7 @@ export default {
   methods: {
 
     async addGame() {
-      var popup = document.getElementById("addPopup")
-      popup.classList.toggle("show")
+      //this.showAddPopup = true
       const res = await this.$axios.post(
         "http://localhost:3000/api/games/addGames/" + this.ajoutNom + "/" + this.ajoutLogo
       );

@@ -8,12 +8,12 @@
                 <td>{{ person.pseudo }}</td>
                 <td class="editLabel">  
                   <div class="popup" v-on:click="invite()"> INVITE 
-                    <span class="popuptext" id="invitePopup">Cet ami a été invité</span>
+                    <span class="popuptext" id="invitePopup" v-bind:class="{show:showInvitePopup}">Cet ami a été invité</span>
                   </div>
                 </td>
                 <td class="editLabel">
                   <div class="popup" v-on:click="deletefriend(person.pseudo)"> DELETE
-                    <span class="popuptext" id="deletePopup">Cet ami a été supprimé</span>
+                    <span class="popuptext" id="deletePopup" v-bind:class="{show:showDeletePopup}">Cet ami a été supprimé</span>
                   </div>
                 </td>
               </tr>
@@ -35,6 +35,8 @@ export default {
     return {
       persons: [],
       amiId: Number,
+      showInvitePopup : false,
+      showDeletePopup : false
     };
   },
 
@@ -66,8 +68,7 @@ export default {
     },*/
 
     invite : function () {
-      var popup = document.getElementById("invitePopup")
-      popup.classList.toggle("show")
+      this.showInvitePopup = true
     },
 
     getAmis : async function(){
@@ -80,14 +81,13 @@ export default {
 
 
     deletefriend: async function(pseudo){
-      var popup = document.getElementById("deletePopup")
-      popup.classList.toggle("show")
+      //this.showDeletePopup = true
 
       console.log(pseudo)
       const amiId =  await this.findUsersId(pseudo);
       console.log(amiId.id)
       const ami2Id = amiId.id
-      const res = await this.$axios.delete('http://localhost:3000/api/amis/deleteAmis/' + this.userId + '/' + ami2Id)
+      const res = await this.$axios.delete('http://localhost:3000/api/amis/' + ami2Id)
       //console.log(res)
       if (res.delete === true) {
           this.$router.push('/Amis');

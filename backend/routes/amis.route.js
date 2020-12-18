@@ -2,6 +2,7 @@ const router = require('express').Router()
 // const User = require('../models/user.model')
 // const Game = require('../models/game.model')
 const Ami = require('../models/amis.model')
+const hasToBeAuthenticated = require('../middlewares/hasToBeAuthenticated')
 
 
 // router.get('/amis', async (req, res) => {
@@ -37,12 +38,12 @@ router.get('/liste/:userId', async (req, res) => {
     res.json(amis)
 })
 
-router.post('/invite/:userId/:amiInvitedId', async (req, res) => {
-    console.log('routeCreationAmitie', req.params.userId, req.params.amiInvitedId)
-    console.log(req.params.userId)
+router.post('/:amiInvitedId', async (req, res) => {
+    console.log('routeCreationAmitie', req.session.user.id, req.params.amiInvitedId)
+    console.log(req.session.user.id)
     console.log(req.params.amiInvitedId)
-    const amis = await Ami.create(req.params.userId, req.params.amiInvitedId)
-    //console.log()
+    const amis = await Ami.create(req.session.user.id, req.params.amiInvitedId)
+    //console.log("test")
     res.json({
         amis,
         invite: true
@@ -50,11 +51,11 @@ router.post('/invite/:userId/:amiInvitedId', async (req, res) => {
     res.status(200)
 })
 
-router.delete('/deleteAmis/:userId/:ami2Id', async (req, res) => {
-    console.log('routeDelete', req.params.userId, req.params.ami2Id)
-    console.log(req.params.userId)
+router.delete('/:ami2Id', async (req, res) => {
+    console.log('routeDelete', req.session.user.id, req.params.ami2Id)
+    console.log(req.session.user.id)
     console.log(req.params.ami2Id)
-    const amis = await Ami.deleteIdAmitie(req.params.userId, req.params.ami2Id)
+    const amis = await Ami.deleteIdAmitie(req.session.user.id, req.params.ami2Id)
     //console.log(amis)
     res.json({
         delete: true

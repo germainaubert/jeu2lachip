@@ -10,7 +10,7 @@
           <td class="editLabel">
             <div class="popup" v-on:click="deleteGame(game.name)">
               SUPPRIMER
-              <span class="popuptext" id="suppressionPopup">Ce jeu a été supprimé</span>
+              <span class="popuptext" id="suppressionPopup" v-bind:class="{show:showSuppressionPopup}">Ce jeu a été supprimé</span>
             </div>
           </td>
         </tr>
@@ -30,6 +30,7 @@ export default {
   data: function () {
     return {
       games: [],
+      showSuppressionPopup : false
     };
   },
 
@@ -49,11 +50,10 @@ export default {
     },
 
     async deleteGame(gameName) {
-      var popup = document.getElementById("suppressionPopup")
-      popup.classList.toggle("show")
+      //this.showSuppressionPopup = true;
 
       const res = await this.$axios.delete(
-        "http://localhost:3000/api/games/deleteGames/" + gameName 
+        "http://localhost:3000/api/games/" + gameName 
       );
       if (res.data.supprimer === true) {
         this.$router.push("/GestionGames");

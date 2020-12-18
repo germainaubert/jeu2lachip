@@ -10,10 +10,11 @@
       <tbody>
         <tr v-for="user in users" v-bind:key="user.id">
           <td>{{ user.pseudo }}</td>
+          <td>{{user.is_admin}}</td>
           <td class="editLabel">
             <div class="popup" v-on:click="deleteUser(user.pseudo)">
               SUPPRIMER
-              <span class="popuptext" id="suppressionPopup"
+              <span class="popuptext" id="suppressionPopup" v-bind:class="{show:showSuppressionPopup}"
                 >Cet utilisateur a été supprimé</span
               >
             </div>
@@ -21,7 +22,7 @@
           <td class="editLabel">
             <div class="popup" v-on:click="becomeAdmin(user.pseudo)">
               BECOMEADMIN
-              <span class="popuptext" id="adminPopup"
+              <span class="popuptext" id="adminPopup" v-bind:class="{show:showNewAdminPopup}"
                 >Cet utilisateur est devenu administrateur</span
               >
             </div>
@@ -41,6 +42,8 @@ export default {
   props: {},
   data: function () {
     return {
+      showSuppressionPopup : false,
+      showNewAdminPopup : false,
       users: [],
       researchPseudo: null,
     };
@@ -61,9 +64,7 @@ export default {
 
   methods: {
     async deleteUser(pseudo) {
-      var popup = document.getElementById("suppressionPopup");
-      popup.classList.toggle("show");
-
+      //this.showSuppressionPopup = true;
       console.log(pseudo);
       const deletedUserId = await this.findUsersId(pseudo);
       console.log(deletedUserId.id);
@@ -77,8 +78,7 @@ export default {
     },
 
     async becomeAdmin(pseudo){
-      var popup = document.getElementById("adminPopup");
-      popup.classList.toggle("show");
+      //this.showNewAdminPopup = true;
       console.log(pseudo);
       const newAdminUserId = await this.findUsersId(pseudo);
       console.log(newAdminUserId.id);
@@ -103,6 +103,7 @@ export default {
     },
 
     async getUsers() {
+      console.log("test methode")
       const res = await this.$axios.get(
         "http://localhost:3000/api/users/liste"
       );
