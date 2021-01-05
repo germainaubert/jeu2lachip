@@ -41,7 +41,6 @@ router.get('/nameValidity/:pseudo', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     const { pseudo, password } = req.body
-    console.log(pseudo, password)
     const user = await User.findByPseudo(pseudo)
 
     if (!user || !(await bcrypt.compare(password, user.password))) {

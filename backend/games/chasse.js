@@ -4,7 +4,6 @@ class Chasse {
     constructor (users) {
         this.users = users
         this.players = this.initPlayers()
-        console.log(this.players)
     }
 
     initPlayers () {

@@ -1,6 +1,6 @@
 import { Vector3 } from "@babylonjs/core"
 
-const acceleration = 10
+const acceleration = 20
 export class Player {
     mesh
     constructor (pseudo) {
@@ -20,8 +20,6 @@ export class Player {
     updatePos(timeRatio) {
         this.coords.x += this.velocity.x / timeRatio
         this.coords.z += this.velocity.y / timeRatio
-        // this.coords.y += this.velocityY / fps
-        // this.coords.z += this.velocityZ / fps
         this.mesh.position = new Vector3 (this.coords.x, this.coords.y, this.coords.z)
     }
 
@@ -29,41 +27,38 @@ export class Player {
         
         if (inputState.up) {
             this.velocity.x += acceleration / timeRatio
-        } else if (this.velocity.x > 0) {
+        } else if (this.velocity.x > 0 && this.velocity.x > 0.1) {
             this.velocity.x -= acceleration / timeRatio
-        } 
+        } else if (this.velocity.x > 0 && this.velocity.x < 0.1) {
+            this.velocity.x = 0
+        }
         
         if (inputState.down) {
             this.velocity.x -= acceleration / timeRatio
-        } else if (this.velocity.x < 0) {
+        } else if (this.velocity.x < 0 && this.velocity.x < -0.1) {
             this.velocity.x += acceleration / timeRatio
-        } 
+        }  else if (this.velocity.x < 0 && this.velocity.x > -0.1) {
+            this.velocity.x = 0
+        }
         
         if (inputState.right) {
             this.velocity.y -= acceleration / timeRatio
-        } else if (this.velocity.y < 0) {
-            this.velocity.y += acceleration /timeRatio
+        } else if (this.velocity.y < 0 && this.velocity.y < -0.1) {
+            this.velocity.y += acceleration / timeRatio
+        } else if (this.velocity.y < 0 && this.velocity.y > -0.1){
+            this.velocity.y = 0
         }
         
         if (inputState.left) {
             this.velocity.y += acceleration / timeRatio
-        } else if (this.velocity.y > 0) {
-            this.velocity.y -= acceleration /timeRatio
+        } else if (this.velocity.y > 0 && this.velocity.y > 0.1) {
+            this.velocity.y -= acceleration / timeRatio
+        } else if (this.velocity.y > 0 && this.velocity.x < 0.1){
+            this.velocity.y = 0
         }
-        
-        
-        // this.velocity.y += acceleration / fps
-        // this.velocity.z += acceleration / fps
+        this.updatePos(timeRatio)
+       
     }
-
-    // accelerate(timeRatio, inputState) {
-        
-    // }
-
-    // decelerate(timeRatio) {
-        
-         
-    // }
 
     isMoving () {
         if (this.velocity.x === 0 && this.velocity.y === 0 && this.velocity.z === 0) {
@@ -72,4 +67,11 @@ export class Player {
             return true
         }  
     }
+
+    export () {
+        return {
+            pseudo: this.pseudo,
+            coords: this.coords,
+        }
+    }   
 }

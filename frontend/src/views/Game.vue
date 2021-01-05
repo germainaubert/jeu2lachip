@@ -15,6 +15,10 @@ export default {
 
   mounted: function () {
     this.game = new Game(this.$refs.renderCanvas, this.$socket, this.playerList, this.lobbyId, this.localPlayer)
+    if (this.gameLeader) {
+      this.$socket.emit("initChasse", this.lobbyId)
+    }
+    console.log("Game.vue", this.$socket)
   },
   computed: {
     playerList () {
@@ -26,12 +30,17 @@ export default {
     localPlayer() {
       return this.$store.state.localPlayer;
     },
+    gameLeader () {
+      return this.$store.state.gameLeader
+    }
   },
   sockets: {
     chasseInitiated (players) {
-      this.game.currentScene.players = players
-      this.game.currentScene.displayPlayers()
-      
+      this.game.getCurrentScene().players = players
+      this.game.getCurrentScene().displayPlayers()
+    },
+    chasseUpdate (players) {
+      this.game.getCurrentScene().updatePlayers(players)
     }
   },
   methods: {

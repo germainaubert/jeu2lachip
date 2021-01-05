@@ -2,7 +2,7 @@ import * as BABYLON from "@babylonjs/core/Legacy/legacy"
 import { Vector3 } from "@babylonjs/core/Legacy/legacy"
 import { Player } from "../classes/Player"
 
-const interval = 10
+const interval = 15
 const timeRatio = 1000 / interval
 
 export class Chasse {
@@ -11,7 +11,7 @@ export class Chasse {
         this.canvas = canvas
         this.engine = engine
         this.socket = socket
-
+        console.log("chasse.js", this.socket)
         // this.initSocket(socket)
         this.scene = new BABYLON.Scene(this.engine)
         this.players = null
@@ -26,8 +26,6 @@ export class Chasse {
         }
 
         this.localPlayer = new Player(localPlayer.pseudo)
-
-        this.socket.emit("initChasse", this.lobbyId)
 
         this.basicInit()
 
@@ -51,21 +49,9 @@ export class Chasse {
         // NOTE:: SET CAMERA TARGET AFTER THE TARGET'S CREATION AND NOTE CHANGE FROM BABYLONJS V 2.5
         // targetMesh created here.
 
-
-
         new BABYLON.HemisphericLight("HemiLight", new Vector3(0, 1, 0), this.scene);
         this.scene.createDefaultCameraOrLight(true, true, true);
         this.scene.createDefaultEnvironment();
-
-        window.addEventListener("keydown", (e) => {
-            this.downHandler(e)
-        })
-        window.addEventListener("keyup", (e) => {
-            this.upHandler(e)
-        })
-
-        console.log(interval)
-        setInterval(() => { this.movement() }, interval)
 
     }
 
@@ -93,30 +79,36 @@ export class Chasse {
         }
     }
 
-    movement() {
-        // if (this.inputTriggered()) { // Cas où le joueur est à l'arrêt mais souahite bouger
-            
-        //     console.log('input')
-        // }
-        // else if (this.localPlayer.isMoving()) { // 
-        //     this.localPlayer.updateVelocity(timeRatio, true, this.inputState)   
-        // } 
-        // else {
-        //     this.localPlayer.updateVelocity(timeRatio, false, this.inputState)
-        //     console.log('pas input')
-        // }
-        this.localPlayer.updateVelocity(timeRatio, this.inputState)
-        this.localPlayer.updatePos(timeRatio)
-    }
+    
 
     displayPlayers() {
+        let i = 0
         for (let player of this.players) {
-            let box = BABYLON.MeshBuilder.CreateBox(player.pseudo, {}, this.scene);
-            box.position = new Vector3(player.coords.x, player.coords.y, player.coords.z)
-            if (player.name === this.localPlayer.pseudo) {
-                this.localPlayer.mesh = box
+            if (player.name !== this.localPlayer.pseudo) {
+                this.players[i].mesh = BABYLON.MeshBuilder.CreateBox(player.name, {}, this.scene)
+                this.players[i].mesh.position = new Vector3(player.coords.x, player.coords.y, player.coords.z)
             }
+            else if (player.name === this.localPlayer.pseudo) {
+                this.localPlayer.coords = { x: player.coords.x, y: player.coords.y, z: player.coords.y }
+                this.localPlayer.mesh = new BABYLON.MeshBuilder.CreateBox(player.name, {}, this.scene)
+                this.localPlayer.mesh.position = this.localPlayer.coords
+                this.players[i].mesh = null
+            }
+            i++
         }
+
+        window.addEventListener("keydown", (e) => {
+            this.downHandler(e)
+        })
+        window.addEventListener("keyup", (e) => {
+            this.upHandler(e)
+        })
+
+        setInterval(() => { this.localPlayer.updateVelocity(timeRatio, this.inputState) }, interval)
+        setInterval(() => { 
+            // console.log(JSON.stringify(this.localPlayer, null, 2))
+            this.socket.emit("updatePlayer", this.localPlayer.export(), this.lobbyId)       
+        }, 30)
 
     }
 
@@ -126,4 +118,23 @@ export class Chasse {
         }
         return false
     }
+
+    updatePlayers(players) {
+        // this.players.mesh.position = players.coords
+        
+        players = checkCollision(players)
+
+        for (let i = 0; i < this.players.length; i++) {
+            if (players[i].name !== this.localPlayer.pseudo) {
+                console.log("updateMesh",players[i].coords.x, players[i].coords.y, players[i].coords.z)
+                this.players[i].mesh.position = new Vector3 (players[i].coords.x, players[i].coords.y, players[i].coords.z)
+            }
+            
+        }
+    }
+}
+
+function checkCollision (players) {
+    
+    return players
 }
