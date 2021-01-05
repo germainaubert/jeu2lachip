@@ -39,11 +39,11 @@ export class Game {
 
     main() {
         this.engine.runRenderLoop(() => {
-            this.currentScene.scene.render()
+            this.getCurrentScene().scene.render()
         })
     }
 
-    get currentScene () {
+    getCurrentScene () {
         return this.scenes[this._currentSceneIndex]
     }
 

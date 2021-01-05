@@ -1,6 +1,6 @@
 import { Vector3 } from "@babylonjs/core"
 
-const acceleration = 14
+const acceleration = 20
 export class Player {
     mesh
     constructor (pseudo) {
@@ -56,7 +56,6 @@ export class Player {
         } else if (this.velocity.y > 0 && this.velocity.x < 0.1){
             this.velocity.y = 0
         }
-        console.log(this.velocity.x, this.velocity.y)
         this.updatePos(timeRatio)
        
     }
@@ -68,4 +67,11 @@ export class Player {
             return true
         }  
     }
+
+    export () {
+        return {
+            pseudo: this.pseudo,
+            coords: this.coords,
+        }
+    }   
 }

@@ -29,6 +29,7 @@ app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(mySession)
+app.use('/static', express.static(__dirname + '/assets'))
 const authRouter = require('./routes/auth.route')
 
 app.use('/api/auth', authRouter)
