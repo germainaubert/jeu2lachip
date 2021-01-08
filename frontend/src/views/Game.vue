@@ -14,11 +14,10 @@ export default {
   },
 
   mounted: function () {
-    this.game = new Game(this.$refs.renderCanvas, this.$socket, this.playerList, this.lobbyId, this.localPlayer)
-    if (this.gameLeader) {
-      this.$socket.emit("initChasse", this.lobbyId)
-    }
-    console.log("Game.vue", this.$socket)
+    this.game = new Game(this.$refs.renderCanvas, this.$socket, this.playerList, this.lobbyId, this.localPlayer, this.gameLeader)
+    // if (this.gameLeader) {
+    //   this.$socket.emit("initChasse", this.lobbyId)
+    // }
   },
   computed: {
     playerList () {
@@ -41,6 +40,19 @@ export default {
     },
     chasseUpdate (players) {
       this.game.getCurrentScene().updatePlayers(players)
+    },
+    pmuInitiated(players) {
+      
+      const pseudo = this.game.getCurrentScene().localPlayer.pseudo
+      const player = players.find(p => p.name === pseudo)
+      console.log("console 1 1", player)
+      if(!player) {
+          throw new Error("joueur non trouvé")
+      }
+      // debugger // eslint-disable-line
+      this.game.getCurrentScene().userInformations(player)
+
+      console.log('joueurs du pmu: ', players)
     }
   },
   methods: {

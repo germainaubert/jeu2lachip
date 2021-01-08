@@ -7,11 +7,12 @@ const timeRatio = 1000 / interval
 
 export class Chasse {
     camera
-    constructor(canvas, engine, socket, localPlayer, lobbyId) {
+    constructor(canvas, engine, socket, localPlayer, lobbyId, gameLeader) {
         this.canvas = canvas
         this.engine = engine
         this.socket = socket
-        console.log("chasse.js", this.socket)
+        this.gameLeader = gameLeader
+        console.log("chasse.js")
         // this.initSocket(socket)
         this.scene = new BABYLON.Scene(this.engine)
         this.players = null
@@ -109,6 +110,9 @@ export class Chasse {
             // console.log(JSON.stringify(this.localPlayer, null, 2))
             this.socket.emit("updatePlayer", this.localPlayer.export(), this.lobbyId)       
         }, 30)
+        // setTimeout(() => {
+        //     this.socket.emit("nextGame", this.lobbyId)
+        // })
 
     }
 
