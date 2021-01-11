@@ -16,13 +16,55 @@ export class UserInformations {
         console.log(this.localPlayer)
         
         let advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, this.scene);
-        let pseudo = new TextBlock();
-        pseudo.text = this.localPlayer.name;
-        pseudo.color = "white";
-        pseudo.fontSize = 24;
-        advancedTexture.addControl(pseudo);    
-        console.log("is foreground : ", advancedTexture.isForeground)
+        displayInfos(advancedTexture,  this.localPlayer)
+        // let pseudo = new TextBlock();
+        // pseudo.text = this.localPlayer.name;
+        // pseudo.color = "white";
+        // pseudo.fontSize = 24;
+        // advancedTexture.addControl(pseudo);    
+        // console.log("is foreground : ", advancedTexture.isForeground)
     }
 
 }
 
+function displayInfos(advancedTexture, infos) {
+    let top = -350
+    let left = 650
+    for (const info in infos) {
+        console.log(info)
+        let message = new TextBlock()
+        switch(info) {
+            case('name'):
+            message.text = `Nom: ${infos[info]}`
+            break
+            case('bet'):
+            message.text = `Mise: ${infos[info]}`
+            break
+            case('hp'):
+            message.text = `Points de vies: ${infos[info]}`
+            break
+            case('horse'):
+            message.text = `Cheval: as de ${infos[info].color}`; 
+            break
+            case('bullets'):
+            message.text = `Balles: ${infos[info]}`
+            break
+        }
+          
+        message.color = "white";
+        message.top = top ;
+        message.left = left;
+        message.fontSize = 24;
+        advancedTexture.addControl(message);
+        top += 50
+        
+}
+    // infos.forEach(info => {
+    //     let message = new TextBlock()
+    //     message.text = info;
+    //     message.color = "white";
+    //     message.fontSize = 24;
+    //     advancedTexture.addControl(message);
+    //  })
+    
+}
