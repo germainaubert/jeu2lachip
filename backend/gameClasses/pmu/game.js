@@ -7,7 +7,7 @@ class Game {
     deck
     field
     constructor(players) {
-        if (players.length != 4) {
+        if (players.length != 2) {
             throw new Error('Le jeu doit se jouer a quatre joueurs. Nombre de joueurs actuels : ' + players.length)
         }
         this.players = players

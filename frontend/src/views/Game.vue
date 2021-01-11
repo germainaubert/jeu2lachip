@@ -40,7 +40,20 @@ export default {
       this.game.getCurrentScene().displayPlayers()
     },
     chasseUpdate (players) {
-       this.game.getCurrentScene().updatePlayers(players)
+      this.game.getCurrentScene().updatePlayers(players)
+    },
+    pmuInitiated(players) {
+      
+      const pseudo = this.game.getCurrentScene().localPlayer.pseudo
+      const player = players.find(p => p.name === pseudo)
+      console.log("console 1 1", player)
+      if(!player) {
+          throw new Error("joueur non trouvé")
+      }
+      // debugger // eslint-disable-line
+      this.game.getCurrentScene().userInformations(player)
+
+      console.log('joueurs du pmu: ', players)
     }
   },
   methods: {
