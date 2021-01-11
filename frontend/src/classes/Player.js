@@ -2,7 +2,7 @@ import { Vector3 } from "@babylonjs/core"
 
 const acceleration = 20
 export class Player {
-    mesh
+    
     constructor (pseudo) {
         this.pseudo = pseudo
         this.coords = {
@@ -15,16 +15,19 @@ export class Player {
             y: 0,
             z: 0
         }
+        this.mesh = null
     }
 
     updatePos(timeRatio) {
+        
         this.coords.x += this.velocity.x / timeRatio
         this.coords.z += this.velocity.y / timeRatio
-        this.mesh.position = new Vector3 (this.coords.x, this.coords.y, this.coords.z)
+        
+        return new Vector3(this.coords.x, this.coords.y, this.coords.z)
+        
     }
 
     updateVelocity(timeRatio, inputState) {
-        
         if (inputState.up) {
             this.velocity.x += acceleration / timeRatio
         } else if (this.velocity.x > 0 && this.velocity.x > 0.1) {
@@ -56,7 +59,7 @@ export class Player {
         } else if (this.velocity.y > 0 && this.velocity.x < 0.1){
             this.velocity.y = 0
         }
-        this.updatePos(timeRatio)
+        return this.updatePos(timeRatio)
        
     }
 

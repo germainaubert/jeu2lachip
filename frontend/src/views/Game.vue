@@ -14,10 +14,10 @@ export default {
   },
 
   mounted: function () {
-    this.game = new Game(this.$refs.renderCanvas, this.$socket, this.playerList, this.lobbyId, this.localPlayer, this.gameLeader)
-    // if (this.gameLeader) {
-    //   this.$socket.emit("initChasse", this.lobbyId)
-    // }
+    this.game = new Game(this.$refs.renderCanvas, this.$socket, this.playerList, this.lobbyId, this.localPlayer)
+    if (this.gameLeader) {
+      this.$socket.emit("initChasse", this.lobbyId)
+    }
   },
   computed: {
     playerList () {
@@ -35,6 +35,7 @@ export default {
   },
   sockets: {
     chasseInitiated (players) {
+      console.log('PLAYERS', players)
       this.game.getCurrentScene().players = players
       this.game.getCurrentScene().displayPlayers()
     },
