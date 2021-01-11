@@ -18,7 +18,6 @@ export default {
     if (this.gameLeader) {
       this.$socket.emit("initChasse", this.lobbyId)
     }
-    console.log("Game.vue", this.$socket)
   },
   computed: {
     playerList () {
@@ -36,11 +35,12 @@ export default {
   },
   sockets: {
     chasseInitiated (players) {
+      console.log('PLAYERS', players)
       this.game.getCurrentScene().players = players
       this.game.getCurrentScene().displayPlayers()
     },
     chasseUpdate (players) {
-      this.game.getCurrentScene().updatePlayers(players)
+       this.game.getCurrentScene().updatePlayers(players)
     }
   },
   methods: {
