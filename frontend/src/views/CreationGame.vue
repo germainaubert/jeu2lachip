@@ -1,18 +1,26 @@
 <template>
-  <div class="creationGames">
-    <h1>Ajout d'un jeu</h1>
-    <div>
-        <label for="nameInput">Nom du jeu:</label>
-        <input type="text" id="nameInput" v-model="ajoutNom" />
-        <label for="logoInput">Logo du jeu:</label>
-        <input type="text" id="logoInput" v-model="ajoutLogo" />
-        <div class="popup" v-on:click="addGame()">
-            AJOUTER LE JEU
-            <span class="popuptext" id="addPopup" v-bind:class="{show:showAddPopup}">Ce jeu a été ajouté</span>
-        </div>
-    </div>
-    <br />
-  </div>
+  <v-container>
+    <v-card width="500" class="mx-auto mt-10">
+      <v-card-title>
+        <h1 class="display-1">Ajout d'un jeu</h1>
+      </v-card-title>
+      <v-card-text>
+        <v-form>
+          <v-text-field
+            label="Nom du jeu"
+            v-model="ajoutNom"
+          />
+          <v-text-field
+            label="Logo du jeu"
+            v-model="ajoutLogo"
+          />
+        </v-form>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn  v-on:click="addGame">Ajouter le jeu</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 
 <script>

@@ -1,38 +1,40 @@
 <template>
-  <div class="gestionUsers">
-    <h1>Gestion des utilisateurs</h1>
-    <div>
-      <label for="researchInput">Pseudo:</label>
-      <input type="text" id="researchInput" v-model="researchPseudo" />
-      <button v-on:click="research(researchPseudo)">Rechercher</button>
-    </div>
-    <table>
-      <tbody>
-        <tr v-for="user in users" v-bind:key="user.id">
-          <td>{{ user.pseudo }}</td>
-          <td>{{user.is_admin}}</td>
-          <td class="editLabel">
-            <div class="popup" v-on:click="deleteUser(user.pseudo)">
-              SUPPRIMER
-              <span class="popuptext" id="suppressionPopup" v-bind:class="{show:showSuppressionPopup}"
-                >Cet utilisateur a été supprimé</span
-              >
-            </div>
-          </td>
-          <td class="editLabel">
-            <div class="popup" v-on:click="becomeAdmin(user.pseudo)">
-              BECOMEADMIN
-              <span class="popuptext" id="adminPopup" v-bind:class="{show:showNewAdminPopup}"
-                >Cet utilisateur est devenu administrateur</span
-              >
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <br />
-  </div>
-</template>
+  <v-container>
+    <v-card width="1000" class="mx-auto mt-10">
+      <v-card-title>
+        <h1 class="display-1">Gestion des utilisateurs</h1>
+      </v-card-title>
+      <div>
+        <v-data-table
+          :headers="headers"
+          :items="users"
+          item-key="user.id"
+          class="elevation-1"
+          :search="researchPseudo"
+        >
+          <template v-slot:top>
+            <v-text-field
+              v-model="researchPseudo"
+              label="Pseudo a rechercher"
+              class="mx-4"
+            ></v-text-field>
+          </template>
+
+          <template v-slot:item.supp="props">
+            <v-btn v-on:click="deleteUser(props.item.pseudo)">supprimer {{props.item.pseudo}}</v-btn>
+          </template>
+
+          <template v-slot:item.is_admin="props">
+            <v-btn v-on:click="becomeAdmin(props.item.pseudo)">nommer {{props.item.pseudo}} admin</v-btn>
+          </template>
+
+        </v-data-table>
+      </div>
+    </v-card>
+  </v-container>
+</template> 
+
+  
 
 <script>
 //import ConnexionVue from './Connexion.vue';
@@ -42,6 +44,26 @@ export default {
   props: {},
   data: function () {
     return {
+      headers: [
+        {
+          text: "Utilisateurs",
+          align: "start",
+          sortable: false,
+          value: "pseudo",
+        },
+        {
+          text: "supprimer un utilisateur",
+          align: "end",
+          sortable: false,
+          value: "supp",
+        },
+        {
+          text: "nommer un admin",
+          align: "end",
+          sortable: false,
+          value: "is_admin",
+        },
+      ],
       showSuppressionPopup : false,
       showNewAdminPopup : false,
       users: [],

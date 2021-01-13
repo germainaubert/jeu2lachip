@@ -1,24 +1,27 @@
 <template>
-  <div class="gestionGames">
-    <h1>Gestion des jeux</h1>
-    <div>
-      <router-link to="/CreationGame" tag="button">Ajouter un jeu</router-link>
-      <table>
-      <tbody>
-        <tr v-for="game in games" v-bind:key="game.id">
-          <td>{{ game.name }}</td>
-          <td class="editLabel">
-            <div class="popup" v-on:click="deleteGame(game.name)">
-              SUPPRIMER
-              <span class="popuptext" id="suppressionPopup" v-bind:class="{show:showSuppressionPopup}">Ce jeu a été supprimé</span>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-    <br />
-  </div>
+  <v-container>
+    <v-card width="500" class="mx-auto mt-10">
+      <v-card-title>
+        <h1 class="display-1">Gestion des jeux</h1>
+      </v-card-title>
+      <v-card-actions>
+        <v-btn  v-on:click="goCreationGame">Ajouter un jeu</v-btn>
+      </v-card-actions>
+      <div>
+        <v-data-table
+          :headers="headers"
+          :items="games"
+          item-key="game.id"
+          class="elevation-1"
+        >
+          <template v-slot:item.is_admin="props">
+            <v-btn v-on:click="deleteGame(props.item.name)">supprimer {{props.item.name}}</v-btn>
+          </template>
+
+        </v-data-table>
+      </div>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -29,6 +32,20 @@ export default {
   props: {},
   data: function () {
     return {
+      headers: [
+        {
+          text: "Jeux",
+          align: "start",
+          sortable: false,
+          value: "name",
+        },
+        {
+          text: "supprimer un jeu",
+          align: "end",
+          sortable: false,
+          value: "is_admin",
+        },
+      ],
       games: [],
       showSuppressionPopup : false
     };
@@ -58,6 +75,10 @@ export default {
       if (res.data.supprimer === true) {
         this.$router.push("/GestionGames");
       }
+    },
+
+    async goCreationGame(){
+      this.$router.push("/CreationGame");
     },
   },
 };

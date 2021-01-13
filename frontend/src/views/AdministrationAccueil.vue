@@ -1,15 +1,22 @@
 <template>
-  <div class="administrationAccueil">
-    <h1>Administration</h1>
-    <div>
-      <h1>Vos Actions</h1>
-      <router-link to="/GestionUsers" tag="button">Gérer utilisateurs</router-link>
-      <br />
-      <router-link to="/GestionGames" tag="button">Gérer jeux</router-link>
-    </div>
-    <br />
-  </div>
+  <v-container>
+    <v-card width="500" class="mx-auto mt-10">
+      <v-card-title>
+        <h1 class="display-1">Administration</h1>
+      </v-card-title>
+      <v-card-text>
+          <h2>Vos Actions</h2>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn  v-on:click="goGestionUsers">Gérer utilisateurs</v-btn>
+      </v-card-actions>
+      <v-card-actions>
+        <v-btn  v-on:click="goGestionGames">Gérer jeux</v-btn>
+      </v-card-actions>
+     </v-card>
+  </v-container>
 </template>
+
 
 <script>
 //import ConnexionVue from './Connexion.vue';
@@ -36,7 +43,15 @@ export default {
     this.getAmis(this.userId);*/
   },
 
-  methods: {},
+  methods: {
+    goGestionUsers: async function(){
+      this.$router.push("/GestionUsers");
+    },
+
+    goGestionGames: async function(){
+      this.$router.push("/GestionGames");
+    }
+  },
 };
 </script>
 

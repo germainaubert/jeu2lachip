@@ -1,30 +1,34 @@
 <template>
-  <div class="invitationAmi">
-    <h1>Utilisateur</h1>
-    <div>
+  <v-container>
+    <v-card width="500" class="mx-auto mt-10">
+      <v-card-title>
+        <h1 class="display-1">Utilisateurs</h1>
+      </v-card-title>
       <div>
-        <label for="researchInput">Pseudo:</label>
-        <input type="text" id="researchInput" v-model="researchPseudo" />
-        <button v-on:click="research()">Rechercher</button>
+        <v-data-table
+          :headers="headers"
+          :items="users"
+          item-key="user.id"
+          class="elevation-1"
+          :search="researchPseudo"
+        >
+          <template v-slot:top>
+            <v-text-field
+              v-model="researchPseudo"
+              label="Pseudo a rechercher"
+              class="mx-4"
+            ></v-text-field>
+          </template>
+
+          <template v-slot:item.is_admin="props">
+            <v-btn v-on:click="invite(props.item.pseudo)">inviter {{props.item.pseudo}}</v-btn>
+          </template>
+          
+        </v-data-table>
       </div>
-      <table>
-        <tbody>
-          <tr v-for="user in users" v-bind:key="user.id">
-            <td>{{ user.pseudo }}</td>
-            <td class="editLabel">
-              <div class="popup" v-on:click="invite(user.pseudo)">
-                INVITE
-                <span class="popuptext" id="invitePopup" v-bind:class="{show:showInvitePopup}"
-                  >Cet ami a été invité</span
-                >
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</template>
+    </v-card>
+  </v-container>
+</template> 
 
 <script>
 //import ConnexionVue from './Connexion.vue';
@@ -34,41 +38,54 @@ export default {
   props: {},
   data: function () {
     return {
+      headers: [
+        {
+          text: "Utilisateurs",
+          align: "start",
+          sortable: false,
+          value: "pseudo",
+        },
+        {
+          text: "inviter un ami",
+          align: "end",
+          sortable: false,
+          value: "is_admin",
+        },
+      ],
       users: [],
       newamiId: Number,
       researchPseudo: null,
-      showInvitePopup : false
-    }
+      showInvitePopup: false,
+    };
   },
 
   mounted: async function () {
     const res = await this.$axios.get(
       "http://localhost:3000/api/auth/getSession"
-    )
-    let user = res.data.user
-    this.currentUser = user
-    console.log(user)
-    this.userId = user.id
-    console.log(this.userId)
+    );
+    let user = res.data.user;
+    this.currentUser = user;
+    console.log(user);
+    this.userId = user.id;
+    console.log(this.userId);
     //this.getAmis(this.userId)
-    this.getUsers()
+    this.getUsers();
   },
 
   methods: {
     async invite(pseudo) {
       //this.showInvitePopup = true
-      console.log(pseudo)
-      const amiInviteId = await this.findUsersId(pseudo)
-      console.log(amiInviteId.id)
-      const amiInvitedId = amiInviteId.id
+      console.log(pseudo);
+      const amiInviteId = await this.findUsersId(pseudo);
+      console.log(amiInviteId.id);
+      const amiInvitedId = amiInviteId.id;
       //const amitie = this.userId + amiInviteId
       //console.log(amitie)
       const res = await this.$axios.post(
-        "http://localhost:3000/api/amis/" +
-          amiInvitedId
-      )
+        "http://localhost:3000/api/amis/" + amiInvitedId
+      );
       if (res.data.invite === true) {
-        this.$router.push("/Amis")
+        this.$router.push("/Amis");
       }
     },
 
@@ -82,29 +99,28 @@ export default {
     async getUsers() {
       const res = await this.$axios.get(
         "http://localhost:3000/api/users/liste"
-      )
-      console.log(res.data)
-      this.users = res.data
-      console.log(this.users)
+      );
+      console.log(res.data);
+      this.users = res.data;
+      console.log(this.users);
     },
 
     async findUsersId(pseudo) {
       const res = await this.$axios.get(
         "http://localhost:3000/api/users/id/" + pseudo
-      )
-      console.log(res.data)
-      this.newamiId = res.data
-      console.log(this.newamiId)
-      return this.newamiId
+      );
+      console.log(res.data);
+      this.newamiId = res.data;
+      console.log(this.newamiId);
+      return this.newamiId;
     },
 
     async research() {
-      
       const res = await this.$axios.get(
         "http://localhost:3000/api/users/" + this.researchPseudo
       );
-      
-      this.users = res.data 
+
+      this.users = res.data;
     },
 
     /*async research(researchPseudo){

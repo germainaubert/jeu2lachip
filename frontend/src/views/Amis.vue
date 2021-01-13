@@ -1,38 +1,51 @@
 <template>
-  <div class="lobby">
-    <h1>Amis</h1>
-    <div>
-      <h1>Vos amis</h1>
-            <tbody>
-              <tr v-for="person in persons" v-bind:key="person.id">
-                <td>{{ person.pseudo }}</td>
-                <td class="editLabel">  
-                  <div class="popup" v-on:click="invite()"> INVITE 
-                    <span class="popuptext" id="invitePopup" v-bind:class="{show:showInvitePopup}">Cet ami a été invité</span>
-                  </div>
-                </td>
-                <td class="editLabel">
-                  <div class="popup" v-on:click="deletefriend(person.pseudo)"> DELETE
-                    <span class="popuptext" id="deletePopup" v-bind:class="{show:showDeletePopup}">Cet ami a été supprimé</span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-            <br>
-        <router-link to="/InvitationAmi" tag="button">Inviter un joueur a etre ami</router-link>
-    </div>
-      <br>
-  </div>
-</template>
+  <v-container>
+    <v-card width="500" class="mx-auto mt-10">
+      <v-card-title>
+        <h1 class="display-1">Amis</h1>
+      </v-card-title>
+      <div>
+        <v-data-table
+          :headers="headers"
+          :items=" persons"
+          item-key=" persons.id"
+          class="elevation-1"
+        >
+          <template v-slot:item.is_admin="props">
+            <v-btn v-on:click="deletefriend(props.item.pseudo)">Supprimer {{props.item.pseudo}}</v-btn>
+          </template>
+      </v-data-table>
+      </div>
+      <v-card-actions>
+        <v-btn v-on:click="goInvitationAmi">Inviter un joueur a etre ami</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-container>
+</template> 
+  
 
 <script>
 //import ConnexionVue from './Connexion.vue';
 //const axios = require('axios')
 export default {
-  name: "Lobby",
+  name: "Amis",
   props: {},
   data: function () {
     return {
+      headers: [
+        {
+          text: "Vos amis",
+          align: "start",
+          sortable: false,
+          value: "pseudo",
+        },
+        {
+          text: "supprimer un ami",
+          align: "end",
+          sortable: false,
+          value: "is_admin",
+        },
+      ],
       persons: [],
       amiId: Number,
       showInvitePopup : false,
@@ -101,6 +114,10 @@ export default {
       console.log(this.amiId)
       return this.amiId
     },
+
+    goInvitationAmi : async function (){
+      this.$router.push("/InvitationAmi");
+    }
   }
 }
 </script>
