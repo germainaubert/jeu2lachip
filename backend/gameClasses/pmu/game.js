@@ -7,13 +7,18 @@ class Game {
     deck
     field
     constructor(players) {
-        if (players.length != 1) {
+        if (players.length != 4) {
             throw new Error('Le jeu doit se jouer a quatre joueurs. Nombre de joueurs actuels : ' + players.length)
         }
         this.players = players
         this.field = {}
         this.gameIsOn = true
         this.turns = 0
+        this.advancement = {}
+        this.advancement.drawedCard = []
+        this.advancement.winner = []
+        this.advancement.looser = []
+        this.advancement.malusRevealed = []
         this.ranking = []
         this.deck = new Deck()
         this.playerAlive = true
@@ -57,6 +62,7 @@ class Game {
     }
     drawPhase() {
         const card = this.deck.drawCard()
+        this.advancement.drawedCard.push({card : card, turn : this.turns})
         this.checkWinner(card)
         this.checkMalus()
         this.playerArrive()
@@ -64,6 +70,7 @@ class Game {
     }
     checkWinner(card) {
         let winner = this.players.find(player => player.horse.color == card.color)
+        this.advancement.winner.push({winner : winner, turn : this.turns})
         //console.log('et le gagnant est : ', winner.name)
         if (winner.arrived == false) {
             winner.horse.pos += 1
@@ -73,6 +80,7 @@ class Game {
     }
     checkLooser(malus) {
         let looser = this.players.find(player => player.horse.color == malus.color)
+        this.advancement.looser.push({looser : looser, turn : this.turns})
         //console.log('et le perdant est : ', looser.name)
         if (looser.arrived == false) {
             looser.horse.pos -= 1
@@ -90,6 +98,7 @@ class Game {
 
             if (count) {
                 this.deck.malus[indexMalus].revealed = true 
+                this.advancement.malusRevealed.push({malusRevealed : this.deck.malus[indexMalus], turn : this.turns})
                 //console.log("UN MALUS EST INTERVENU", this.deck.malus)
                 this.checkLooser(firstActiveMalus)
             }

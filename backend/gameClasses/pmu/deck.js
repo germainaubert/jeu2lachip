@@ -13,6 +13,7 @@ class Deck {
         this.createDeck()
         this.shuffle()
         this.setupMalus()
+        debugger
     }
     createDeck() {
         for (let i = 1; i < Deck.noms.length; i++) {
@@ -23,11 +24,13 @@ class Deck {
     }
     setupMalus() {
         for (let i = 0; i < MALUSLENGTH; i++) {
+            
             this.malus.push(this.cards[i])
             this.malus[i].revealed = false
             this.malus[i].pos = i+1
-            this.cards.shift()
+            
         }
+        this.cards.splice(0, 6)
     }
     shuffle() {
         var i, j, tmp;

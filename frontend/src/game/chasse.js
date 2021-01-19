@@ -15,7 +15,7 @@ export class Chasse {
         this.gameLeader = gameLeader
         console.log("chasse.js")
         // this.initSocket(socket)
-        this.scene = new BABYLON.Scene(engine)
+        // this.scene = new BABYLON.Scene(engine)
         this.players = null
         this.lobbyId = lobbyId
         this.inputState = {
