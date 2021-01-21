@@ -21,7 +21,7 @@ export default {
       this.localPlayer
     );
     if (this.gameLeader) {
-     this.$socket.emit("pmuInit", this.lobbyId);
+     //this.$socket.emit("pmuInit", this.lobbyId);
     }
   },
   computed: {
@@ -58,23 +58,25 @@ export default {
       if (!player) {
         throw new Error("joueur non trouvé");
       }
+      // Affichage des objets 3d 
       this.game.getCurrentScene().displayPlayers(data.players);
       this.game.getCurrentScene().displayMalus(deck);
       this.game.getCurrentScene().displayCards(deck);
-      
-      // debugger // eslint-disable-line
       this.game.getCurrentScene().userInformations(player);
+      // 15 secondes d'attentes le temps que toutes les textures et les modeles soient chargés
       setTimeout(() => {
         if (this.gameLeader) {
+          // Envoie de la socket pour jouer une partie 
           this.$socket.emit("pmuPlay", this.lobbyId);
         }
       },15000);
-      console.log("joueurs du pmu: ", data.players);
+  
     },
     pmuPlayed(data) {
+      // Récuperation des données de la partie simulée
       const advancement = data.advancement; 
-
-      const turns = data.turns // eslint-disable-line
+      const turns = data.turns 
+      // Lancement des animations a partir des résultats récupérés
       this.game.getCurrentScene().animationManager(turns, advancement);
     },
   },
