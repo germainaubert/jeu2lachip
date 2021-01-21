@@ -21,7 +21,7 @@ export default {
       this.localPlayer
     );
     if (this.gameLeader) {
-     //this.$socket.emit("pmuInit", this.lobbyId);
+     this.$socket.emit("pmuInit", this.lobbyId);
     }
   },
   computed: {
