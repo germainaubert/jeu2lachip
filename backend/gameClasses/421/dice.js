@@ -5,7 +5,6 @@ class Dice {
     constructor(id) {
     this.id = id
     this.faces = 6
-    this.value
     }
     
     roll() {

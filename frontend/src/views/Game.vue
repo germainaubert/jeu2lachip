@@ -21,7 +21,7 @@ export default {
       this.localPlayer
     );
     if (this.gameLeader) {
-     //this.$socket.emit("pmuInit", this.lobbyId);
+     this.$socket.emit("pmuInit", this.lobbyId);
     }
   },
   computed: {
@@ -78,6 +78,14 @@ export default {
       const turns = data.turns 
       // Lancement des animations a partir des résultats récupérés
       this.game.getCurrentScene().animationManager(turns, advancement);
+    },
+    update421(gameData) {
+      this.game.getCurrentScene().gameData = gameData;
+      this.game.getCurrentScene().players = gameData.players;
+      this.game.getCurrentScene().update();
+    },
+    async throwDice(vector) {
+      await this.game.getCurrentScene().throwDices(vector);
     },
   },
   methods: {},
