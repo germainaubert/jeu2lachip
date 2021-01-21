@@ -12,8 +12,18 @@ class PmuSocket {
             let targetLobby = lobbyContainer.lobbies.find(lobby => lobby.id == idLobby)
             
             targetLobby.pmu = new Pmu(createPlayers(targetLobby.users))
+            console.log('game play')
             
-            shareEvent(socketList(targetLobby.users), 'pmuInitiated', targetLobby.pmu.players)
+            shareEvent(socketList(targetLobby.users), 'pmuInitiated', targetLobby.pmu)
+        })
+        socket.on("pmuPlay", (idLobby) => {
+            
+            let targetLobby = lobbyContainer.lobbies.find(lobby => lobby.id == idLobby)
+            
+            targetLobby.pmu.play()
+            console.log('game play')
+            
+            shareEvent(socketList(targetLobby.users), 'pmuPlayed', targetLobby.pmu)
         })
     }
 

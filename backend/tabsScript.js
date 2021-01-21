@@ -18,7 +18,7 @@ async function openUrl (url, tabs) {
 //         },
 //     })
 // }
-let tabs = 2
+let tabs = 4
 openUrl('http://localhost:8080/#/Connexion', tabs)
 // setTimeout(() => {  console.log("Attendre Cool"); }, 4000)
 // connect()

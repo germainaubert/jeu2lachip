@@ -3,22 +3,30 @@
 </template>
 
 <script>
-import { Game } from "../game/gameMain.js"
+import { Game } from "../game/gameMain.js";
 
 export default {
-
   data: function () {
     return {
-      game: null
+      game: null,
     };
   },
 
   mounted: function () {
-    this.game = new Game(this.$refs.renderCanvas, this.$socket, this.playerList, this.lobbyId, this.localPlayer, this.gameLeader)
+    this.game = new Game(
+      this.$refs.renderCanvas,
+      this.$socket,
+      this.playerList,
+      this.lobbyId,
+      this.localPlayer
+    );
+    if (this.gameLeader) {
+      this.$socket.emit("pmuInit", this.lobbyId);
+    }
   },
   computed: {
-    playerList () {
-      return this.$store.state.playerList
+    playerList() {
+      return this.$store.state.playerList;
     },
     lobbyId() {
       return this.$store.state.lobbyId;
@@ -26,45 +34,64 @@ export default {
     localPlayer() {
       return this.$store.state.localPlayer;
     },
-    gameLeader () {
-      return this.$store.state.gameLeader
-    }
+    gameLeader() {
+      return this.$store.state.gameLeader;
+    },
   },
   sockets: {
-    chasseInitiated (players) {
-      console.log('PLAYERS', players)
-      this.game.getCurrentScene().players = players
-      this.game.getCurrentScene().displayPlayers()
+    chasseInitiated(players) {
+      console.log("PLAYERS", players);
+      this.game.getCurrentScene().players = players;
+      this.game.getCurrentScene().displayPlayers();
     },
-    chasseUpdate (players) {
-      this.game.getCurrentScene().updatePlayers(players)
+    chasseUpdate(players) {
+      this.game.getCurrentScene().updatePlayers(players);
     },
-    pmuInitiated(players) {
-      
-      const pseudo = this.game.getCurrentScene().localPlayer.pseudo
-      const player = players.find(p => p.name === pseudo)
-      console.log("console 1 1", player)
-      if(!player) {
-          throw new Error("joueur non trouvé")
-      }
-      // debugger // eslint-disable-line
-      this.game.getCurrentScene().userInformations(player)
+    pmuInitiated(data) {
+      console.log(data);
+      const deck = data.deck;
 
-      console.log('joueurs du pmu: ', players)
+      console.log(deck);
+      const pseudo = this.game.getCurrentScene().localPlayer.pseudo;
+      const player = data.players.find((p) => p.name === pseudo);
+      console.log("console 1 1", player);
+      if (!player) {
+        throw new Error("joueur non trouvé");
+      }
+      this.game.getCurrentScene().displayPlayers(data.players);
+      this.game.getCurrentScene().displayMalus(deck);
+      this.game.getCurrentScene().displayCards(deck);
+
+      // debugger // eslint-disable-line
+
+      this.game.getCurrentScene().userInformations(player);
+
+      this.game.getCurrentScene().userInformations(player);
+      setTimeout(() => {
+        if (this.gameLeader) {
+          this.$socket.emit("pmuPlay", this.lobbyId);
+        }
+      }, 15000);
+      console.log("joueurs du pmu: ", data.players);
+    },
+    pmuPlayed(data) {
+      const advancement = data.advancement;
+
+      const turns = data.turns; // eslint-disable-line
+      //console.log(advancement.malusRevealed[0].card.name + "_de_" + advancement.malusRevealed[0].card.color)
+      //this.game.getCurrentScene().malusRevealed(advancement.malusRevealed[1].malusRevealed.name + "_de_" + advancement.malusRevealed[1].malusRevealed.color)
+      this.game.getCurrentScene().animationManager(turns, advancement);
     },
     update421(gameData) {
-      
-      this.game.getCurrentScene().gameData = gameData
-      this.game.getCurrentScene().players = gameData.players
-      this.game.getCurrentScene().update()
+      this.game.getCurrentScene().gameData = gameData;
+      this.game.getCurrentScene().players = gameData.players;
+      this.game.getCurrentScene().update();
     },
     async throwDice(vector) {
-      await this.game.getCurrentScene().throwDices(vector)
-    }
+      await this.game.getCurrentScene().throwDices(vector);
+    },
   },
-  methods: {
-
-  },
+  methods: {},
 };
 </script>
 
@@ -88,5 +115,4 @@ canvas {
   width: "100%";
   height: "100%";
 }
-
 </style>
