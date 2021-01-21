@@ -2,6 +2,7 @@ import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
 import { Vector3 } from "@babylonjs/core/Legacy/legacy"
 import { Player } from "../classes/Player"
+// (global).CANNON = require('cannon')
 
 const interval = 30
 const timeRatio = 1000 / interval
@@ -9,12 +10,11 @@ const timeRatio = 1000 / interval
 export class Chasse {
     camera
     constructor(canvas, socket, engine, localPlayer, lobbyId, gameLeader) {
+        console.log("chasse.js")
         this.canvas = canvas
         this.socket = socket
         this.scene = new BABYLON.Scene(engine)
         this.gameLeader = gameLeader
-        console.log("chasse.js")
-        // this.initSocket(socket)
         this.players = null
         this.lobbyId = lobbyId
         this.inputState = {
@@ -24,14 +24,22 @@ export class Chasse {
             left: false
         }
         this.localPlayer = localPlayer.pseudo
+        this.physicsRoot = null
         // new Player(localPlayer.pseudo)
-
+        this.socket.emit("updatePlayer", this.currentPlayer().local.export(), this.lobbyId)
         this.basicInit()
-        console.log("init chasse")
-
+        if (this.gameLeader) {
+            this.socket.emit("initChasse", this.lobbyId)
+        }
     }
 
     basicInit() {
+        this.scene.collisionsEnabled = true
+        // let gravity = new BABYLON.Vector3(0, 0, 0)
+        // this.scene.enablePhysics(gravity, new BABYLON.CannonJSPlugin())
+        // let ground = BABYLON.Mesh.CreateGround("ground1", 24, this.scene);
+        // ground.scaling = new Vector3(1,.02,1);
+        // ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, friction: 0.5, restitution: 0.7 }, this.scene);
         // Parameters: name, position, scene
         this.camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 0, -10), this.scene);
         // The goal distance of camera from target
@@ -89,6 +97,9 @@ export class Chasse {
         mesh = container.meshes[0]
         for (let player of this.players) {
             this.players[i].mesh = mesh.clone("mesh" + i)
+            // this.players[i].mesh.material = matPlan
+            this.players[i].mesh.PhysicsImpostor = new BABYLON.PhysicsImpostor(this.players[i].mesh, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, restitution: 0.9 }, this.scene)
+            // this.players[i].mesh.checkCollisions = true
             this.players[i].mesh.position = new Vector3(player.coords.x, player.coords.y, player.coords.z)
             if (player.name == this.localPlayer) {
                 this.players[i].local = new Player(this.localPlayer)
@@ -102,7 +113,7 @@ export class Chasse {
             //     this.players[i].mesh = mesh.clone("mesh" + i)
             //     this.players.local = new Player(localPlayer.pseudo)
             //     this.players.local.coords = { x: player.coords.x, y: player.coords.y, z: player.coords.z }
-                // this.localPlayer.mesh = new BABYLON.MeshBuilder.CreateBox(player.name, {}, this.scene)
+            // this.localPlayer.mesh = new BABYLON.MeshBuilder.CreateBox(player.name, {}, this.scene)
             i++
         }
 
@@ -112,12 +123,8 @@ export class Chasse {
         window.addEventListener("keyup", (e) => {
             this.upHandler(e)
         })
-        
-        setTimeout(setInterval(() => { this.currentPlayer().mesh.position = this.currentPlayer().local.updateVelocity(timeRatio, this.inputState) }, interval), 5000)
-        setTimeout(setInterval(() => {
-            // console.log(JSON.stringify(this.localPlayer, null, 2))     
-            this.socket.emit("updatePlayer", this.currentPlayer().local.export(), this.lobbyId)
-        }, 30), 5000)
+
+        setTimeout(this.setListener(), 5000)
         // setTimeout(() => {
         //     this.socket.emit("nextGame", this.lobbyId)
         // })
@@ -137,7 +144,7 @@ export class Chasse {
                 this.players[i].mesh.position = new Vector3(players[i].coords.x, players[i].coords.y, players[i].coords.z)
             }
         }
-        // checkCollision(this.players)
+        checkCollision(this.players)
     }
 
     currentPlayer() {
@@ -147,20 +154,20 @@ export class Chasse {
             }
         }
     }
+    setListener() {
+        console.log("hello from setListener")
+        setInterval(() => { this.currentPlayer().mesh.position = this.currentPlayer().local.updateVelocity(timeRatio, this.inputState) }, interval)
+        setInterval(() => {
+            // console.log(JSON.stringify(this.localPlayer, null, 2))     
+            this.socket.emit("updatePlayer", this.currentPlayer().local.export(), this.lobbyId)
+        }, 30)
+    }
 }
 
-// function checkCollision (localPlayers) {
-//     let decalage = 0
-//     for (let i = 0; i < localPlayers.length - 1; i++) {
-        
-//         if (localPlayers[i].mesh.intersectsMesh(localPlayers[i + decalage].mesh, false)) {
-//             // localPlayers[i].mesh.material.emissiveColor = new BABYLON.Color4(1, 0, 0, 1);
-//             console.log("collision")
-//         } else {
-//             // localPlayers[i].mesh.material.emissiveColor = new BABYLON.Color4(1, 1, 1, 1);
-//             console.log("pas de collision")
-//         }
-        
-//     }
-    
-// }
+function checkCollision(localPlayers) {
+    if (localPlayers[0].mesh.intersectsMesh(localPlayers[1].mesh, false)) {
+        console.log("collision")
+    } else {
+        console.log("no collision")
+    }
+}

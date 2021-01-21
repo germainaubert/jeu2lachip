@@ -14,10 +14,7 @@ export default {
   },
 
   mounted: function () {
-    this.game = new Game(this.$refs.renderCanvas, this.$socket, this.playerList, this.lobbyId, this.localPlayer)
-    if (this.gameLeader) {
-      this.$socket.emit("initChasse", this.lobbyId)
-    }
+    this.game = new Game(this.$refs.renderCanvas, this.$socket, this.playerList, this.lobbyId, this.localPlayer, this.gameLeader)
   },
   computed: {
     playerList () {
@@ -54,6 +51,15 @@ export default {
       this.game.getCurrentScene().userInformations(player)
 
       console.log('joueurs du pmu: ', players)
+    },
+    update421(gameData) {
+      
+      this.game.getCurrentScene().gameData = gameData
+      this.game.getCurrentScene().players = gameData.players
+      this.game.getCurrentScene().update()
+    },
+    async throwDice(vector) {
+      await this.game.getCurrentScene().throwDices(vector)
     }
   },
   methods: {
