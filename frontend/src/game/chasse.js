@@ -3,7 +3,7 @@ import 'babylonjs-loaders';
 import { Vector3 } from "@babylonjs/core/Legacy/legacy"
 import { Player } from "../classes/Player"
 
-const interval = 15
+const interval = 30
 const timeRatio = 1000 / interval
 
 export class Chasse {
@@ -15,7 +15,6 @@ export class Chasse {
         this.gameLeader = gameLeader
         console.log("chasse.js")
         // this.initSocket(socket)
-        // this.scene = new BABYLON.Scene(engine)
         this.players = null
         this.lobbyId = lobbyId
         this.inputState = {
@@ -115,10 +114,10 @@ export class Chasse {
         })
         
         setTimeout(setInterval(() => { this.currentPlayer().mesh.position = this.currentPlayer().local.updateVelocity(timeRatio, this.inputState) }, interval), 5000)
-        setInterval(() => {
-            // console.log(JSON.stringify(this.localPlayer, null, 2))
+        setTimeout(setInterval(() => {
+            // console.log(JSON.stringify(this.localPlayer, null, 2))     
             this.socket.emit("updatePlayer", this.currentPlayer().local.export(), this.lobbyId)
-        }, 30)
+        }, 30), 5000)
         // setTimeout(() => {
         //     this.socket.emit("nextGame", this.lobbyId)
         // })
