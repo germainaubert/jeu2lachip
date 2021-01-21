@@ -21,7 +21,7 @@ export default {
       this.localPlayer
     );
     if (this.gameLeader) {
-      this.$socket.emit("pmuInit", this.lobbyId);
+     this.$socket.emit("pmuInit", this.lobbyId);
     }
   },
   computed: {
@@ -75,8 +75,6 @@ export default {
       const advancement = data.advancement; 
 
       const turns = data.turns // eslint-disable-line
-      //console.log(advancement.malusRevealed[0].card.name + "_de_" + advancement.malusRevealed[0].card.color)
-      //this.game.getCurrentScene().malusRevealed(advancement.malusRevealed[1].malusRevealed.name + "_de_" + advancement.malusRevealed[1].malusRevealed.color)
       this.game.getCurrentScene().animationManager(turns, advancement);
     },
   },

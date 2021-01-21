@@ -3,7 +3,7 @@ import 'babylonjs-loaders'
 import "@babylonjs/loaders/glTF"
 import { UserInformations } from './guiInterface'
 // import { Vector3 } from "@babylonjs/core/Legacy/legacy"
-import { Scene, FreeCamera, HemisphericLight, Vector3 } from "@babylonjs/core"
+import { Scene, Vector3 } from "@babylonjs/core"
 
 //const interval = 15
 //const timeRatio = 1000 / interval
@@ -34,7 +34,7 @@ export class Pmu {
     basicInit() {
         console.log('local player : ', this.localPlayer, "id lobby : ", this.lobbyId, "game leader : ", this.gameLeader)
         // Parameters: name, position, scene
-        this.camera = new FreeCamera("FreeCam", new Vector3(0, 5, -10), this.scene)
+        // this.camera = new FreeCamera("FreeCam", new Vector3(1, 0, 0), this.scene)
         // The goal distance of camera from target
         // this.camera.radius = 300
         // // The goal height of camera above local origin (centre) of target
@@ -46,12 +46,23 @@ export class Pmu {
         // // The speed at which acceleration is halted
         // this.camera.maxCameraSpeed = 10
         // This attaches the camera to the canvas
-        this.camera.attachControl(this.canvas, true)
+        //this.camera.attachControl(this.canvas, true)
         // NOTE:: SET CAMERA TARGET AFTER THE TARGET'S CREATION AND NOTE CHANGE FROM BABYLONJS V 2.5
         // targetMesh created here.
+        const mat = new BABYLON.StandardMaterial("");
+        mat.diffuseTexture = new BABYLON.Texture("http://localhost:3000/static/Table.jpg");
+        this.ground = BABYLON.Mesh.CreateGround("ground1", 64, 150, 2, this.scene);
+        this.ground.material = mat
+        this.ground.specularColor = new BABYLON.Color3(0, 0, 0);
 
-        new HemisphericLight("HemiLight", new Vector3(0, 1, 0), this.scene)
-        this.scene.createDefaultCameraOrLight(true, true, true)
+        // this.light = new HemisphericLight("HemiLight", new Vector3(0, 1, 0), this.scene)
+        this.scene.createDefaultCameraOrLight(true, true, true);
+        this.helperCamera = this.scene.activeCamera;
+        this.helperCamera.radius = 64;
+        this.helperCamera.alpha = Math.PI / -2;
+        this.helperCamera.beta = Math.PI / 4;
+        // this.helperLight = this.scene.lights.pop();
+        // this.scene.lights.push(this.helperLight);
         //this.scene.createDefaultEnvironment()
 
     }
@@ -61,9 +72,9 @@ export class Pmu {
     }
     displayPlayers(players) {
         console.log("display PLAYERS")
-        
+
         let x = 0
-        let y = 0
+        let y = 0.05
         let z = 0
 
         let assetsManager = new BABYLON.AssetsManager(this.scene)
@@ -77,7 +88,7 @@ export class Pmu {
                 task.loadedMeshes[0].position.x = x
                 task.loadedMeshes[0].position.y = y
                 task.loadedMeshes[0].position.z = z
-                
+                task.loadedMeshes[0].rotation = new Vector3(0,0, 0);
 
                 x += 10
             }
@@ -98,9 +109,9 @@ export class Pmu {
 
     displayMalus(malus) {
         console.log("display MALUS")
-        
+
         let x = -5
-        let y = 0
+        let y = 0.05
         let z = 5
 
         let assetsManager = new BABYLON.AssetsManager(this.scene)
@@ -138,12 +149,12 @@ export class Pmu {
         console.log("display cards")
         console.log(cards)
         let x = -10
-        let y = 2.1
+        let y = 2.15
         let z = 0
         let assetsManager = new BABYLON.AssetsManager(this.scene)
         cards.cards.forEach(card => {
             console.log(card)
-            let meshTask = assetsManager.addMeshTask(card.name + "_de_" + card.color, "", "http://localhost:3000/static/pmu/cards/", card.name + "_de_" + card.color+".gltf")
+            let meshTask = assetsManager.addMeshTask(card.name + "_de_" + card.color, "", "http://localhost:3000/static/pmu/cards/", card.name + "_de_" + card.color + ".gltf")
             //let meshTask = assetsManager.addMeshTask("card task", "", "http://localhost:3000/static/pmu/cards/", "" + card.name + "_de_" + card.color + ".gltf")
 
             meshTask.onSuccess = (task) => {
@@ -212,7 +223,7 @@ export class Pmu {
             frame: 0,
             value: player.loadedMeshes[0].position.z
         });
-        
+
         if (player.loadedMeshes[0].position.z >= 35) {
             player.loadedMeshes[0].position.z += 5
         }
@@ -234,7 +245,7 @@ export class Pmu {
     malusRevealed(malusName) {
         console.log("MAAAAALUUUUUUS")
         let player = this.tasks.malus.find(mesh => mesh.name === malusName)
-        
+
         let frameRate = 10
         const xRot = new BABYLON.Animation("xRot", "rotation.z", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
         const keyFramesRot = [];
@@ -332,7 +343,7 @@ export class Pmu {
                 setTimeout(() => {
 
                     let cardName = advancement.drawedCard[i].card.name + "_de_" + advancement.drawedCard[i].card.color
-                    console.log("nom de la carte" , cardName)
+                    console.log("nom de la carte", cardName)
                     this.drawCard(cardName, i)
                 }, 200)
             }
@@ -344,9 +355,9 @@ export class Pmu {
             }
             if (advancement.looser[j] && advancement.looser[j].turn == i) {
                 setTimeout(() => {
-                    let looserColor = advancement.looser[j-1].looser.horse.color
+                    let looserColor = advancement.looser[j - 1].looser.horse.color
                     this.playerRegress(looserColor)
-                    let malusRevealed = advancement.malusRevealed[j-1].malusRevealed.name + "_de_" + advancement.malusRevealed[j-1].malusRevealed.color
+                    let malusRevealed = advancement.malusRevealed[j - 1].malusRevealed.name + "_de_" + advancement.malusRevealed[j - 1].malusRevealed.color
                     this.malusRevealed(malusRevealed)
                 }, 1000)
                 j++
