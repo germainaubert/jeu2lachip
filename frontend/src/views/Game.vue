@@ -20,8 +20,9 @@ export default {
       this.lobbyId,
       this.localPlayer
     );
+    console.log("liste des joueurs",this.playerList)
     if (this.gameLeader) {
-     //this.$socket.emit("pmuInit", this.lobbyId);
+     this.$socket.emit("pmuInit", this.lobbyId);
     }
   },
   computed: {
@@ -59,7 +60,7 @@ export default {
         throw new Error("joueur non trouvé");
       }
       // Affichage des objets 3d 
-      this.game.getCurrentScene().displayPlayers(data.players);
+       this.game.getCurrentScene().displayPlayers(data.players);
       this.game.getCurrentScene().displayMalus(deck);
       this.game.getCurrentScene().displayCards(deck);
       this.game.getCurrentScene().userInformations(player);

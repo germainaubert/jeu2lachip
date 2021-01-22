@@ -1,5 +1,5 @@
 <template>
-  <v-card width="500" class="mx-auto mt-10">
+  <v-card dark height="210" width="500" class="mx-auto mt-10">
       <v-card-title>
         <h1 class="display-1">Créer un Lobby</h1>
       </v-card-title>

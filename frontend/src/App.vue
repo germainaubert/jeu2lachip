@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app style="background-image:url('http://localhost:3000/static/Table.jpg');">
     <template
       v-if='
         this.$router.history.current.name === "Default" ||
@@ -22,3 +22,6 @@ export default {
   components: { Navbar },
 };
 </script>
+<style scoped>
+
+</style>

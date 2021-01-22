@@ -1,6 +1,40 @@
 <template>
   <v-container>
-    <v-card width="500" class="mx-auto mt-10">
+    <v-row>
+      <v-col cols="3">
+        <model-gltf
+          :rotation="this.rotation1"
+          @on-load="onLoad"
+          backgroundAlpha="0"
+          width="150"
+          height="150"
+          src="http://localhost:3000/static/421/dice.gltf"
+        ></model-gltf>
+      </v-col>
+      <v-spacer></v-spacer>
+      <v-col cols="3">
+        <model-gltf
+          :rotation="this.rotation2"
+          @on-load="onLoad"
+          backgroundAlpha="0"
+          width="150"
+          height="150"
+          src="http://localhost:3000/static/421/dice.gltf"
+        ></model-gltf>
+      </v-col>
+      <v-spacer></v-spacer>
+      <v-col cols="3">
+        <model-gltf
+         :rotation="this.rotation3"
+          @on-load="onLoad"
+          backgroundAlpha="0"
+          width="150"
+          height="150"
+          src="http://localhost:3000/static/421/dice.gltf"
+        ></model-gltf>
+      </v-col>
+     </v-row>
+    <v-card dark width="500" class="mx-auto mt-10">
       <v-card-title>
         <h1 class="display-1">Inscription</h1>
       </v-card-title>
@@ -23,13 +57,13 @@
         </v-form>
       </v-card-text>
       <v-card-actions v-if="validButton">
-        <v-btn color="success" v-on:click="checkInfo">S'inscrire</v-btn>
+        <v-btn rounded color="green" v-on:click="checkInfo">S'inscrire</v-btn>
       </v-card-actions>
       <v-card-actions v-else>
-        <v-btn color="success" disabled v-on:click="checkInfo">S'inscrire</v-btn>
+        <v-btn rounded color="green" disabled v-on:click="checkInfo">S'inscrire</v-btn>
       </v-card-actions>
     </v-card>
-    <v-card width="400" class="mx-auto mt-5">
+    <v-card dark width="400" class="mx-auto mt-5">
       Le mot de passe doit contenir au moins:
       <v-row v-for="label in validPassword" :key="label.name" class="ml-2">
         <v-icon v-if="label.state" color="green">
@@ -46,14 +80,32 @@
 </template>
 
 <script>
+import { ModelGltf } from "vue-3d-model";
 //import User from '../../../backend/models/user.model.js'
 export default {
   name: "Inscription",
   props: {
     msg: String,
   },
+  components: {
+    ModelGltf,
+  },
   data: function () {
     return {
+       rotation1: {
+        x: -Math.PI / 2,
+        y: 0,
+        z: 0,
+      },
+      rotation2: {
+        x: -Math.PI / 2,
+        y: 0,
+        z: 0,
+      },rotation3: {
+        x: -Math.PI / 2,
+        y: 0,
+        z: 0,
+      },
       pseudo: "",
       password: "",
       validityPseudo: "",
@@ -74,6 +126,15 @@ export default {
   },
 
   methods: {
+    onLoad() {
+      this.rotate();
+    },
+    rotate() {
+      this.rotation1.z += 0.01;
+      this.rotation2.x += 0.01;
+      this.rotation3.y += 0.01;
+      requestAnimationFrame(this.rotate);
+    },
     checkInfo: async function () {
       const errorPw = checkPw(this.password);
       const errorPseudo = checkPseudo(this.pseudo);

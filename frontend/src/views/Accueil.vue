@@ -1,9 +1,9 @@
 <template>
     <v-layout align-center justify-center>
       <v-img
-        src="../assets/paquet-chips.png"
-        max-height="300"
-        max-width="300"
+        src="../assets/image.png"
+        max-height="800"
+        max-width="1700"
       ></v-img>
     </v-layout>
 </template>

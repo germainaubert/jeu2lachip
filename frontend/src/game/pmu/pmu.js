@@ -49,16 +49,18 @@ export class Pmu {
         //this.camera.attachControl(this.canvas, true)
         // NOTE:: SET CAMERA TARGET AFTER THE TARGET'S CREATION AND NOTE CHANGE FROM BABYLONJS V 2.5
         // targetMesh created here.
+
+        
+        let layer = new BABYLON.Layer('','http://localhost:3000/static/background.jpg', this.scene, true); //eslint-disable-line
         const mat = new BABYLON.StandardMaterial("");
-        mat.diffuseTexture = new BABYLON.Texture("http://localhost:3000/static/Table.jpg");
+        mat.diffuseTexture = new BABYLON.Texture("http://localhost:3000/static/layer.jpg");
         this.ground = BABYLON.Mesh.CreateGround("ground1", 64, 150, 2, this.scene);
-        this.ground.material = mat
-        this.ground.specularColor = new BABYLON.Color3(0, 0, 0);
+        this.ground.isVisible = false
 
         // this.light = new HemisphericLight("HemiLight", new Vector3(0, 1, 0), this.scene)
         this.scene.createDefaultCameraOrLight(true, true, true);
         this.helperCamera = this.scene.activeCamera;
-        this.helperCamera.radius = 64;
+        this.helperCamera.radius = 32;
         this.helperCamera.alpha = Math.PI / -2;
         this.helperCamera.beta = Math.PI / 4;
         // this.helperLight = this.scene.lights.pop();
@@ -75,7 +77,7 @@ export class Pmu {
 
         let x = 0
         let y = 0.05
-        let z = 0
+        let z = -10
 
         let assetsManager = new BABYLON.AssetsManager(this.scene)
         players.forEach(player => {
@@ -112,7 +114,7 @@ export class Pmu {
 
         let x = -5
         let y = 0.05
-        let z = 5
+        let z = -5
 
         let assetsManager = new BABYLON.AssetsManager(this.scene)
         malus.malus.forEach(malus => {
@@ -150,7 +152,7 @@ export class Pmu {
         console.log(cards)
         let x = -10
         let y = 2.15
-        let z = 0
+        let z = -10
         let assetsManager = new BABYLON.AssetsManager(this.scene)
         cards.cards.forEach(card => {
             console.log(card)
