@@ -19,10 +19,25 @@
             v-model="newpassword2"
           />
         </v-form>
-        <v-card-actions>
-          <v-btn v-on:click="modifPassword">valider</v-btn>
+        <v-card-actions v-if="validButton">
+          <v-btn color="success" v-on:click="modifPassword">valider</v-btn>
         </v-card-actions>
+        <v-card-actions v-else>
+        <v-btn color="success" disabled v-on:click="modifPassword">valider</v-btn>
+      </v-card-actions>
       </div>
+    </v-card>
+    <v-card width="400" class="mx-auto mt-5">
+      Le mot de passe doit contenir au moins:
+      <v-row v-for="label in validPassword" :key="label.name" class="ml-2">
+        <v-icon v-if="label.state" color="green">
+          {{label.icon}}
+        </v-icon>
+        <v-icon v-else color="red">
+          {{label.icon}}
+        </v-icon>
+        {{ label.name }}
+      </v-row>
     </v-card>
   </v-container>
 </template> 
@@ -42,6 +57,13 @@ export default {
       newpassword2: null,
       currentUserId: " ",
       currentUserPseudo: " ",
+      validPassword: [
+        { name: "6 caractères minimum", icon:"clear", state: false },
+        { name: "Une majuscule", icon:"clear", state: false },
+        { name: "Un caractère spécial: ! @ # $ % ^ & * ?", icon:"clear", state: false },
+        { name: "Un chiffre", icon:"clear", state: false },
+      ],
+      validButton: false
     };
   },
 
@@ -55,6 +77,11 @@ export default {
     this.currentUserId = user.id;
     this.currentUserPseudo = user.pseudo;
     console.log(user.pseudo)
+  },
+
+  watch:{
+    newpassword1: "passwordValidation",
+    newpassword2: "passwordValidation"
   },
 
   methods: {
@@ -90,6 +117,60 @@ export default {
       console.log(res);
       this.$router.push("/Connexion");
     },
+    passwordValidation: function () {
+      let flag = true
+      // 6 caracatères min
+      if (this.newpassword1.length > 5) {
+        this.validPassword[0].state = true
+        this.validPassword[0].icon = "done"
+      } else {
+        this.validPassword[0].state = false
+        this.validPassword[0].icon = "clear"
+        flag = false
+      }
+      
+      // Majuscule
+      const majRegex = new RegExp('(?=.*[A-Z])')
+
+      if (majRegex.test(this.newpassword1)) {
+        this.validPassword[1].state = true
+        this.validPassword[1].icon = "done"
+      } else {
+        this.validPassword[1].state = false
+        this.validPassword[1].icon = "clear"
+        flag = false
+      }
+
+      // Caractère spécial
+      const specialRegex = new RegExp('(?=.*[!@#$%^&*?])')
+      
+      if (specialRegex.test(this.newpassword1)) {
+        this.validPassword[2].state = true
+        this.validPassword[2].icon = "done"
+      } else {
+        this.validPassword[2].state = false
+        this.validPassword[2].icon = "clear"
+        flag = false
+      }
+
+      // Chiffre
+      const digitRegex = new RegExp('(?=.*[0-9])')
+      
+      if (digitRegex.test(this.newpassword1)) {
+        this.validPassword[3].state = true
+        this.validPassword[3].icon = "done"
+      } else {
+        this.validPassword[3].state = false
+        this.validPassword[3].icon = "clear"
+        flag = false
+      }
+
+      console.log(this.newpassword1)
+      console.log(this.newpassword2)
+      if(this.newpassword1 === this.newpassword2){
+        this.validButton = flag
+      }
+    }
   },
 };
 </script>
