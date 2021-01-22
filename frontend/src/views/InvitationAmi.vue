@@ -21,7 +21,7 @@
           </template>
 
           <template v-slot:item.is_admin="props">
-            <v-btn v-on:click="invite(props.item.pseudo)">inviter {{props.item.pseudo}}</v-btn>
+            <v-btn v-on:click="invite(props.item.pseudo)">inviter</v-btn>
           </template>
           
         </v-data-table>

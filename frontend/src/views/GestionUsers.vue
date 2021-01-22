@@ -21,11 +21,11 @@
           </template>
 
           <template v-slot:item.supp="props">
-            <v-btn v-on:click="deleteUser(props.item.pseudo)">supprimer {{props.item.pseudo}}</v-btn>
+            <v-btn v-on:click="deleteUser(props.item.pseudo)">supprimer </v-btn>
           </template>
 
           <template v-slot:item.is_admin="props">
-            <v-btn v-on:click="becomeAdmin(props.item.pseudo)">nommer {{props.item.pseudo}} admin</v-btn>
+            <v-btn v-on:click="becomeAdmin(props.item.pseudo)">nommer admin</v-btn>
           </template>
 
         </v-data-table>
@@ -95,7 +95,9 @@ export default {
         "http://localhost:3000/api/users/suppression/" + deleteUserId
       );
       if (res.data.delete === true) {
-        this.$router.push("/GestionUsers");
+        
+        this.users = this.users.filter(user => user.pseudo != pseudo);
+        //this.$router.push("/GestionUsers");
       }
     },
 

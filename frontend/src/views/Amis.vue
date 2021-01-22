@@ -12,7 +12,7 @@
           class="elevation-1"
         >
           <template v-slot:item.is_admin="props">
-            <v-btn v-on:click="deletefriend(props.item.pseudo)">Supprimer {{props.item.pseudo}}</v-btn>
+            <v-btn v-on:click="deletefriend(props.item.pseudo)">Supprimer</v-btn>
           </template>
       </v-data-table>
       </div>
@@ -102,8 +102,9 @@ export default {
       const ami2Id = amiId.id
       const res = await this.$axios.delete('http://localhost:3000/api/amis/' + ami2Id)
       //console.log(res)
-      if (res.delete === true) {
-          this.$router.push('/Amis');
+      if (res.data.delete === true) {
+          this.persons = this.persons.filter(person => person.pseudo != pseudo);
+          //this.$router.push('/Amis');
       }
     },
 

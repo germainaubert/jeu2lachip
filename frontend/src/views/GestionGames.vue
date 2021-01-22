@@ -15,7 +15,7 @@
           class="elevation-1"
         >
           <template v-slot:item.is_admin="props">
-            <v-btn v-on:click="deleteGame(props.item.name)">supprimer {{props.item.name}}</v-btn>
+            <v-btn v-on:click="deleteGame(props.item.name)">supprimer </v-btn>
           </template>
 
         </v-data-table>
@@ -73,7 +73,8 @@ export default {
         "http://localhost:3000/api/games/" + gameName 
       );
       if (res.data.supprimer === true) {
-        this.$router.push("/GestionGames");
+        this.games = this.games.filter(game => game.name != gameName);
+        //this.$router.push("/GestionGames");
       }
     },
 
