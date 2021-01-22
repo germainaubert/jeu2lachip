@@ -104,6 +104,30 @@ class User {
         return result.rows[0]
     }
 
+    static async changePseudo(currentUserId, newPseudo){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${User.tableName}
+            SET pseudo = $2
+            WHERE id =$1
+            RETURNING *
+            `,
+            values:[currentUserId, newPseudo]
+        })
+        return result.rows[0]
+    }
+
+    static async changePassword(currentUserPseudo, newpassword1){
+        const hashedPw = await bcrypt.hash(newpassword1, 10)
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${User.tableName}
+            SET password = $2
+            WHERE pseudo = $1
+            `,
+            values:[currentUserPseudo, hashedPw]
+        })
+        return result.rows[0]
+    }
+
     static toSQLTable() {
         return `
             CREATE TABLE ${User.tableName} (

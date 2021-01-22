@@ -54,6 +54,21 @@ const routes = [
     name: 'AdministrationAccueil',
     component: () => import('../views//AdministrationAccueil.vue')
   },
+  {
+    path: '/VotreCompte',
+    name: 'VotreCompte',
+    component: () => import('../views//VotreCompte.vue')
+  },
+  {
+    path: '/ChangePseudo',
+    name: 'ChangePseudo',
+    component: () => import('../views//ChangePseudo.vue')
+  },
+  {
+    path: '/ChangePassword',
+    name: 'ChangePassword',
+    component: () => import('../views//ChangePassword.vue')
+  },
 ]
 
 const router = new VueRouter({
