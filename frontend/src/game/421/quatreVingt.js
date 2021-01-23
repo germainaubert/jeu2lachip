@@ -106,7 +106,6 @@ export class QuatreVingt {
                 console.log("c'est moi !")
                 this.currentPlayer().playPhase = "throw"
             }
-            
         } else if (this.gameData.throwNotif) {
             console.log("condition ?")
             this.impulse(this.gameData.vectors)

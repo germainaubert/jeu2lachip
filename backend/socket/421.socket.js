@@ -26,6 +26,7 @@ class QuatreVingtSocket {
                 if (player.name === localPlayer) {
                     player.roll++
                     if(player.roll === 3) {
+                        console.log("yo bro")
                         targetLobby.quatreVingt.throwNotif = true
                         player.playPhase = false
                         player.roll = 0
