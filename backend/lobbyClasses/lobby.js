@@ -10,12 +10,18 @@ class Lobby {
         this.users = []
         this.chat = []
         this.is_full = false
+        this.skins = ["http://localhost:3000/static/chipgltf/chip_textured.gltf",
+        "http://localhost:3000/static/decorations/chip_textured2.gltf",
+        "http://localhost:3000/static/chipgltf/chip_textured_moonskin.gltf",
+        "http://localhost:3000/static/chipgltf/nacho_textured.gltf"
+    ]
     }
 
     addUser(user) {
-
+        
         if (user) {
             this.users.push(user)
+            this.giveSkin(user)
         }
     }
 
@@ -31,7 +37,10 @@ class Lobby {
             this.chat.push(message)
         }
     }
-
+    giveSkin(user){
+        user.skin = this.skins[this.users.length-1]
+    }
+    
 }
 
 module.exports = Lobby

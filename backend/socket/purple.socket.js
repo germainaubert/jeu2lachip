@@ -1,29 +1,29 @@
 const shareEvent = require('../middlewares/shareEvent')
-const Pmu = require('../gameClasses/pmu/game.js')
-const Player = require('../gameClasses/pmu/player')
-class PmuSocket {
+const Purple = require('../gameClasses/purple/game.js')
+const Player = require('../gameClasses/purple/player')
+class PurpleSocket {
     constructor() {
 
     }
 
     socketOn(socket, lobbyContainer) {
-        socket.on("pmuInit", (idLobby) => {
-            
+        socket.on("purpleInit", (idLobby) => {
+            console.log("truc")
             let targetLobby = lobbyContainer.lobbies.find(lobby => lobby.id == idLobby)
             
-            targetLobby.pmu = new Pmu(createPlayers(targetLobby.users))
+            targetLobby.purple = new Purple(createPlayers(targetLobby.users))
             console.log('game play')
             
-            shareEvent(socketList(targetLobby.users), 'pmuInitiated', targetLobby.pmu)
+            shareEvent(socketList(targetLobby.users), 'purpleInitiated', targetLobby.purple)
         })
-        socket.on("pmuPlay", (idLobby) => {
+        socket.on("purplePlay", (idLobby) => {
             
             let targetLobby = lobbyContainer.lobbies.find(lobby => lobby.id == idLobby)
             
-            targetLobby.pmu.play()
+            targetLobby.purple.play()
             console.log('game play')
             
-            shareEvent(socketList(targetLobby.users), 'pmuPlayed', targetLobby.pmu)
+            shareEvent(socketList(targetLobby.users), 'purplePlayed', targetLobby.purple)
         })
     }
 
@@ -45,4 +45,4 @@ function createPlayers(users) {
     return players
 }
 
-module.exports = PmuSocket
+module.exports = PurpleSocket
