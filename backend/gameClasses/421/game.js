@@ -19,6 +19,8 @@ class Game {
         this.vectors = null
         this.shufflePlayers()
         this.chosen = null
+        this.results = null
+        this.quickReset = null
     }
     // play() {
     //     while(this.gameIsOn) {
@@ -33,7 +35,6 @@ class Game {
         }
         for (let player of this.players) {
             if (player.name === localPlayer) {
-                player.roll++
                 console.log("++ sur le lancer", player)
             }
         }
@@ -72,9 +73,9 @@ class Game {
         let results = []
         for (let i = 0; i < 3; i++) {
             results[i] = {
-                x: Math.random() * 2,
-                y: Math.random() * 6,
-                z: Math.random() * 2,
+                x: Math.random() * 3,
+                y: Math.random(),
+                z: Math.random() * 3,
             }
             if (Math.random() < 0.5) {
                 results[i].x = -results[i].x
@@ -86,13 +87,29 @@ class Game {
         this.vectors = results
     }
 
+    chosenValidity(chosen) {
+        let cpt = 0
+        for (let i = 0; i < chosen.length; i++) {
+            if (chosen[i]) {
+                cpt++
+            }
+        }
+        if (cpt > 2) {
+            return false
+        } else {
+            return true
+        }
+    }
+
     export () {
         return {
             dices: this.dices,
             players: this.players,
             throwNotif: this.throwNotif,
             vectors: this.vectors,
-            chosen: this.chosen
+            chosen: this.chosen,
+            results: this.results,
+            quickReset: this.quickReset
         }
     }
 

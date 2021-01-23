@@ -22,7 +22,7 @@ export class QuatreVingt {
         this.contactLocalRefPoint = BABYLON.Vector3.Zero();
         this.refreshIntervalId = null
         this.ground = null
-        this.highlight = null
+        this.highlight = new BABYLON.HighlightLayer("hl1", this.scene)
         if (this.gameLeader) {
             console.log("envoi du init421")
             this.socket.emit("init421", this.lobbyId)
@@ -44,7 +44,7 @@ export class QuatreVingt {
         this.ground = BABYLON.Mesh.CreateGround("ground1", 64, 64, 2, this.scene);
         this.ground.physicsImpostor = new BABYLON.PhysicsImpostor(this.ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, this.scene)
         // mesh options
-        
+
         // let physicsViewer = new BABYLON.Debug.PhysicsViewer();
         for (let i = 0; i < 3; i++) {
             this.newDice(i)
@@ -52,8 +52,7 @@ export class QuatreVingt {
 
     }
 
-    newDice (index) {
-        
+    newDice(index) {
         let diceMass = 8
         let diceImpostorParams = { mass: diceMass, restitution: 0, friction: 1.0 };
         const boxMat = new BABYLON.StandardMaterial("boxMat");
@@ -77,51 +76,84 @@ export class QuatreVingt {
         this.diceMeshes[index].position = new BABYLON.Vector3(10 * index, 1, 0);
         this.diceMeshes[index].material = boxMat
         this.diceMeshes[index].physicsImpostor = new BABYLON.PhysicsImpostor(this.diceMeshes[index], BABYLON.PhysicsImpostor.BoxImpostor, diceImpostorParams);
+        this.chosen = [
+            false,
+            false,
+            false
+        ]
         this.scene.onPointerDown = (evt, pickResult) => {
             // We try to pick an object
             if (pickResult.hit && this.currentPlayer().playPhase === "pick") {
                 let diceIndex = 0
                 for (let i = 0; i < this.diceMeshes.length; i++) {
                     if (this.diceMeshes[i].name === pickResult.pickedMesh.name) {
-                        let chosen = [
-                            false,
-                            false,
-                            false
-                        ]
                         diceIndex = i
-                        chosen[diceIndex] = true
-                        this.highlight = new BABYLON.HighlightLayer("hl1", this.scene)
-                        this.highlight.addMesh(this.diceMeshes[diceIndex], BABYLON.Color3.Green())
-                        this.socket.emit("glowingMesh", this.lobbyId, chosen)
+                        this.chosen[diceIndex] = true
+                        this.socket.emit("glowingMesh", this.lobbyId, this.chosen)
                         break
                     }
                 }
-                
+
                 // console.log(pickResult.pickedMesh.name);
             }
         };
     }
 
     async update() {
-        if (this.gameData.throwNotif && this.gameData.chosen === null) {
+        if (this.gameData.quickReset) {
+            this.reposition()
+            if (this.currentPlayer().playPhase === "pick") {
+                console.log("c'est moi !")
+                this.currentPlayer().playPhase = "throw"
+            }
+            
+        } else if (this.gameData.throwNotif) {
+            console.log("condition ?")
             this.impulse(this.gameData.vectors)
             if (this.currentPlayer().playPhase === "throw") {
-                console.log(await this.sleepcheck())
+                this.socket.emit("diceResult", this.lobbyId, await this.sleepcheck(), this.currentPlayer().name)
             }
-        } else if (this.gameData.chosen && this.currentPlayer().playPhase === false) {
-            this.glowingDice(this.gameData.chosen)
+        } else if (this.gameData.chosen && this.currentPlayer().playPhase !== "throw ") {
+            let allPicked = this.glowingDice(this.gameData.chosen)
+            if (allPicked === 2 && this.currentPlayer().playPhase === "pick") {
+                setTimeout(() => {
+                    this.socket.emit("pickedDice", this.lobbyId, this.currentPlayer())
+                }, 2000)
+            }
         }
         this.routerHUD()
     }
 
+    reposition() {
+        let decal = 0
+        for (let i = 0; i < this.gameData.chosen.length; i++) {
+            if (!this.gameData.chosen[i]) {
+                this.diceMeshes[i].dispose()
+                this.newDice(i)
+            } else {
+                decal += 4
+                this.diceMeshes[i].position = new Vector3(10 + decal, 1, 0)
+                this.highlight.removeMesh(this.diceMeshes[i])
+            }
+        }
+    }
+
     glowingDice(chosen) {
-        for 
+        let cpt = 0
+        for (let i = 0; i < chosen.length; i++) {
+            if (chosen[i]) {
+                cpt++
+                this.highlight.addMesh(this.diceMeshes[i], BABYLON.Color3.Green())
+            }
+
+        }
+        return cpt
     }
 
     impulse(vector) {
         let i = 0
         for (let dice of this.diceMeshes) {
-            dice.physicsImpostor.applyImpulse((new Vector3(vector[i].x, vector[i].y, vector[i].z)).scale(23), dice.getAbsolutePosition().add(this.contactLocalRefPoint))
+            dice.physicsImpostor.applyImpulse((new Vector3(vector[i].x, 5, vector[i].z)).scale(10), dice.getAbsolutePosition().add(this.contactLocalRefPoint))
             i++
         }
     }
@@ -129,11 +161,17 @@ export class QuatreVingt {
     routerHUD() {
         let currentPlayer = this.currentPlayer()
         if (currentPlayer.playPhase === "throw" && currentPlayer.roll < 3) { // Quand le joueur n'a pas encore tout tiré
-            this.HUD.playPhaseHUD()
+            this.HUD.throwPhaseHUD()
+        } else if (currentPlayer.playPhase === "pick") {
+            this.HUD.pickPhaseHUD()
         } else if (currentPlayer.roll >= 3 || currentPlayer.endTurn) {
             this.socket.emit('passTurn', this.lobbyId, currentPlayer)
-        } else {
+        } else if (currentPlayer.playPhase === false) {
             this.HUD.waitingHUD(this.playingPlayer().name)
+        } else if (currentPlayer.playPhase === "quickReset") {
+            this.HUD = new HUD(this.localPlayer, this.scene, this.socket, this.lobbyId)
+
+            this.HUD.throwPhaseHUD()
         }
     }
 
@@ -143,6 +181,8 @@ export class QuatreVingt {
     playingPlayer() {
         return this.players.find(player => player.playPhase)
     }
+    // this.diceMeshes[0].dispose()
+    // this.newDice(0)
     async sleepcheck() {
         let flag = true
         let results = []
@@ -165,8 +205,6 @@ export class QuatreVingt {
                         console.log(results)
                         flag = false
                         clearInterval(this.refreshIntervalId)
-                        this.diceMeshes[0].dispose()
-                        this.newDice(0)
                     }
 
                 }
