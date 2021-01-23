@@ -314,7 +314,7 @@ export class Pmu {
                 frame: 0,
                 value: card.loadedMeshes[0].position.y
             });
-            card.loadedMeshes[0].position.y += -2.1 + 0.05 * modifier
+            card.loadedMeshes[0].position.y += -2.1 + 0.05 * modifier *2
             keyFramesTransY.push({
                 frame: frameRate,
                 value: card.loadedMeshes[0].position.y

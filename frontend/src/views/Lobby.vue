@@ -5,7 +5,7 @@
         <v-img
           max-height="110"
           max-width="250"
-          src="../assets/chip_textured.png"
+          src="http://localhost:3000/static/decorations/chip.png"
         >
         </v-img>
         <v-spacer></v-spacer>
@@ -16,7 +16,7 @@
         <v-img
           max-height="110"
           max-width="250"
-          src="../assets/chip_textured.png"
+          src="http://localhost:3000/static/decorations/chip.png"
         >
         </v-img>
       </v-toolbar>
@@ -134,10 +134,10 @@ export default {
       this.rotate();
     },
     rotate() {
-      this.rotation1.z += 0.005;
-      this.rotation2.x += 0.005;
-      this.rotation3.x += 0.005;
-      this.rotation3.y += 0.005;
+      this.rotation1.z += 0.001;
+      this.rotation2.x += 0.001;
+      this.rotation3.x += 0.001;
+      this.rotation3.y += 0.001;
       requestAnimationFrame(this.rotate);
     },
   },

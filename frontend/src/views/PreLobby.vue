@@ -5,7 +5,7 @@
         <v-img
           max-height="110"
           max-width="250"
-          src="../assets/chip_textured.png"
+          src="http://localhost:3000/static/decorations/chip.png"
         >
         </v-img>
         <v-spacer></v-spacer>
@@ -16,7 +16,7 @@
         <v-img
           max-height="110"
           max-width="250"
-          src="../assets/chip_textured.png"
+          src="http://localhost:3000/static/decorations/chip.png"
         >
         </v-img>
       </v-toolbar>
@@ -92,4 +92,8 @@ export default {
 </script>
 
 <style>
+.v-toolbar {
+  font-family: "Deluce Free";
+  font-size: 1.5em;
+}
 </style>

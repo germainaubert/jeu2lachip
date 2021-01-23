@@ -8,7 +8,7 @@
      <v-img
         max-height="110"
         max-width="250"
-          src="../assets/chip_textured.png">
+          src="http://localhost:3000/static/decorations/chip.png">
         </v-img>
     <v-spacer></v-spacer>
       <v-toolbar-title>
@@ -21,7 +21,7 @@
        <v-img
         max-height="110"
         max-width="250"
-          src="../assets/chip_textured.png">
+          src="http://localhost:3000/static/decorations/chip.png">
         </v-img>
       <v-toolbar-items>
         <v-btn v-for="item in menuItems" :key="item.title" :to="item.link">
