@@ -3,6 +3,7 @@ const Players = require('./player.js')
 
 class Game {
     constructor(users) {
+        this.indexPlaying = 0
         this.players = new Array()
         for (let i = 0; i < users.length; i++) {
             console.log(users[i].pseudo)
@@ -17,6 +18,7 @@ class Game {
         this.throwNotif = false
         this.vectors = null
         this.shufflePlayers()
+        this.chosen = null
     }
     // play() {
     //     while(this.gameIsOn) {
@@ -38,6 +40,15 @@ class Game {
         
     }
 
+    nextTurn() {
+        this.indexPlaying++
+        if (this.indexPlaying === this.players.length) {
+            this.indexPlaying = 0
+        }
+        
+        this.players[this.indexPlaying].playPhase = "throw"
+    }
+
     winCondition () {
         for (let player of this.players) {
             if (player.token === 0) {
@@ -54,7 +65,25 @@ class Game {
             this.players[i] = this.players[j];
             this.players[j] = temp;
         }
-        this.players[0].thrower = true
+        this.players[0].playPhase = "throw"
+    }
+
+    randomVector() {
+        let results = []
+        for (let i = 0; i < 3; i++) {
+            results[i] = {
+                x: Math.random() * 2,
+                y: Math.random() * 6,
+                z: Math.random() * 2,
+            }
+            if (Math.random() < 0.5) {
+                results[i].x = -results[i].x
+            }
+            if (Math.random() < 0.5) {
+                results[i].z = -results[i].z
+            }
+        }
+        this.vectors = results
     }
 
     export () {
@@ -63,6 +92,7 @@ class Game {
             players: this.players,
             throwNotif: this.throwNotif,
             vectors: this.vectors,
+            chosen: this.chosen
         }
     }
 
