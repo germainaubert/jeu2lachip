@@ -4,6 +4,7 @@ const LobbySocket = require('./lobby.socket')
 const ChasseSocket = require('./chasse.socket')
 const PmuSocket = require('./pmu.socket')
 const PurpleSocket = require('./purple.socket')
+const QuatreVingt = require('./421.socket')
 
 clients = []
 
@@ -15,6 +16,7 @@ module.exports = function (server, mySession) {
     let chasse = new ChasseSocket()
     let purple = new PurpleSocket()
     let pmu = new PmuSocket()
+    let quatreVingt = new QuatreVingt()
     io.on('connection', function (socket) {
         socket.use((packet, next) => {
             mySession(socket.request, {}, next)
@@ -25,6 +27,6 @@ module.exports = function (server, mySession) {
         pmu.socketOn(socket, lobby.lobbyContainer)
         purple.socketOn(socket, lobby.lobbyContainer)
 
+        quatreVingt.socketOn(socket, lobby.lobbyContainer)
     })
-
 }

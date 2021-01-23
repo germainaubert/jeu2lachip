@@ -7,7 +7,7 @@ import { Scene, Vector3 } from "@babylonjs/core"
 
 export class Pmu {
     camera
-    constructor(canvas, engine, socket, localPlayer, lobbyId, gameLeader) {
+    constructor(canvas, socket, engine, localPlayer, lobbyId, gameLeader) {
         this.canvas = canvas
         this.engine = engine
         this.socket = socket

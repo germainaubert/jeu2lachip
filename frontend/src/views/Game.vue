@@ -84,6 +84,11 @@ export default {
       //const player = data.players.find((p) => p.name === pseudo);
       this.game.getCurrentScene().displayCards(deck);
     },
+    async update421(gameData) {
+      this.game.getCurrentScene().gameData = gameData;
+      this.game.getCurrentScene().players = gameData.players;
+      await this.game.getCurrentScene().update();
+    },
   },
   methods: {},
 };
