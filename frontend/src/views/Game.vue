@@ -18,12 +18,12 @@ export default {
       this.$socket,
       this.playerList,
       this.lobbyId,
-      this.localPlayer
+      this.localPlayer,
+      this.gameLeader
     );
-    console.log("liste des joueurs",this.playerList)
-    if (this.gameLeader) {
-     this.$socket.emit("pmuInit", this.lobbyId);
-    }
+    // if (this.gameLeader) {
+    // //  this.$socket.emit("pmuInit", this.lobbyId);
+    // }
   },
   computed: {
     playerList() {
@@ -79,6 +79,11 @@ export default {
       const turns = data.turns 
       // Lancement des animations a partir des résultats récupérés
       this.game.getCurrentScene().animationManager(turns, advancement);
+    },
+    async update421(gameData) {
+      this.game.getCurrentScene().gameData = gameData;
+      this.game.getCurrentScene().players = gameData.players;
+      await this.game.getCurrentScene().update();
     },
   },
   methods: {},
