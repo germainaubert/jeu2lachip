@@ -5,7 +5,7 @@ class Player {
         this.name = name
         this.token = 0
         this.roll = 0
-        this.thrower = false
+        this.playPhase = false
         this.endTurn = false
     }
 }

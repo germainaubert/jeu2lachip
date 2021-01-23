@@ -14,19 +14,35 @@ class QuatreVingtSocket {
             setTimeout(() => {
                     shareEvent(socketList(targetLobby.users), 'update421', targetLobby.quatreVingt.export())
                 },
-                2000
+                500
             )
             
         })
-        socket.on("throwDices", (idLobby, player) => {
+        socket.on("throwDices", (idLobby, localPlayer) => {
             let targetLobby = lobbyContainer.lobbies.find(lobby => lobby.id == idLobby)
-            targetLobby.quatreVingt.throwNotif = true
+            for (let player of targetLobby.quatreVingt.players) {
+                if (player.name === localPlayer) {
+                    player.roll++
+                    if(player.roll === 3) {
+                        targetLobby.quatreVingt.throwNotif = false
+                        console.log("trop de lancer ahah")
+                        player.playPhase = false
+                        player.roll = 0
+                        targetLobby.quatreVingt.nextTurn()
+                    } else {
+                        console.log("cool rahoul je shoot")
+                        targetLobby.quatreVingt.randomVector()
+                        targetLobby.quatreVingt.throwNotif = true
+                    }
+                }
+            }
+            
             shareEvent(socketList(targetLobby.users), 'update421', targetLobby.quatreVingt.export())
         })
-        socket.on('diceVector', (idLobby, vectors) => {
+        socket.on("glowingMesh", (idLobby, chosen) => {
             let targetLobby = lobbyContainer.lobbies.find(lobby => lobby.id == idLobby)
-            targetLobby.quatreVingt.vectors = vectors
-            shareEvent(socketList(targetLobby.users), 'throwDice', targetLobby.quatreVingt.vectors)
+            targetLobby.quatreVingt.chosen = chosen
+            shareEvent(socketList(targetLobby.users), 'update421', targetLobby.quatreVingt.export())
         })
     }
 

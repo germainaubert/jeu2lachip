@@ -1,13 +1,13 @@
 import * as BABYLON from "@babylonjs/core/Legacy/legacy"
 // import { Chasse } from "./chasse"
 // import { Purple } from "./purple.js"
-import { Pmu } from "./pmu/pmu.js"
+// import { Pmu } from "./pmu/pmu.js"
 import { QuatreVingt } from "./421/quatreVingt"
 
 export class Game {
     constructor(canvas, socket, playerList, lobbyId, localPlayer, gameLeader) {
         this.canvas = canvas
-        this.engine = new BABYLON.Engine(this.canvas, true)
+        this.engine = new BABYLON.Engine(this.canvas, true, {stencil: true})
         this.socket = socket
         this.gameLeader = gameLeader
         // this.chasse = new Chasse(this.canvas, this.engine)

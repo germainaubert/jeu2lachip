@@ -9,7 +9,7 @@ export class HUD {
         this.lobbyId = lobbyId
     } 
 
-    throwerHUD () {
+    playPhaseHUD () {
         let advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, this.scene);
         
         var button = Button.CreateSimpleButton("button", this.localPlayer);
@@ -28,6 +28,24 @@ export class HUD {
             button.isEnabled = false
             button.isVisible = false
         })
+        advancedTexture.addControl(button)
+    }
+
+    waitingHUD(playingPlayer) {
+        let advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, this.scene);
+        
+        var button = Button.CreateSimpleButton("button", "En attente de " + playingPlayer);
+        button.top = "0px";
+        button.left = "0px";
+        button.width = "150px";
+        button.height = "50px";
+        button.cornerRadius = 20;
+        button.thickness = 4;
+        button.children[0].color = "#DFF9FB";
+        button.children[0].fontSize = 24;
+        button.color = "#FF7979";
+        button.background = "#EB4D4B";
+
         advancedTexture.addControl(button)
     }
     
