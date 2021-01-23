@@ -60,7 +60,7 @@ export default {
         throw new Error("joueur non trouvé");
       }
       // Affichage des objets 3d 
-      this.game.getCurrentScene().displayPlayers(data.players);
+       this.game.getCurrentScene().displayPlayers(data.players);
       this.game.getCurrentScene().displayMalus(deck);
       this.game.getCurrentScene().displayCards(deck);
       this.game.getCurrentScene().userInformations(player);
