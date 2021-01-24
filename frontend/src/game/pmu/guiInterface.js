@@ -37,17 +37,8 @@ function displayInfos(advancedTexture, infos) {
             case('name'):
             message.text = `Nom: ${infos[info]}`
             break
-            case('bet'):
-            message.text = `Mise: ${infos[info]}`
-            break
-            case('hp'):
-            message.text = `Points de vies: ${infos[info]}`
-            break
             case('horse'):
             message.text = `Cheval: as de ${infos[info].color}`; 
-            break
-            case('bullets'):
-            message.text = `Balles: ${infos[info]}`
             break
         }
           

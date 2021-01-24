@@ -43,7 +43,13 @@ class Deck {
         //console.log('la carte piochée est : ', draw)
         return draw
     }
-    
+    shuffleDiscardsInCards() {
+        this.discards.forEach(card => {
+            this.cards.push(card)
+        });
+        this.discards = []
+        this.shuffle()
+    }
 }
 
 module.exports = Deck

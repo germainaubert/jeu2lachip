@@ -24,19 +24,6 @@ class Game {
         this.deck = new Deck()
         this.playerAlive = true
     }
-    play() {
-
-        while (this.gameIsOn) {
-
-            this.drawPhase()
-            this.checkEndGame()
-            this.turns += 1
-        }
-    }
-    drawPhase() {
-        const card = this.deck.drawCard()
-        console.log(card)
-    }
     checkStateOfQuestions() {
         if (this.deck.bomb.length == 0) {
             this.questions[3].active = false
@@ -76,6 +63,7 @@ class Game {
         console.log("nouveau joueur actuel : ", this.currentPlayer)
     }
     checkAnswer(answer) {
+        
         if(answer == 'Passer') {
             this.nextPlayer()
             return

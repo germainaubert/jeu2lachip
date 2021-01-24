@@ -1,7 +1,7 @@
 import * as BABYLON from "@babylonjs/core/Legacy/legacy"
 import 'babylonjs-loaders'
 import "@babylonjs/loaders/glTF"
-//import { UserInformations } from './guiInterface'
+import { HUDPurple } from './HUD'
 import { Scene, Vector3 } from "@babylonjs/core"
 
 
@@ -18,7 +18,7 @@ export class Purple {
         this.lobbyId = lobbyId
         this.localPlayer = localPlayer
         this.tasks = {}
-        
+        this.hud = new HUDPurple(this.localPlayer, this.scene,this.socket,this.lobbyId)
 
         if (this.gameLeader) {
             this.socket.emit("purpleInit", this.lobbyId)
@@ -40,6 +40,10 @@ export class Purple {
     userInformations(player) {
         console.log(player)
        // new UserInformations(player, this.scene)
+    }
+    initQuestions() {
+        console.log('init questions')
+        this.hud.initQuestions()
     }
     displayPlayers(players) {
         console.log("display PLAYERS")
@@ -85,6 +89,7 @@ export class Purple {
         }
         assetsManager.load()
     }
+    
     displayCards(cards) {
         console.log("display cards")
         console.log(cards)

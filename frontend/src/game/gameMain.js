@@ -1,6 +1,6 @@
 import * as BABYLON from "@babylonjs/core/Legacy/legacy"
 //import { Chasse } from "./chasse"
-import { Purple } from "./purple.js"
+import { Purple } from "./purple/purple.js"
 // import { Pmu } from "./pmu/pmu.js"
 import { QuatreVingt } from "./421/quatreVingt"
 

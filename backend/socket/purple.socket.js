@@ -12,18 +12,22 @@ class PurpleSocket {
             let targetLobby = lobbyContainer.lobbies.find(lobby => lobby.id == idLobby)
             
             targetLobby.purple = new Purple(createPlayers(targetLobby.users))
+            targetLobby.purple.currentPlayer = targetLobby.purple.players[0]
             console.log('game play')
             
             shareEvent(socketList(targetLobby.users), 'purpleInitiated', targetLobby.purple)
         })
-        socket.on("purplePlay", (idLobby) => {
+
+        socket.on("purplePlayTurn", (idLobby, answer) => {
             
             let targetLobby = lobbyContainer.lobbies.find(lobby => lobby.id == idLobby)
             
-            targetLobby.purple.play()
+            targetLobby.purple.checkStateOfQuestions()
+            targetLobby.purple.checkAnswer(answer)
+            targetLobby.purple.checkDeadPlayers()
             console.log('game play')
             
-            shareEvent(socketList(targetLobby.users), 'purplePlayed', targetLobby.purple)
+            shareEvent(socketList(targetLobby.users), 'purplePlayTurn', targetLobby.purple)
         })
     }
 

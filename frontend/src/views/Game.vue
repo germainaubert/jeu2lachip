@@ -78,11 +78,24 @@ export default {
     },
     purpleInitiated(data) {
       console.log(data)
+      
       this.game.getCurrentScene().displayPlayers(data.players);
-      const deck = data.deck;
-      //const pseudo = this.game.getCurrentScene().localPlayer.pseudo;
-      //const player = data.players.find((p) => p.name === pseudo);
-      this.game.getCurrentScene().displayCards(deck);
+      //const deck = data.deck;
+      const name = this.game.getCurrentScene().localPlayer.pseudo;
+      const player = data.players.find((p) => p.name === name);
+      console.log(player)
+      if(player.name === data.currentPlayer.name) {
+        this.game.getCurrentScene().initQuestions(data.questions);
+      }
+      //this.game.getCurrentScene().displayCards(deck);
+      this.game.getCurrentScene().hud.displayInfos(player);
+
+      
+
+    },
+    purplePlayTurn(data) {
+      console.log(data)
+  
     },
     async update421(gameData) {
       this.game.getCurrentScene().gameData = gameData;
