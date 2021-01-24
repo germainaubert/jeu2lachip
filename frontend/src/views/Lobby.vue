@@ -1,193 +1,161 @@
 <template>
-  <div class="lobby">
-    <h1>Lobby</h1>
-    <h3 class="connectedAs">{{ currentUser.pseudo }}</h3>
-    <canvas
-      v-on:keydown.down="moveDown()"
-      v-on:keydown.left="moveLeft()"
-      v-on:keydown.right="moveRight()"
-      v-on:keydown.up="moveUp()"
-      tabindex="0"
-      ref="canvas"
-      id="canvas"
-      class="bg"
-      width="400"
-      height="400"
-      autofocus
-    >
-    </canvas>
-    <div>
-      <div class="chat">
-        <div class="chatbox">
-          <div v-if="messages.length > 0" class="messages">
-            <div v-for="(message, index) in messages" v-bind:key="index">
-              <div id="pseudo">{{ message.pseudo }} dit:</div>
-              <div>{{ message.content }}</div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <input
-            type="text"
-            placeholder="Ecrivez un Message"
-            v-model="message"
-          />
-          <button v-on:click="sendMessage()">Envoyer</button>
-        </div>
-      </div>
-    </div>
+  <div class="lobbyIdContainer">
+    <v-card>
+      <v-toolbar class="application" dark prominent>
+        <v-img
+          max-height="110"
+          max-width="250"
+          src="http://localhost:3000/static/decorations/chip.png"
+        >
+        </v-img>
+        <v-spacer></v-spacer>
+        <v-toolbar-title>
+          <h1 style="font-size: 80px">Salle d'attente du Jeu de la Chips</h1>
+        </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-img
+          max-height="110"
+          max-width="250"
+          src="http://localhost:3000/static/decorations/chip.png"
+        >
+        </v-img>
+      </v-toolbar>
+      </v-card>
+      <v-row>
+      <v-col cols="3">
+        <model-gltf
+          :rotation="this.rotation1"
+          @on-load="onLoad"
+          backgroundAlpha="0"
+          width="250"
+          height="250"
+          src="http://localhost:3000/static/chipgltf/chip_textured.gltf"
+        ></model-gltf>
+      </v-col>
+      <v-col cols="3">
+        <model-gltf
+          :rotation="this.rotation3"
+          @on-load="onLoad"
+          backgroundAlpha="0"
+          width="250"
+          height="250"
+          src="http://localhost:3000/static/decorations/chip_textured2.gltf"
+        ></model-gltf>
+      </v-col>
+      <v-col cols="3">
+        <model-gltf
+         :rotation="this.rotation2"
+          @on-load="onLoad"
+          backgroundAlpha="0"
+          width="300"
+          height="300"
+          src="http://localhost:3000/static/chipgltf/chip_textured_moonskin.gltf"
+        ></model-gltf>
+      </v-col>
+      <v-col cols="3">
+        <model-gltf
+         :rotation="this.rotation1"
+          @on-load="onLoad"
+          backgroundAlpha="0"
+          width="300"
+          height="300"
+          src="http://localhost:3000/static/chipgltf/nacho_textured.gltf"
+        ></model-gltf>
+      </v-col>
+     </v-row>
+
+    <v-card width="800" dark class="mx-auto mt-10">
+      <v-card-title>
+        <h1 class="display-1">Id de la partie : {{ lobbyId }}</h1>
+      </v-card-title>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn rounded v-if="gameLeader" color="success" v-on:click="goToGame"
+      >Commencer</v-btn>
+      </v-card-actions>
+    </v-card>
   </div>
 </template>
 
 <script>
+
+import { ModelGltf } from "vue-3d-model";
 export default {
-  name: "Lobby",
-  props: {},
-  data: function () {
+  data() {
     return {
-      users: [],
-      messages: [],
-      message: "",
-      currentUser: {},
-      players: [],
-      player: null,
-      vueCanvas: null,
+      rotation1: {
+        x: -Math.PI / 2,
+        y: 0,
+        z: 0,
+      },
+      rotation2: {
+        x: -Math.PI / 2,
+        y: 0,
+        z: 0,
+      },
+      rotation3: {
+        x: -Math.PI / 2,
+        y: 0,
+        z: 0,
+      },
+      rotation4: {
+        x: -Math.PI / 2,
+        y: 0,
+        z: 0,
+      },
     };
   },
+  components: {
+    ModelGltf,
+  },
+  computed: {
+    lobbyId() {
+      return this.$store.state.lobbyId;
+    },
+    gameLeader() {
+      return this.$store.state.gameLeader;
+    },
+  },
 
-  mounted: async function () {
-    console.log("lobby mounted");
-    this.$socket.open();
-    this.$socket.emit("logged");
-    const res2 = (await this.$axios.get(
-          "http://localhost:3000/api/auth/getUser"
-        )).data.user
-    this.currentUser = res2
-    this.canvas = this.$refs.canvas;
-    const ctx = this.canvas.getContext("2d");
-    this.vueCanvas = ctx;
-    console.log("a");
-    this.drawPlayers();
-    this.update();
+  sockets: {
+    // playerList(users) {
+    //   this.$store.state.users = users //
+    //   console.log("list users + sockets", this.$store.state.users)
+    // },
+    startGame() {
+      this.$router.push("/Game");
+    },
   },
   methods: {
-    drawPlayers() {
-      this.players.forEach((player) => {
-        this.vueCanvas.beginPath();
-        this.vueCanvas.rect(player.x, player.y, player.size, player.size);
-        this.vueCanvas.fillStyle = player.c;
-        this.vueCanvas.fill();
-      });
+    goToGame: function () {
+      this.$socket.emit("notifyInitGame", this.lobbyId);
     },
-    update() {
-      this.vueCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.drawPlayers();
-      requestAnimationFrame(this.update);
+    onLoad() {
+      this.rotate();
     },
-    moveDown() {
-      this.$socket.emit("moveDown", {
-        currentUser: this.currentUser,
-      });
-    },
-    moveLeft() {
-      this.$socket.emit("moveLeft", {
-        currentUser: this.currentUser,
-      });
-    },
-    moveRight() {
-      this.$socket.emit("moveRight", {
-        currentUser: this.currentUser,
-      });
-    },
-    moveUp() {
-      this.$socket.emit("moveUp", {
-        currentUser: this.currentUser,
-      });
-    },
-    sendMessage() {
-      this.$socket.emit("sendMessage", this.message);
-      this.message = "";
-    },
-  },
-  sockets: {
-    loggedEvent(data) {
-      const lobby = data.lobby
-      console.log("data du log : ", data);
-      const lobbyUsers = lobby.users;
-      const chat = lobby.chat;
-      const players = data.players;
-
-      console.log(lobbyUsers);
-      this.users = lobbyUsers;
-      this.messages = chat;
-      this.players = players;
-    },
-    sendMessageEvent(data) {
-      const chat = data;
-      console.log(chat);
-      this.messages = chat;
-    },
-    moveDownEvent(data) {
-      const players = data;
-      this.players = players;
-      this.drawPlayers();
-    },
-    moveLeftEvent(data) {
-      const players = data;
-      this.players = players;
-      this.drawPlayers();
-    },
-    moveRightEvent(data) {
-      const players = data;
-      this.players = players;
-      this.drawPlayers();
-    },
-    moveUpEvent(data) {
-      const players = data;
-      this.players = players;
-      this.drawPlayers();
+    rotate() {
+      this.rotation1.z += 0.001;
+      this.rotation2.x += 0.001;
+      this.rotation3.x += 0.001;
+      this.rotation3.y += 0.001;
+      requestAnimationFrame(this.rotate);
     },
   },
 };
 </script>
 
-
+  
 <style scoped>
-ul {
-  list-style-type: none;
-  padding: 0;
+.lobbyIdContainer {
+  text-align: center;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+#canvas {
+  border: 20px solid black;
 }
-a {
-  color: #42b983;
-}
-html {
-  overflow-y: hidden;
-}
-.lobby {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-.chatbox {
-  height: 250px;
-  border: 1px solid black;
-  overflow: auto;
-}
-.connectedAs {
-  margin-left: 1500px;
-  color: red;
-}
-.chat {
-  margin-left: 1500px;
-}
-#pseudo {
-  font: bold;
-  color: red;
+@import url("https://fonts.googleapis.com/css?family=Questrial");
+
+.v-toolbar {
+  font-family: "Deluce Free";
+  font-size: 1.5em;
 }
 </style>

@@ -69,6 +69,16 @@ const routes = [
     name: 'ChangePassword',
     component: () => import('../views//ChangePassword.vue')
   },
+  {
+    path: '/PreLobby',
+    name: 'PreLobby',
+    component: () => import('../views/PreLobby.vue')
+  },
+  {
+    path: '/Game',
+    name: 'Game',
+    component: () => import('../views/Game.vue')
+  },
 ]
 
 const router = new VueRouter({

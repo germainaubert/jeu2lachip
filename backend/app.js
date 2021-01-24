@@ -7,7 +7,7 @@ const ami = require('./models/amis.model')
 const cors = require('cors')
 
 PostgresStore.init()
-    .then(() => console.log('connected'))
+    // .then(() => console.log('connected'))
 
 const app = express();
 
@@ -30,6 +30,7 @@ app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(mySession)
+app.use('/static', express.static(__dirname + '/assets'))
 const authRouter = require('./routes/auth.route')
 const amiRouter = require('./routes/amis.route')
 const userRouter = require('./routes/users.route')
