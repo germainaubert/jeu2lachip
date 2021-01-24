@@ -21,9 +21,7 @@ export default {
       this.localPlayer,
       this.gameLeader
     );
-    // if (this.gameLeader) {
-    // //  this.$socket.emit("pmuInit", this.lobbyId);
-    // }
+    console.log("liste des joueurs",this.playerList)
   },
   computed: {
     playerList() {
@@ -51,16 +49,14 @@ export default {
     pmuInitiated(data) {
       console.log(data);
       const deck = data.deck;
-
-      console.log(deck);
       const pseudo = this.game.getCurrentScene().localPlayer.pseudo;
       const player = data.players.find((p) => p.name === pseudo);
-      console.log("console 1 1", player);
+
       if (!player) {
         throw new Error("joueur non trouvé");
       }
       // Affichage des objets 3d 
-       this.game.getCurrentScene().displayPlayers(data.players);
+      this.game.getCurrentScene().displayPlayers(data.players);
       this.game.getCurrentScene().displayMalus(deck);
       this.game.getCurrentScene().displayCards(deck);
       this.game.getCurrentScene().userInformations(player);
@@ -79,6 +75,27 @@ export default {
       const turns = data.turns 
       // Lancement des animations a partir des résultats récupérés
       this.game.getCurrentScene().animationManager(turns, advancement);
+    },
+    purpleInitiated(data) {
+      console.log(data)
+      
+      this.game.getCurrentScene().displayPlayers(data.players);
+      //const deck = data.deck;
+      const name = this.game.getCurrentScene().localPlayer.pseudo;
+      const player = data.players.find((p) => p.name === name);
+      console.log(player)
+      if(player.name === data.currentPlayer.name) {
+        this.game.getCurrentScene().initQuestions(data.questions);
+      }
+      //this.game.getCurrentScene().displayCards(deck);
+      this.game.getCurrentScene().hud.displayInfos(player);
+
+      
+
+    },
+    purplePlayTurn(data) {
+      console.log(data)
+  
     },
     async update421(gameData) {
       this.game.getCurrentScene().gameData = gameData;

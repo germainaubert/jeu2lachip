@@ -2,11 +2,8 @@ import * as BABYLON from "@babylonjs/core/Legacy/legacy"
 import 'babylonjs-loaders'
 import "@babylonjs/loaders/glTF"
 import { UserInformations } from './guiInterface'
-// import { Vector3 } from "@babylonjs/core/Legacy/legacy"
 import { Scene, Vector3 } from "@babylonjs/core"
 
-//const interval = 15
-//const timeRatio = 1000 / interval
 
 export class Pmu {
     camera
@@ -33,23 +30,6 @@ export class Pmu {
 
     basicInit() {
         console.log('local player : ', this.localPlayer, "id lobby : ", this.lobbyId, "game leader : ", this.gameLeader)
-        // Parameters: name, position, scene
-        // this.camera = new FreeCamera("FreeCam", new Vector3(1, 0, 0), this.scene)
-        // The goal distance of camera from target
-        // this.camera.radius = 300
-        // // The goal height of camera above local origin (centre) of target
-        // this.camera.heightOffset = 10
-        // // The goal rotation of camera around local origin (centre) of target in x y plane
-        // this.camera.rotationOffset = 0
-        // // Acceleration of camera in moving from current to goal position
-        // this.camera.cameraAcceleration = 0.005
-        // // The speed at which acceleration is halted
-        // this.camera.maxCameraSpeed = 10
-        // This attaches the camera to the canvas
-        //this.camera.attachControl(this.canvas, true)
-        // NOTE:: SET CAMERA TARGET AFTER THE TARGET'S CREATION AND NOTE CHANGE FROM BABYLONJS V 2.5
-        // targetMesh created here.
-
         
         let layer = new BABYLON.Layer('','http://localhost:3000/static/background.jpg', this.scene, true); //eslint-disable-line
         const mat = new BABYLON.StandardMaterial("");
@@ -57,15 +37,12 @@ export class Pmu {
         this.ground = BABYLON.Mesh.CreateGround("ground1", 64, 150, 2, this.scene);
         this.ground.isVisible = false
 
-        // this.light = new HemisphericLight("HemiLight", new Vector3(0, 1, 0), this.scene)
         this.scene.createDefaultCameraOrLight(true, true, true);
         this.helperCamera = this.scene.activeCamera;
         this.helperCamera.radius = 32;
         this.helperCamera.alpha = Math.PI / -2;
         this.helperCamera.beta = Math.PI / 4;
-        // this.helperLight = this.scene.lights.pop();
-        // this.scene.lights.push(this.helperLight);
-        //this.scene.createDefaultEnvironment()
+        
 
     }
     userInformations(player) {
@@ -157,8 +134,6 @@ export class Pmu {
         cards.cards.forEach(card => {
             console.log(card)
             let meshTask = assetsManager.addMeshTask(card.name + "_de_" + card.color, "", "http://localhost:3000/static/pmu/cards/", card.name + "_de_" + card.color + ".gltf")
-            //let meshTask = assetsManager.addMeshTask("card task", "", "http://localhost:3000/static/pmu/cards/", "" + card.name + "_de_" + card.color + ".gltf")
-
             meshTask.onSuccess = (task) => {
                 console.log(task + x)
                 task.loadedMeshes[0].position.x = x

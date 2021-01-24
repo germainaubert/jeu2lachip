@@ -106,7 +106,7 @@ export default {
     rotate() {
       this.rotation1.z += 0.01;
       this.rotation2.x += 0.01;
-      this.rotation3.y += 0.01;
+      this.rotation3.z -= 0.01;
       requestAnimationFrame(this.rotate);
     },
     connexionRequest: async function () {

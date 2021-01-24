@@ -40,7 +40,7 @@ function socketList(users) {
 function createPlayers(users) {
     let players = []
     users.forEach(user => {
-        players.push(new Player(user.pseudo))
+        players.push(new Player(user.pseudo, user.skin))
     });
     return players
 }

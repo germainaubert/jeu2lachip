@@ -1,26 +1,27 @@
 import * as BABYLON from "@babylonjs/core/Legacy/legacy"
 import 'babylonjs-loaders'
 import "@babylonjs/loaders/glTF"
-import { UserInformations } from './guiInterface'
+import { HUDPurple } from './HUD'
 import { Scene, Vector3 } from "@babylonjs/core"
 
 
-export class Pmu {
+export class Purple {
     camera
     constructor(canvas, engine, socket, localPlayer, lobbyId, gameLeader) {
         this.canvas = canvas
         this.engine = engine
         this.socket = socket
         this.gameLeader = gameLeader
-        console.log("pmu.js")
+        console.log("purple.js")
         this.scene = new Scene(this.engine)
         this.players = null
         this.lobbyId = lobbyId
         this.localPlayer = localPlayer
         this.tasks = {}
+        this.hud = new HUDPurple(this.localPlayer, this.scene,this.socket,this.lobbyId)
 
         if (this.gameLeader) {
-            this.socket.emit("pmuInit", this.lobbyId)
+            this.socket.emit("purpleInit", this.lobbyId)
         }
 
         this.basicInit()
@@ -28,13 +29,7 @@ export class Pmu {
 
     basicInit() {
         console.log('local player : ', this.localPlayer, "id lobby : ", this.lobbyId, "game leader : ", this.gameLeader)
-
-        const mat = new BABYLON.StandardMaterial("");
-        mat.diffuseTexture = new BABYLON.Texture("http://localhost:3000/static/Table.jpg");
-        this.ground = BABYLON.Mesh.CreateGround("ground1", 64, 150, 2, this.scene);
-        this.ground.material = mat
-        this.ground.specularColor = new BABYLON.Color3(0, 0, 0);
-
+        let layer = new BABYLON.Layer('','http://localhost:3000/static/background.jpg', this.scene, true); //eslint-disable-line
         this.scene.createDefaultCameraOrLight(true, true, true);
         this.helperCamera = this.scene.activeCamera;
         this.helperCamera.radius = 64;
@@ -44,19 +39,23 @@ export class Pmu {
     }
     userInformations(player) {
         console.log(player)
-        new UserInformations(player, this.scene)
+       // new UserInformations(player, this.scene)
+    }
+    initQuestions() {
+        console.log('init questions')
+        this.hud.initQuestions()
     }
     displayPlayers(players) {
         console.log("display PLAYERS")
 
-        let x = 0
+        let x = -10
         let y = 0.05
         let z = 0
 
         let assetsManager = new BABYLON.AssetsManager(this.scene)
         players.forEach(player => {
 
-            let meshTask = assetsManager.addMeshTask(player.horse.color, "", "http://localhost:3000/static/pmu/cards/", "As_de_" + player.horse.color + ".gltf")
+            let meshTask = assetsManager.addMeshTask(player.pseudo, "", player.skin)
 
             meshTask.onSuccess = (task) => {
                 console.log(task + x)
@@ -65,8 +64,16 @@ export class Pmu {
                 task.loadedMeshes[0].position.y = y
                 task.loadedMeshes[0].position.z = z
                 task.loadedMeshes[0].rotation = new Vector3(0,0, 0);
-
-                x += 10
+                if(x==-10) {
+                    x += 10
+                    z -= 10
+                }
+                else if(x == 0)
+                {
+                    x+=10
+                    z+=10
+                }
+               
             }
             meshTask.onError = (task, message, exception) => {
                 console.warn(message, exception)
@@ -82,17 +89,17 @@ export class Pmu {
         }
         assetsManager.load()
     }
-
+    
     displayCards(cards) {
         console.log("display cards")
         console.log(cards)
-        let x = -10
+        let x = 0
         let y = 2.15
         let z = 0
         let assetsManager = new BABYLON.AssetsManager(this.scene)
         cards.cards.forEach(card => {
             console.log(card)
-            let meshTask = assetsManager.addMeshTask(card.name + "_de_" + card.color, "", "http://localhost:3000/static/pmu/cards/", card.name + "_de_" + card.color + ".gltf")
+            let meshTask = assetsManager.addMeshTask(card.name + "_de_" + card.color.color, "", "http://localhost:3000/static/pmu/cards/", card.name + "_de_" + card.color.color + ".gltf")
 
             meshTask.onSuccess = (task) => {
                 console.log(task + x)
@@ -180,7 +187,6 @@ export class Pmu {
     animationManager(turns, advancement) {
         console.log(turns, advancement)
         let i = 0
-        let j = 0
 
         let cardName = advancement.drawedCard[i].card.name + "_de_" + advancement.drawedCard[i].card.color
         this.drawCard(cardName, 0)
