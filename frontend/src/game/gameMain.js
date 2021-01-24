@@ -2,7 +2,7 @@ import * as BABYLON from "@babylonjs/core/Legacy/legacy"
 //import { Chasse } from "./chasse"
 import { Purple } from "./purple/purple.js"
 // import { Pmu } from "./pmu/pmu.js"
-import { QuatreVingt } from "./421/quatreVingt"
+// import { QuatreVingt } from "./421/quatreVingt"
 
 export class Game {
     constructor(canvas, socket, playerList, lobbyId, localPlayer, gameLeader) {

@@ -8,63 +8,59 @@ export class HUDPurple {
         this.socket = socket
         this.lobbyId = lobbyId
         this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, this.scene)
-        // this.buttons = [
-        //     { bouton: Button.CreateSimpleButton("Rouge", "Rouge"), value: "Rouge" },
-        //     { bouton: Button.CreateSimpleButton("Noir", "Noir"), value: "Noir" },
-        //     { bouton: Button.CreateSimpleButton("Purple", "Purple"), value: "Purple" },
-        //     { bouton: Button.CreateSimpleButton("Inferieur", "Inferieur"), value: "Inferieur" },
-        //     { bouton: Button.CreateSimpleButton("Superieur", "Superieur"), value: "Superieur" },
-        //     { bouton: Button.CreateSimpleButton("Passer", "Passer"), value: "Passer" },
-        // ]
         this.button = {
-            Rouge: Button.CreateSimpleButton("Rouge", "Rouge"),
-            Noir: Button.CreateSimpleButton("Noir", "Noir"),
-            
+            rouge: Button.CreateSimpleButton("Rouge", "Rouge"),
+            noir: Button.CreateSimpleButton("Noir", "Noir"),
+            purple: Button.CreateSimpleButton("Purple", "Purple"),
+            inferieur: Button.CreateSimpleButton("Inferieur", "Inferieur"),
+            superieur: Button.CreateSimpleButton("Superieur", "Superieur"),
+            passer: Button.CreateSimpleButton("Passer", "Passer"),
         }
+        this.initQuestionsgog()
     }
 
-    initQuestions() {
-        this.button.Rouge.top = "0px";
-        this.button.Rouge.left = "0px";
-        this.button.Rouge.width = "150px";
-        this.button.Rouge.height = "50px";
-        this.button.Rouge.cornerRadius = 20;
-        this.button.Rouge.thickness = 4;
-        this.button.Rouge.children[0].color = "#DFF9FB";
-        this.button.Rouge.children[0].fontSize = 24;
-        this.button.Rouge.color = "#FF7979";
-        this.button.Rouge.background = "#EB4D4B";
-        this.button.Rouge.onPointerClickObservable.add(() => {
+    initQuestionsgog() {
+        this.button.rouge.top = "0px";
+        this.button.rouge.left = "0px";
+        this.button.rouge.width = "150px";
+        this.button.rouge.height = "50px";
+        this.button.rouge.cornerRadius = 20;
+        this.button.rouge.thickness = 4;
+        this.button.rouge.children[0].color = "#DFF9FB";
+        this.button.rouge.children[0].fontSize = 24;
+        this.button.rouge.color = "#FF7979";
+        this.button.rouge.background = "#EB4D4B";
+        this.button.rouge.onPointerClickObservable.add(() => {
             console.log("ououiuiuouiouoi")
-            this.button.Rouge.isEnabled = false
-            this.button.Rouge.isVisible = false
+            this.button.rouge.isEnabled = false
+            this.button.rouge.isVisible = false
             this.socket.emit("purplePlayTurn", this.lobbyId, 'Rouge')
 
         })
-        this.button.Rouge.isEnabled = true
-        this.button.Rouge.isVisible = true
-        this.advancedTexture.addControl(this.button.Rouge)
+        this.button.rouge.isEnabled = true
+        this.button.rouge.isVisible = true
+        this.advancedTexture.addControl(this.button.rouge)
 
-        this.button.Noir.top = "300px";
-        this.button.Noir.left = "200px";
-        this.button.Noir.width = "250px";
-        this.button.Noir.height = "50px";
-        this.button.Noir.cornerRadius = 20;
-        this.button.Noir.thickness = 4;
-        this.button.Noir.children[0].color = "#DFF9FB";
-        this.button.Noir.children[0].fontSize = 24;
-        this.button.Noir.color = "#FF7979";
-        this.button.Noir.background = "#EB4D4B";
-        this.button.Noir.onPointerClickObservable.add(() => {
+        this.button.noir.top = "300px";
+        this.button.noir.left = "200px";
+        this.button.noir.width = "250px";
+        this.button.noir.height = "50px";
+        this.button.noir.cornerRadius = 20;
+        this.button.noir.thickness = 4;
+        this.button.noir.children[0].color = "#DFF9FB";
+        this.button.noir.children[0].fontSize = 24;
+        this.button.noir.color = "#FF7979";
+        this.button.noir.background = "#EB4D4B";
+        this.button.noir.onPointerClickObservable.add(() => {
             console.log("NONONNONONON")
-            this.button.Noir.isEnabled = false
-            this.button.Noir.isVisible = false
+            this.button.noir.isEnabled = false
+            this.button.noir.isVisible = false
             this.socket.emit("purplePlayTurn", this.lobbyId, 'Noir')
 
         })
-        this.button.Noir.isEnabled = true
-        this.button.Noir.isVisible = true
-        this.advancedTexture.addControl(this.button.Noir)
+        this.button.noir.isEnabled = true
+        this.button.noir.isVisible = true
+        this.advancedTexture.addControl(this.button.noir)
 
 
         // let left = -200
