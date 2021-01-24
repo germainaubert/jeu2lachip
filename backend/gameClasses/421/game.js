@@ -6,7 +6,6 @@ class Game {
         this.indexPlaying = 0
         this.players = new Array()
         for (let i = 0; i < users.length; i++) {
-            console.log(users[i].pseudo)
             this.players.push(new Players(users[i].pseudo))
         }
         this.gameIsOn = true
@@ -36,14 +35,12 @@ class Game {
         }
         for (let player of this.players) {
             if (player.name === localPlayer) {
-                console.log("++ sur le lancer", player)
             }
         }
         
     }
 
     nextTurn() {
-        console.log(this.players)
         this.indexPlaying++
         if (this.indexPlaying === this.players.length) {
             this.indexPlaying = 0
@@ -75,9 +72,9 @@ class Game {
         let results = []
         for (let i = 0; i < 3; i++) {
             results[i] = {
-                x: Math.random() * 3,
+                x: Math.random() * 4,
                 y: Math.random(),
-                z: Math.random() * 3,
+                z: Math.random() * 4,
             }
             if (Math.random() < 0.5) {
                 results[i].x = -results[i].x

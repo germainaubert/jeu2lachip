@@ -34,15 +34,19 @@ export class QuatreVingt {
     async basicInit() {
         // let physicsViewer = new BABYLON.Debug.PhysicsViewer();
         // camera
-        let camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 10, new BABYLON.Vector3(0, 0, 0), this.scene)
+        let camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 70, new BABYLON.Vector3(0, 5, 0), this.scene)
         camera.setTarget(Vector3.Zero());
         camera.attachControl(this.canvas, true);
         // light
-        let light = new BABYLON.HemisphericLight("light1", new Vector3(0, 1, 0), this.scene);
+        let light = new BABYLON.HemisphericLight("light1", new Vector3(0.7, 0.7, 0), this.scene);
         light.intensity = 0.7;
         // ground
-        this.ground = BABYLON.Mesh.CreateGround("ground1", 64, 64, 2, this.scene);
-        this.ground.physicsImpostor = new BABYLON.PhysicsImpostor(this.ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, this.scene)
+        let layer = new BABYLON.Layer('','http://localhost:3000/static/background.jpg', this.scene, true); //eslint-disable-line
+        const mat = new BABYLON.StandardMaterial("");
+        mat.diffuseTexture = new BABYLON.Texture("http://localhost:3000/static/layer.jpg");
+        this.ground = BABYLON.Mesh.CreateGround("ground1", 64, 150, 2, this.scene);
+        this.ground.isVisible = false
+        this.ground.physicsImpostor = new BABYLON.PhysicsImpostor(this.ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.2 }, this.scene)
         // mesh options
 
         // let physicsViewer = new BABYLON.Debug.PhysicsViewer();
@@ -53,8 +57,8 @@ export class QuatreVingt {
     }
 
     newDice(index) {
-        let diceMass = 8
-        let diceImpostorParams = { mass: diceMass, restitution: 0, friction: 1.0 };
+        let diceMass = 5
+        let diceImpostorParams = { mass: diceMass, restitution: 0.5, friction: 1.0 };
         const boxMat = new BABYLON.StandardMaterial("boxMat");
         boxMat.diffuseTexture = new BABYLON.Texture("http://localhost:3000/static/421/longDice.jpg")
         let faceUV = [];
@@ -73,7 +77,7 @@ export class QuatreVingt {
         };
         let diceName = "dice:" + (Number(index) + 1)
         this.diceMeshes[index] = BABYLON.MeshBuilder.CreateBox(diceName, options)
-        this.diceMeshes[index].position = new BABYLON.Vector3(10 * index, 1, 0);
+        this.diceMeshes[index].position = new BABYLON.Vector3((7 * index) - 7, 1, 0);
         this.diceMeshes[index].material = boxMat
         this.diceMeshes[index].physicsImpostor = new BABYLON.PhysicsImpostor(this.diceMeshes[index], BABYLON.PhysicsImpostor.BoxImpostor, diceImpostorParams);
         this.chosen = [
@@ -107,8 +111,8 @@ export class QuatreVingt {
                 console.log("gameDATA", this.gameData)
             }
 
-        }
-        if (this.gameData.quickReset) {
+        } if (this.gameData.quickReset) {
+            console.log(this.gameData.chosen)
             this.reposition()
             if (this.currentPlayer().playPhase === "pick") {
                 console.log("c'est moi !")
@@ -126,9 +130,8 @@ export class QuatreVingt {
             let allPicked = this.glowingDice(this.gameData.chosen)
             console.log(this.lockedDiceTab(), allPicked)
             if (allPicked === 2 || (this.lockedDiceCpt() >= 2 && allPicked === 1 && this.currentPlayer().playPhase === "pick")) {
-                setTimeout(() => {
-                    this.socket.emit("pickedDice", this.lobbyId, this.currentPlayer())
-                }, 2000)
+                this.socket.emit("pickedDice", this.lobbyId, this.currentPlayer())
+
             }
         }
         this.routerHUD()
@@ -138,21 +141,23 @@ export class QuatreVingt {
         let decal = 0
         let lockedDice = this.lockedDiceTab()
         console.log(lockedDice)
-        for (let i = 0; i < this.gameData.chosen.length; i++) {
-            if (!lockedDice[i]) {
-                if (!this.gameData.chosen[i]) {
-                    // console.log("qqn?")
-                    this.highlight.removeMesh(this.diceMeshes[i])
-                    this.diceMeshes[i].dispose()
-                    this.newDice(i)
-                } else if (this.gameData.chosen[i]) {
-                    decal += 4
-                    this.diceMeshes[i].position = new Vector3(10 + decal, 1, 0)
-                    this.diceMeshes[i].physicsImpostor.mass = 0
-                    this.highlight.removeMesh(this.diceMeshes[i])
+        if (this.gameData.chosen) {
+            for (let i = 0; i < this.gameData.chosen.length; i++) {
+                if (!lockedDice[i]) {
+                    if (!this.gameData.chosen[i]) {
+                        // console.log("qqn?")
+                        this.highlight.removeMesh(this.diceMeshes[i])
+                        this.diceMeshes[i].dispose()
+                        this.newDice(i)
+                    } else if (this.gameData.chosen[i]) {
+                        decal += 4
+                        this.diceMeshes[i].position = new Vector3(30 + decal, 1, 0)
+                        this.diceMeshes[i].physicsImpostor.mass = 0
+                        this.highlight.removeMesh(this.diceMeshes[i])
+                    }
                 }
-            }
 
+            }
         }
     }
 
@@ -195,7 +200,7 @@ export class QuatreVingt {
     impulse(vector) {
         let i = 0
         for (let dice of this.diceMeshes) {
-            dice.physicsImpostor.applyImpulse((new Vector3(vector[i].x, 5, vector[i].z)).scale(10), dice.getAbsolutePosition().add(this.contactLocalRefPoint))
+            dice.physicsImpostor.applyImpulse((new Vector3(vector[i].x, 5, vector[i].z)).scale(12), dice.getAbsolutePosition().add(this.contactLocalRefPoint))
             i++
         }
     }
@@ -203,11 +208,11 @@ export class QuatreVingt {
     routerHUD() {
         let currentPlayer = this.currentPlayer()
         if (currentPlayer.playPhase === "throw" && currentPlayer.roll < 3) { // Quand le joueur n'a pas encore tout tiré
-            this.HUD.throwPhaseHUD()
+            this.HUD.throwPhaseHUD(currentPlayer.roll)
         } else if (currentPlayer.playPhase === "throw" && currentPlayer.roll >= 3) {
-            this.HUD.lastThrowPhaseHUD()
+            this.HUD.throwPhaseHUD(currentPlayer.roll)
         } else if (currentPlayer.playPhase === "pick") {
-            this.HUD.pickPhaseHUD()
+            this.HUD.confirmPickPhaseHUD()
         } else if (currentPlayer.roll >= 3 || currentPlayer.endTurn) {
             this.socket.emit('passTurn', this.lobbyId, currentPlayer)
         } else if (currentPlayer.playPhase === false) {
@@ -253,7 +258,7 @@ export class QuatreVingt {
             }
 
         }, 1000)
-
+        
         return results
     }
     getResult(dice) {
