@@ -21,6 +21,7 @@ class Game {
         this.chosen = null
         this.results = null
         this.quickReset = null
+        this.resetAll = false
     }
     // play() {
     //     while(this.gameIsOn) {
@@ -42,11 +43,12 @@ class Game {
     }
 
     nextTurn() {
+        console.log(this.players)
         this.indexPlaying++
         if (this.indexPlaying === this.players.length) {
             this.indexPlaying = 0
         }
-        
+        this.resetAll = true
         this.players[this.indexPlaying].playPhase = "throw"
     }
 
@@ -109,7 +111,8 @@ class Game {
             vectors: this.vectors,
             chosen: this.chosen,
             results: this.results,
-            quickReset: this.quickReset
+            quickReset: this.quickReset,
+            resetAll: this.resetAll,
         }
     }
 

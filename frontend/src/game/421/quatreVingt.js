@@ -86,7 +86,7 @@ export class QuatreVingt {
             if (pickResult.hit && this.currentPlayer().playPhase === "pick") {
                 let diceIndex = 0
                 for (let i = 0; i < this.diceMeshes.length; i++) {
-                    if (this.diceMeshes[i].name === pickResult.pickedMesh.name) {
+                    if (this.diceMeshes[i].name === pickResult.pickedMesh.name && this.diceMeshes[i].physicsImpostor.mass !== 0) {
                         diceIndex = i
                         this.chosen[diceIndex] = true
                         this.socket.emit("glowingMesh", this.lobbyId, this.chosen)
@@ -100,6 +100,14 @@ export class QuatreVingt {
     }
 
     async update() {
+        if (this.gameData.resetAll) {
+            for (let i = 0; i < 3; i++) {
+                this.diceMeshes[i].dispose()
+                this.newDice(i)
+                console.log("gameDATA", this.gameData)
+            }
+
+        }
         if (this.gameData.quickReset) {
             this.reposition()
             if (this.currentPlayer().playPhase === "pick") {
@@ -109,12 +117,15 @@ export class QuatreVingt {
         } else if (this.gameData.throwNotif) {
             console.log("condition ?")
             this.impulse(this.gameData.vectors)
-            if (this.currentPlayer().playPhase === "throw") {
-                this.socket.emit("diceResult", this.lobbyId, await this.sleepcheck(), this.currentPlayer().name)
+            console.log("roll", this.currentPlayer().roll)
+            let result = await this.sleepcheck()
+            if (this.currentPlayer().playPhase === "throw" && this.currentPlayer().roll < 4) {
+                this.socket.emit("diceResult", this.lobbyId, result, this.currentPlayer().name)
             }
-        } else if (this.gameData.chosen && this.currentPlayer().playPhase !== "throw ") {
+        } else if (this.gameData.chosen && this.currentPlayer().playPhase !== "throw " && this.currentPlayer().roll < 3) {
             let allPicked = this.glowingDice(this.gameData.chosen)
-            if (allPicked === 2 && this.currentPlayer().playPhase === "pick") {
+            console.log(this.lockedDiceTab(), allPicked)
+            if (allPicked === 2 || (this.lockedDiceCpt() >= 2 && allPicked === 1 && this.currentPlayer().playPhase === "pick")) {
                 setTimeout(() => {
                     this.socket.emit("pickedDice", this.lobbyId, this.currentPlayer())
                 }, 2000)
@@ -125,17 +136,49 @@ export class QuatreVingt {
 
     reposition() {
         let decal = 0
+        let lockedDice = this.lockedDiceTab()
+        console.log(lockedDice)
         for (let i = 0; i < this.gameData.chosen.length; i++) {
-            if (!this.gameData.chosen[i]) {
-                this.diceMeshes[i].dispose()
-                this.newDice(i)
-            } else {
-                decal += 4
-                this.diceMeshes[i].position = new Vector3(10 + decal, 1, 0)
-                this.highlight.removeMesh(this.diceMeshes[i])
+            if (!lockedDice[i]) {
+                if (!this.gameData.chosen[i]) {
+                    // console.log("qqn?")
+                    this.highlight.removeMesh(this.diceMeshes[i])
+                    this.diceMeshes[i].dispose()
+                    this.newDice(i)
+                } else if (this.gameData.chosen[i]) {
+                    decal += 4
+                    this.diceMeshes[i].position = new Vector3(10 + decal, 1, 0)
+                    this.diceMeshes[i].physicsImpostor.mass = 0
+                    this.highlight.removeMesh(this.diceMeshes[i])
+                }
             }
+
         }
     }
+
+    lockedDiceTab() {
+        let result = []
+        let i = 0
+        for (let dice of this.diceMeshes) {
+            if (dice.physicsImpostor.mass === 0) {
+                result[i] = true
+            } else {
+                result[i] = false
+            }
+            i++
+        }
+        return result
+    }
+    lockedDiceCpt() {
+        let cpt = 0
+        for (let dice of this.diceMeshes) {
+            if (dice.physicsImpostor.mass === 0) {
+                cpt++
+            }
+        }
+        return cpt
+    }
+
 
     glowingDice(chosen) {
         let cpt = 0
@@ -161,6 +204,8 @@ export class QuatreVingt {
         let currentPlayer = this.currentPlayer()
         if (currentPlayer.playPhase === "throw" && currentPlayer.roll < 3) { // Quand le joueur n'a pas encore tout tiré
             this.HUD.throwPhaseHUD()
+        } else if (currentPlayer.playPhase === "throw" && currentPlayer.roll >= 3) {
+            this.HUD.lastThrowPhaseHUD()
         } else if (currentPlayer.playPhase === "pick") {
             this.HUD.pickPhaseHUD()
         } else if (currentPlayer.roll >= 3 || currentPlayer.endTurn) {
@@ -168,8 +213,6 @@ export class QuatreVingt {
         } else if (currentPlayer.playPhase === false) {
             this.HUD.waitingHUD(this.playingPlayer().name)
         } else if (currentPlayer.playPhase === "quickReset") {
-            this.HUD = new HUD(this.localPlayer, this.scene, this.socket, this.lobbyId)
-
             this.HUD.throwPhaseHUD()
         }
     }
