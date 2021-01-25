@@ -84,11 +84,13 @@ export default {
       const name = this.game.getCurrentScene().localPlayer.pseudo;
       const player = data.players.find((p) => p.name === name);
       console.log(player)
+      this.game.getCurrentScene().hud.displayInfos(player);
       if(player.name === data.currentPlayer.name) {
-        this.game.getCurrentScene().initQuestions(data.questions);
+        console.log("display QUESIOTN GMAEVUE")
+        this.game.getCurrentScene().displayQuestions(data.questions);
       }
       //this.game.getCurrentScene().displayCards(deck);
-      this.game.getCurrentScene().hud.displayInfos(player);
+      
 
       
 

@@ -32,7 +32,7 @@ export class Purple {
         let layer = new BABYLON.Layer('','http://localhost:3000/static/background.jpg', this.scene, true); //eslint-disable-line
         this.scene.createDefaultCameraOrLight(true, true, true);
         this.helperCamera = this.scene.activeCamera;
-        this.helperCamera.radius = 64;
+        this.helperCamera.radius = 32;
         this.helperCamera.alpha = Math.PI / -2;
         this.helperCamera.beta = Math.PI / 4;
 
@@ -41,9 +41,8 @@ export class Purple {
         console.log(player)
        // new UserInformations(player, this.scene)
     }
-    initQuestions() {
-        console.log('init questions')
-        this.hud.initQuestions()
+    displayQuestions(questions) {
+        this.hud.displayQuestions(questions)
     }
     displayPlayers(players) {
         console.log("display PLAYERS")
