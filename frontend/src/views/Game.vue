@@ -54,7 +54,7 @@ export default {
       if (!player) {
         throw new Error("joueur non trouvé");
       }
-      // Affichage des objets 3d 
+      // Affichage des objets 3d
       this.game.getCurrentScene().displayPlayers(data.players);
       this.game.getCurrentScene().displayMalus(deck);
       this.game.getCurrentScene().displayCards(deck);
@@ -62,37 +62,48 @@ export default {
       // 15 secondes d'attentes le temps que toutes les textures et les modeles soient chargés
       setTimeout(() => {
         if (this.gameLeader) {
-          // Envoie de la socket pour jouer une partie 
+          // Envoie de la socket pour jouer une partie
           this.$socket.emit("pmuPlay", this.lobbyId);
         }
-      },15000);
-  
+      }, 15000);
     },
     pmuPlayed(data) {
       // Récuperation des données de la partie simulée
-      const advancement = data.advancement; 
-      const turns = data.turns 
+      const advancement = data.advancement;
+      const turns = data.turns;
       // Lancement des animations a partir des résultats récupérés
       this.game.getCurrentScene().animationManager(turns, advancement);
     },
     purpleInitiated(data) {
-      console.log(data)
-      
+      console.log(data);
+      const deck = data.deck;
       this.game.getCurrentScene().displayPlayers(data.players);
-      //const deck = data.deck;
+      this.game.getCurrentScene().displayCards(deck);
+      
       const name = this.game.getCurrentScene().localPlayer.pseudo;
       const player = data.players.find((p) => p.name === name);
-      console.log(player)
+      console.log(player);
       this.game.getCurrentScene().hud.displayInfos(player);
-      if(player.name === data.currentPlayer.name) {
-        console.log("display QUESIOTN GMAEVUE")
+      this.game.getCurrentScene().hud.displayCurrentPlayer(data.currentPlayer);
+      if (player.name === data.currentPlayer.name) {
+        console.log("display QUESIOTN GMAEVUE");
         this.game.getCurrentScene().displayQuestions(data.questions);
       }
-      //this.game.getCurrentScene().displayCards(deck);
+      
     },
     purplePlayTurn(data) {
-      console.log(data)
-  
+      data.cardDrawed.forEach(card => {
+        setTimeout(() => {
+        this.game.getCurrentScene().drawCard(card, data.turns);
+      }, 3000);
+      });
+      const name = this.game.getCurrentScene().localPlayer.pseudo
+      const player = data.players.find((p) => p.name === name)
+      this.game.getCurrentScene().hud.displayInfos(player);
+      this.game.getCurrentScene().hud.displayCurrentPlayer(data.currentPlayer);
+      if (player.name === data.currentPlayer.name) {
+        this.game.getCurrentScene().displayQuestions(data.questions);
+      }
     },
 
 
