@@ -6,6 +6,7 @@ import { HUD } from './HUD'
 
 export class QuatreVingt {
     constructor(canvas, socket, engine, localPlayer, lobbyId, gameLeader) {
+        console.log("LOCAPLAYER", localPlayer)
         this.canvas = canvas
         this.socket = socket
         this.scene = new BABYLON.Scene(engine)
@@ -23,17 +24,23 @@ export class QuatreVingt {
         this.refreshIntervalId = null
         this.ground = null
         this.highlight = new BABYLON.HighlightLayer("hl1", this.scene)
+        this.pickFlag = false
+        this.init = false
+        this.decal = 0
+        this.chosen = [
+            false,
+            false,
+            false
+        ]
         if (this.gameLeader) {
-            console.log("envoi du init421")
+            console.log("INIT 421")
             this.socket.emit("init421", this.lobbyId)
         }
         this.HUD = new HUD(this.localPlayer, this.scene, this.socket, this.lobbyId)
         this.basicInit()
     }
 
-    async basicInit() {
-        // let physicsViewer = new BABYLON.Debug.PhysicsViewer();
-        // camera
+    basicInit() {
         let camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 70, new BABYLON.Vector3(0, 5, 0), this.scene)
         camera.setTarget(Vector3.Zero());
         camera.attachControl(this.canvas, true);
@@ -42,30 +49,27 @@ export class QuatreVingt {
         light.intensity = 0.7;
         // ground
         let layer = new BABYLON.Layer('','http://localhost:3000/static/background.jpg', this.scene, true); //eslint-disable-line
-        const mat = new BABYLON.StandardMaterial("");
-        mat.diffuseTexture = new BABYLON.Texture("http://localhost:3000/static/layer.jpg");
-        this.ground = BABYLON.Mesh.CreateGround("ground1", 64, 150, 2, this.scene);
+        this.ground = BABYLON.Mesh.CreateGround("ground1", 150, 150, 2, this.scene)
         this.ground.isVisible = false
         this.ground.physicsImpostor = new BABYLON.PhysicsImpostor(this.ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.2 }, this.scene)
         // mesh options
 
-        // let physicsViewer = new BABYLON.Debug.PhysicsViewer();
-        for (let i = 0; i < 3; i++) {
-            this.newDice(i)
-        }
+        this.newDices([true, true, true])
+        this.init = true
 
     }
 
-    newDice(index) {
+    newDices(newDiceTab) {
+        console.log("newDICETAB", newDiceTab)
         let diceMass = 5
         let diceImpostorParams = { mass: diceMass, restitution: 0.5, friction: 1.0 };
         const boxMat = new BABYLON.StandardMaterial("boxMat");
         boxMat.diffuseTexture = new BABYLON.Texture("http://localhost:3000/static/421/longDice.jpg")
         let faceUV = [];
-        faceUV[0] = new BABYLON.Vector4(0.0, 0.0, 0.166, 1.0); //rear face
-        faceUV[1] = new BABYLON.Vector4(0.166, 0.0, 0.332, 1.0); //front face
-        faceUV[2] = new BABYLON.Vector4(0.332, 0, 0.498, 1.0); //right side
-        faceUV[3] = new BABYLON.Vector4(0.498, 0, 0.664, 1.0); //left side
+        faceUV[0] = new BABYLON.Vector4(0.0, 0.0, 0.166, 1.0);
+        faceUV[1] = new BABYLON.Vector4(0.166, 0.0, 0.332, 1.0);
+        faceUV[2] = new BABYLON.Vector4(0.332, 0, 0.498, 1.0);
+        faceUV[3] = new BABYLON.Vector4(0.498, 0, 0.664, 1.0);
         faceUV[4] = new BABYLON.Vector4(0.664, 0, 0.83, 1.0);
         faceUV[5] = new BABYLON.Vector4(0.83, 0, 1.0, 1.0);
         let options = {
@@ -75,91 +79,189 @@ export class QuatreVingt {
             faceUV: faceUV,
             wrap: true
         };
-        let diceName = "dice:" + (Number(index) + 1)
-        this.diceMeshes[index] = BABYLON.MeshBuilder.CreateBox(diceName, options)
-        this.diceMeshes[index].position = new BABYLON.Vector3((7 * index) - 7, 1, 0);
-        this.diceMeshes[index].material = boxMat
-        this.diceMeshes[index].physicsImpostor = new BABYLON.PhysicsImpostor(this.diceMeshes[index], BABYLON.PhysicsImpostor.BoxImpostor, diceImpostorParams);
+        for (let i = 0; i < newDiceTab.length; i++) {
+            if (newDiceTab[i] && !this.init) {
+                let diceName = "dice:" + (Number(i) + 1)
+                this.diceMeshes[i] = BABYLON.MeshBuilder.CreateBox(diceName, options)
+                this.diceMeshes[i].position = new BABYLON.Vector3((7 * i) - 7, 1, 0);
+                this.diceMeshes[i].material = boxMat
+                this.diceMeshes[i].physicsImpostor = new BABYLON.PhysicsImpostor(this.diceMeshes[i], BABYLON.PhysicsImpostor.BoxImpostor, diceImpostorParams);
+                this.diceMeshes[i].locked = false
+                this.scene.onPointerDown = (evt, pickResult) => {
+                    // We try to pick an object
+                    if (pickResult.hit) {
+                        this.clickAndGlow(pickResult)
+                    }
+                };
+            } else if (newDiceTab[i] && this.init) {
+                if (!this.diceMeshes[i].locked) {
+                    let diceName = "dice:" + (Number(i) + 1)
+                    this.diceMeshes[i] = BABYLON.MeshBuilder.CreateBox(diceName, options)
+                    this.diceMeshes[i].position = new BABYLON.Vector3((7 * i) - 7, 1, 0);
+                    this.diceMeshes[i].material = boxMat
+                    this.diceMeshes[i].physicsImpostor = new BABYLON.PhysicsImpostor(this.diceMeshes[i], BABYLON.PhysicsImpostor.BoxImpostor, diceImpostorParams);
+                    this.diceMeshes[i].locked = false
+                    this.scene.onPointerDown = (evt, pickResult) => {
+                        // We try to pick an object
+                        if (pickResult.hit) {
+                            this.clickAndGlow(pickResult)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    clickAndGlow(pickResult) {
+        let diceIndex = 0
+        for (let i = 0; i < this.diceMeshes.length; i++) {
+            if (this.diceMeshes[i].name === pickResult.pickedMesh.name && this.pickFlag && this.diceMeshes[i].locked) {
+                
+                this.socket.emit("freeDice", this.lobbyId, i)
+            } else if (this.diceMeshes[i].name === pickResult.pickedMesh.name && this.pickFlag && !this.diceMeshes[i].locked) {
+                console.log("dice pick, sending socket")
+                diceIndex = i
+                this.chosen[diceIndex] = true
+                console.log(this.chosen)
+                this.socket.emit("glowingMesh", this.lobbyId, this.chosen)
+                break
+            }
+        }
+    }
+    init421() {
+        if (this.currentPlayer().playPhase) {
+            this.HUD.throwPhaseHUD(this.currentPlayer().roll)
+        } else {
+            this.HUD.waiting(this.playingPlayer().name)
+        }
+        this.HUD.gameInfo(this.gameData.tokenPile, this.gameData.players)
+    }
+
+    throwDices() {
+        this.resetDice([!this.diceMeshes[0].locked, !this.diceMeshes[1].locked, !this.diceMeshes[2].locked])
         this.chosen = [
             false,
             false,
             false
         ]
-        this.scene.onPointerDown = (evt, pickResult) => {
-            // We try to pick an object
-            if (pickResult.hit && this.currentPlayer().playPhase === "pick") {
-                let diceIndex = 0
-                for (let i = 0; i < this.diceMeshes.length; i++) {
-                    if (this.diceMeshes[i].name === pickResult.pickedMesh.name && this.diceMeshes[i].physicsImpostor.mass !== 0) {
-                        diceIndex = i
-                        this.chosen[diceIndex] = true
-                        this.socket.emit("glowingMesh", this.lobbyId, this.chosen)
-                        break
-                    }
-                }
-
-                // console.log(pickResult.pickedMesh.name);
-            }
-        };
+        console.log("throwDices")
+        this.impulse(this.gameData.vectors)
+        if (this.currentPlayer().playPhase) {
+            this.sleepcheck()
+        }
+        this.HUD.gameInfo(this.gameData.tokenPile, this.gameData.players)
     }
 
-    async update() {
-        if (this.gameData.resetAll) {
-            for (let i = 0; i < 3; i++) {
+    result() {
+        console.log("result happened")
+        if (this.currentPlayer().playPhase && this.currentPlayer().roll < 3) {
+            this.HUD.pickPhase()
+            this.pickFlag = true
+        }
+        this.HUD.gameInfo(this.gameData.tokenPile, this.gameData.players)
+    }
+    resetPick() {
+        this.chosen = [
+            false,
+            false,
+            false
+        ]
+        for (let i = 0; i < 3; i++) {
+            // if (this.diceMeshes[i].physicsImpostor.mass !== 0) {
+            //     this.moveDice
+            // } else {
+            this.highlight.removeMesh(this.diceMeshes[i])
+            // }
+
+        }
+        this.HUD.gameInfo(this.gameData.tokenPile, this.gameData.players)
+    }
+
+    freeDice(idDice) {
+        this.diceMeshes[idDice].locked = false
+        let localChosen = [
+            false,
+            false,
+            false
+        ]
+        for (let i = 0; i < 3; i++) {
+            if (i === idDice) {
+                localChosen[i] = true
+            }
+        }
+        console.log("local Chosen", localChosen)
+        this.resetDice(localChosen)
+        this.HUD.gameInfo(this.gameData.tokenPile, this.gameData.players)
+    }
+
+    nextTurn() {
+        for (let dice of this.diceMeshes) {
+            dice.locked = false
+        }
+        this.resetDice([true, true, true])
+        if (this.currentPlayer().playPhase) {
+            this.HUD.throwPhaseHUD(this.currentPlayer().roll)
+        } else {
+            this.HUD.waiting(this.playingPlayer().name)
+        }
+        this.HUD.gameInfo(this.gameData.tokenPile, this.gameData.players)
+    }
+
+    endPick() {
+        this.pickFlag = false
+        if (this.gameData.chosen !== null) {
+            this.moveDice()
+            this.resetDice([!this.gameData.chosen[0], !this.gameData.chosen[1], !this.gameData.chosen[2]])
+        }
+
+        if (this.currentPlayer().playPhase) {
+            this.HUD.throwPhaseHUD(this.currentPlayer().roll)
+        } else {
+            this.HUD.waiting(this.playingPlayer().name)
+        }
+        this.HUD.gameInfo(this.gameData.tokenPile, this.gameData.players)
+    }
+
+    moveDice() {
+        for (let i = 0; i < 3; i++) {
+            if (this.gameData.chosen[i] && !this.diceMeshes[i].locked) {
+                this.decal += 5
+                this.diceMeshes[i].position = new Vector3(40 + this.decal, 1, 0)
+                this.diceMeshes[i].physicsImpostor.mass = 0
+                this.highlight.removeMesh(this.diceMeshes[i])
+                this.diceMeshes[i].locked = true
+                this.socket.emit("lockedDice", this.lobbyId, this.cptLocked())
+            }
+        }
+    }
+
+    cptLocked() {
+        let cpt = 0
+        for (let i = 0; i < this.diceMeshes.length; i++) {
+            if (this.diceMeshes[i].locked) {
+                cpt++
+            }
+        }
+        return cpt
+    }
+
+    resetDice(chosen) {
+        this.deleteDice(chosen)
+        this.newDices(chosen)
+    }
+    deleteDice(chosen) {
+        for (let i = 0; i < 3; i++) {
+            console.log(chosen[i], !this.diceMeshes[i].locked)
+            if (chosen[i] && !this.diceMeshes[i].locked) {
                 this.diceMeshes[i].dispose()
-                this.newDice(i)
-                console.log("gameDATA", this.gameData)
-            }
-
-        } if (this.gameData.quickReset) {
-            console.log(this.gameData.chosen)
-            this.reposition()
-            if (this.currentPlayer().playPhase === "pick") {
-                console.log("c'est moi !")
-                this.currentPlayer().playPhase = "throw"
-            }
-        } else if (this.gameData.throwNotif) {
-            console.log("condition ?")
-            this.impulse(this.gameData.vectors)
-            console.log("roll", this.currentPlayer().roll)
-            let result = await this.sleepcheck()
-            if (this.currentPlayer().playPhase === "throw" && this.currentPlayer().roll < 4) {
-                this.socket.emit("diceResult", this.lobbyId, result, this.currentPlayer().name)
-            }
-        } else if (this.gameData.chosen && this.currentPlayer().playPhase !== "throw " && this.currentPlayer().roll < 3) {
-            let allPicked = this.glowingDice(this.gameData.chosen)
-            console.log(this.lockedDiceTab(), allPicked)
-            if (allPicked === 2 || (this.lockedDiceCpt() >= 2 && allPicked === 1 && this.currentPlayer().playPhase === "pick")) {
-                this.socket.emit("pickedDice", this.lobbyId, this.currentPlayer())
-
-            }
-        }
-        this.routerHUD()
-    }
-
-    reposition() {
-        let decal = 0
-        let lockedDice = this.lockedDiceTab()
-        console.log(lockedDice)
-        if (this.gameData.chosen) {
-            for (let i = 0; i < this.gameData.chosen.length; i++) {
-                if (!lockedDice[i]) {
-                    if (!this.gameData.chosen[i]) {
-                        // console.log("qqn?")
-                        this.highlight.removeMesh(this.diceMeshes[i])
-                        this.diceMeshes[i].dispose()
-                        this.newDice(i)
-                    } else if (this.gameData.chosen[i]) {
-                        decal += 4
-                        this.diceMeshes[i].position = new Vector3(30 + decal, 1, 0)
-                        this.diceMeshes[i].physicsImpostor.mass = 0
-                        this.highlight.removeMesh(this.diceMeshes[i])
-                    }
-                }
-
             }
         }
     }
+
+    glowMesh() {
+        let allPicked = this.glowingDice(this.gameData.chosen)
+        console.log("glow mesh", allPicked)
+    }
+
 
     lockedDiceTab() {
         let result = []
@@ -199,26 +301,9 @@ export class QuatreVingt {
 
     impulse(vector) {
         let i = 0
-        for (let dice of this.diceMeshes) {
-            dice.physicsImpostor.applyImpulse((new Vector3(vector[i].x, 5, vector[i].z)).scale(12), dice.getAbsolutePosition().add(this.contactLocalRefPoint))
+        for (let dice of this.diceMeshes) { // changer
+            dice.physicsImpostor.applyImpulse((new Vector3(vector[i].x, 12, vector[i].z)).scale(4), dice.getAbsolutePosition().add(this.contactLocalRefPoint))
             i++
-        }
-    }
-
-    routerHUD() {
-        let currentPlayer = this.currentPlayer()
-        if (currentPlayer.playPhase === "throw" && currentPlayer.roll < 3) { // Quand le joueur n'a pas encore tout tiré
-            this.HUD.throwPhaseHUD(currentPlayer.roll)
-        } else if (currentPlayer.playPhase === "throw" && currentPlayer.roll >= 3) {
-            this.HUD.throwPhaseHUD(currentPlayer.roll)
-        } else if (currentPlayer.playPhase === "pick") {
-            this.HUD.confirmPickPhaseHUD()
-        } else if (currentPlayer.roll >= 3 || currentPlayer.endTurn) {
-            this.socket.emit('passTurn', this.lobbyId, currentPlayer)
-        } else if (currentPlayer.playPhase === false) {
-            this.HUD.waitingHUD(this.playingPlayer().name)
-        } else if (currentPlayer.playPhase === "quickReset") {
-            this.HUD.throwPhaseHUD()
         }
     }
 
@@ -228,38 +313,37 @@ export class QuatreVingt {
     playingPlayer() {
         return this.players.find(player => player.playPhase)
     }
-    // this.diceMeshes[0].dispose()
-    // this.newDice(0)
-    async sleepcheck() {
+  
+    sleepcheck() {
         let flag = true
         let results = []
-
-        this.refreshIntervalId = setInterval(() => {
-
-            for (let dice of this.diceMeshes) {
-                if (
-                    dice.physicsImpostor.getAngularVelocity().x < 0.01
-                    && dice.physicsImpostor.getAngularVelocity().y < 0.01
-                    && dice.physicsImpostor.getAngularVelocity().z < 0.01
-                    && dice.physicsImpostor.getLinearVelocity().x < 0.01
-                    && dice.physicsImpostor.getLinearVelocity().y < 0.01
-                    && dice.physicsImpostor.getLinearVelocity().z < 0.01
-                    && flag
-                ) {
-                    // flag = false;
-                    results.push(this.getResult(dice))
-                    if (results.length === 3) {
-                        console.log(results)
-                        flag = false
-                        clearInterval(this.refreshIntervalId)
+        setTimeout(() => {
+            let intervalId = setInterval(() => {
+                for (let dice of this.diceMeshes) {
+                    if (
+                        dice.physicsImpostor.getAngularVelocity().x < 0.01
+                        && dice.physicsImpostor.getAngularVelocity().y < 0.01
+                        && dice.physicsImpostor.getAngularVelocity().z < 0.01
+                        && dice.physicsImpostor.getLinearVelocity().x < 0.01
+                        && dice.physicsImpostor.getLinearVelocity().y < 0.01
+                        && dice.physicsImpostor.getLinearVelocity().z < 0.01
+                        && flag
+                    ) {
+                        results.push(this.getResult(dice))
+                        if (results.length === 3) {
+                            flag = false
+                            console.log(results)
+                            clearInterval(intervalId)
+                            this.socket.emit("result", this.lobbyId, results)
+                        }
                     }
-
                 }
-            }
+            }, 200)
 
-        }, 1000)
-        
-        return results
+
+        }, 5000)
+
+
     }
     getResult(dice) {
 
@@ -274,15 +358,15 @@ export class QuatreVingt {
         // console.log("Z: " + vz.x + " " + vz.y + " " + vz.z );
         if (1 - Math.abs(vx.y) < 0.0001) {
             if (vx.y > 0) {
-                return 4;
+                return 5;
             }
             else {
-                return 3;
+                return 2;
             }
         }
         else if (1 - Math.abs(vy.y) < 0.0001) {
             if (vy.y > 0) {
-                return 1;
+                return 4;
             }
             else {
                 return 6;
@@ -290,10 +374,10 @@ export class QuatreVingt {
         }
         else if (1 - Math.abs(vz.y) < 0.0001) {
             if (vz.y > 0) {
-                return 5;
+                return 1;
             }
             else {
-                return 2;
+                return 3;
             }
         }
 

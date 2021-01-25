@@ -15,7 +15,7 @@ export class Game {
         this.scenes = new Array()
         //this.scenes.push(new Chasse(this.canvas, this.socket, this.engine, localPlayer, lobbyId, this.gameLeader))
         //this.scenes.push(new Pmu(this.canvas, this.engine, this.socket, localPlayer, lobbyId, this.gameLeader))
-        //this.scenes.push(new QuatreVingt(this.canvas, this.socket, this.engine, localPlayer, lobbyId, this.gameLeader))
+        // this.scenes.push(new QuatreVingt(this.canvas, this.socket, this.engine, localPlayer, lobbyId, this.gameLeader))
         this.scenes.push(new Purple(this.canvas, this.engine, this.socket, localPlayer, lobbyId, this.gameLeader))
 
         

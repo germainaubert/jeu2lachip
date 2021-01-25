@@ -21,7 +21,6 @@ export default {
       this.localPlayer,
       this.gameLeader
     );
-    console.log("liste des joueurs",this.playerList)
   },
   computed: {
     playerList() {
@@ -90,20 +89,49 @@ export default {
         this.game.getCurrentScene().displayQuestions(data.questions);
       }
       //this.game.getCurrentScene().displayCards(deck);
-      
-
-      
-
     },
     purplePlayTurn(data) {
       console.log(data)
   
     },
-    async update421(gameData) {
+
+
+    initAll(gameData) {
       this.game.getCurrentScene().gameData = gameData;
       this.game.getCurrentScene().players = gameData.players;
-      await this.game.getCurrentScene().update();
+      this.game.getCurrentScene().init421()
     },
+    glowMesh(gameData) {
+      this.game.getCurrentScene().gameData = gameData;
+      this.game.getCurrentScene().glowMesh()
+    },
+    throwDices(gameData) {
+      this.game.getCurrentScene().gameData = gameData
+      this.game.getCurrentScene().throwDices()
+    },
+    result(gameData) {
+      this.game.getCurrentScene().gameData = gameData
+      this.game.getCurrentScene().result()
+    },
+    resetPick(gameData) {
+      this.game.getCurrentScene().gameData = gameData
+      console.log(gameData)
+      this.game.getCurrentScene().resetPick()
+    },
+    nextTurn(gameData) {
+      this.game.getCurrentScene().gameData = gameData
+      this.game.getCurrentScene().players = gameData.players
+      this.game.getCurrentScene().nextTurn()
+    },
+    endPick(gameData) {
+      this.game.getCurrentScene().players = gameData.players
+      this.game.getCurrentScene().endPick()
+    },
+    freeDice(idDice) {
+      this.game.getCurrentScene().freeDice(idDice)
+    }
+
+
   },
   methods: {},
 };

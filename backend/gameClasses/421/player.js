@@ -6,7 +6,11 @@ class Player {
         this.token = 0
         this.roll = 0
         this.playPhase = false
-        this.endTurn = false
+        this.result = null
+        this.results = {
+            score: null,
+            points: null
+        }
     }
 }
 

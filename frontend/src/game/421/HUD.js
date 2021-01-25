@@ -1,166 +1,206 @@
-import { AdvancedDynamicTexture, Button } from '@babylonjs/gui';
+import { AdvancedDynamicTexture, Button, TextBlock } from '@babylonjs/gui';
 
 export class HUD {
 
     constructor(localPlayer, scene, socket, lobbyId) {
         this.localPlayer = localPlayer
-
         this.scene = scene
         this.socket = socket
         this.lobbyId = lobbyId
         this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, this.scene)
-        this.button = {
-            last: Button.CreateSimpleButton("last", "Fin du tour"),
-            throw: Button.CreateSimpleButton("throw", "Lancer"),
-            nextTurn: Button.CreateSimpleButton("nextTurn", "Passer le tour"),
-            wait: Button.CreateSimpleButton("wait", "En attente des autres joueurs"),
-            confirmPick: Button.CreateSimpleButton("confirmPick", "Confirmer"),
-        }
+        this.button = [
+            Button.CreateSimpleButton("nextTurn", "Passer le tour"),
+            Button.CreateSimpleButton("throw", "Lancer"),
+            Button.CreateSimpleButton("endPick", "Confirmer"),
+            Button.CreateSimpleButton("resetPick", "Annuler")
+        ]
+        this.messages = [
+            new TextBlock(),
+            new TextBlock(),
+            new TextBlock(),
+            new TextBlock(),
+            new TextBlock(),
+        ]
         this.initHUD()
     }
     initHUD() {
-        this.button.last.top = "0px";
-        this.button.last.left = "0px";
-        this.button.last.width = "150px";
-        this.button.last.height = "50px";
-        this.button.last.cornerRadius = 20;
-        this.button.last.thickness = 4;
-        this.button.last.children[0].color = "#DFF9FB";
-        this.button.last.children[0].fontSize = 24;
-        this.button.last.color = "#FF7979";
-        this.button.last.background = "#EB4D4B";
-        this.button.last.isEnabled = false
-        this.button.last.isVisible = false
-        this.advancedTexture.addControl(this.last)
-
-        this.button.throw.top = "300px";
-        this.button.throw.left = "200px";
-        this.button.throw.width = "250px";
-        this.button.throw.height = "50px";
-        this.button.throw.cornerRadius = 20;
-        this.button.throw.thickness = 4;
-        this.button.throw.children[0].color = "#DFF9FB";
-        this.button.throw.children[0].fontSize = 24;
-        this.button.throw.color = "#FF7979";
-        this.button.throw.background = "#EB4D4B";
-        this.button.throw.onPointerClickObservable.add(() => {
-            console.log("ououiuiuouiouoi")
-            this.button.throw.isEnabled = false
-            this.button.throw.isVisible = false
-            this.button.nextTurn.isEnabled = false
-            this.button.nextTurn.isVisible = false
-            this.socket.emit("throwDices", this.lobbyId, this.localPlayer)
-
+        // nextTurn
+        this.button[0].top = "300px"
+        this.button[0].left = "400px"
+        this.button[0].width = "250px"
+        this.button[0].height = "50px"
+        this.button[0].cornerRadius = 20
+        this.button[0].thickness = 4
+        this.button[0].children[0].color = "#DFF9FB"
+        this.button[0].children[0].fontSize = 24
+        this.button[0].color = "#FF7979"
+        this.button[0].background = "#EB4D4B"
+        this.button[0].isVisible = false
+        this.button[0].isEnabled = false
+        this.button[0].onPointerClickObservable.add(() => {
+            console.log("nextTurn click")
+            this.messages[0].isVisible = false
+            this.messages[1].isVisible = false
+            
+            this.button[0].isEnabled = false
+            this.button[0].isVisible = false
+            this.button[1].isEnabled = false
+            this.button[1].isVisible = false
+            this.button[2].isEnabled = false
+            this.button[2].isVisible = false
+            this.button[3].isEnabled = false
+            this.button[3].isVisible = false
+            
+            this.socket.emit("nextTurn", this.lobbyId)
         })
-        this.button.throw.isEnabled = false
-        this.button.throw.isVisible = false
-        this.advancedTexture.addControl(this.button.throw)
-
-        this.button.nextTurn.top = "300px";
-        this.button.nextTurn.left = "450px";
-        this.button.nextTurn.width = "250px";
-        this.button.nextTurn.height = "50px";
-        this.button.nextTurn.cornerRadius = 20;
-        this.button.nextTurn.thickness = 4;
-        this.button.nextTurn.children[0].color = "#DFF9FB";
-        this.button.nextTurn.children[0].fontSize = 24;
-        this.button.nextTurn.color = "#FF7979";
-        this.button.nextTurn.background = "#EB4D4B";
-
-        this.button.nextTurn.onPointerClickObservable.add(() => {
-            this.button.nextTurn.isEnabled = false
-            this.button.nextTurn.isVisible = false
-            this.socket.emit("nextTurn", this.lobbyId, this.localPlayer)
-
+        // throw
+        this.button[1].top = "300px"
+        this.button[1].left = "-500px"
+        this.button[1].width = "200px"
+        this.button[1].height = "50px"
+        this.button[1].cornerRadius = 20
+        this.button[1].thickness = 4
+        this.button[1].children[0].color = "#DFF9FB"
+        this.button[1].children[0].fontSize = 24
+        this.button[1].color = "#FF7979"
+        this.button[1].background = "#EB4D4B"
+        this.button[1].isVisible = false
+        this.button[1].isEnabled = false
+        this.button[1].onPointerClickObservable.add(() => {
+            console.log("throw click")
+            this.button[0].isEnabled = false
+            this.button[0].isVisible = false
+            this.button[1].isEnabled = false
+            this.button[1].isVisible = false
+            this.socket.emit("throwDices", this.lobbyId)
         })
-        this.button.nextTurn.isEnabled = false
-        this.button.nextTurn.isVisible = false
-        this.advancedTexture.addControl(this.button.nextTurn)
-
-        this.button.confirmPick.top = "300px";
-        this.button.confirmPick.left = "-150px";
-        this.button.confirmPick.width = "300px";
-        this.button.confirmPick.height = "50px";
-        this.button.confirmPick.cornerRadius = 20;
-        this.button.confirmPick.thickness = 4;
-        this.button.confirmPick.children[0].color = "#DFF9FB";
-        this.button.confirmPick.children[0].fontSize = 24;
-        this.button.confirmPick.color = "#FF7979";
-        this.button.confirmPick.background = "#EB4D4B";
-        this.button.confirmPick.isEnabled = false
-        this.button.confirmPick.isVisible = false
-        this.button.confirmPick.onPointerClickObservable.add(() => {
-            this.button.confirmPick.isEnabled = false
-            this.button.confirmPick.isVisible = false
-            this.socket.emit("confirmPickNow", this.lobbyId, this.localPlayer)
-
+        // endPick
+        this.button[2].top = "300px"
+        this.button[2].left = "-400px"
+        this.button[2].width = "200px"
+        this.button[2].height = "50px"
+        this.button[2].cornerRadius = 20
+        this.button[2].thickness = 4
+        this.button[2].children[0].color = "#DFF9FB"
+        this.button[2].children[0].fontSize = 24
+        this.button[2].color = "#FF7979"
+        this.button[2].background = "#EB4D4B"
+        this.button[2].isVisible = false
+        this.button[2].isEnabled = false
+        this.button[2].onPointerClickObservable.add(() => {
+            console.log("endPick click")
+            this.button[0].isEnabled = false
+            this.button[0].isVisible = false
+            this.button[2].isEnabled = false
+            this.button[2].isVisible = false
+            this.button[3].isEnabled = false
+            this.button[3].isVisible = false
+            
+            this.socket.emit("endPick", this.lobbyId)
         })
-        this.advancedTexture.addControl(this.button.confirmPick)
+        this.button[3].top = "300px"
+        this.button[3].left = "0px"
+        this.button[3].width = "200px"
+        this.button[3].height = "50px"
+        this.button[3].cornerRadius = 20
+        this.button[3].thickness = 4
+        this.button[3].children[0].color = "#DFF9FB"
+        this.button[3].children[0].fontSize = 24
+        this.button[3].color = "#FF7979"
+        this.button[3].background = "#EB4D4B"
+        this.button[3].isVisible = false
+        this.button[3].isEnabled = false
+        this.button[3].onPointerClickObservable.add(() => {
+            console.log("resetPick click")
+            this.socket.emit("resetPick", this.lobbyId)
+        })
+        // affichage
+        for (let i = 0; i < this.button.length; i++) {
+            this.button[i].zIndex = 10000
+            console.log(this.button[i].name)
+            this.advancedTexture.addControl(this.button[i])
+        }
+        //message
 
-        this.button.wait.top = "300px";
-        this.button.wait.left = "-400px";
-        this.button.wait.width = "300px";
-        this.button.wait.height = "70px";
-        this.button.wait.cornerRadius = 20;
-        this.button.wait.thickness = 4;
-        this.button.wait.children[0].color = "#DFF9FB";
-        this.button.wait.children[0].fontSize = 24;
-        this.button.wait.color = "#FF7979";
-        this.button.wait.background = "#EB4D4B";
-        this.button.wait.isEnabled = false
-        this.button.wait.isVisible = false
-        this.advancedTexture.addControl(this.button.wait)
-    }
-    // lastThrowPhaseHUD() {
-    //     console.log("last")
-    //     // this.button
+        this.messages[0].text = "Selectionnez les dés que vous ne voulez pas relancer"
+        this.messages[0].color = "white"
+        this.messages[0].top = -350
+        this.messages[0].left = 0
+        this.messages[0].fontSize = 24
+        this.messages[0].zIndex = 0
+        this.messages[0].isVisible = false
 
-    // }
-    throwPhaseHUD(roll) {
-        this.button.confirmPick.isEnabled = false
-        this.button.confirmPick.isVisible = false
-        this.button.wait.isEnabled = false
-        this.button.wait.isVisible = false
+        this.messages[1].text = ""
+        this.messages[1].color = "white"
+        this.messages[1].top = -350
+        this.messages[1].left = 0
+        this.messages[1].fontSize = 24
+        this.messages[1].zIndex = 0
+        this.messages[1].isVisible = false
 
-        this.button.throw.isEnabled = true
-        this.button.throw.isVisible = true
-        console.log(roll)
-        // console.log("throw HUD")
-        if (roll >= 1) {
-            this.button.nextTurn.isEnabled = true
-            this.button.nextTurn.isVisible = true
-        } else {
-            this.button.nextTurn.isEnabled = false
-            this.button.nextTurn.isVisible = false
+        this.messages[2].text = ""
+        this.messages[2].color = "white"
+        this.messages[2].top = -350
+        this.messages[2].left = 650
+        this.messages[2].fontSize = 24
+        this.messages[2].zIndex = 0
+        
+        this.messages[3].text = ""
+        this.messages[3].color = "white"
+        this.messages[3].top = -390
+        this.messages[3].left = 650
+        this.messages[3].fontSize = 24
+        this.messages[3].zIndex = 0
+
+        this.messages[4].text = ""
+        this.messages[4].color = "white"
+        this.messages[4].top = -430
+        this.messages[4].left = 650
+        this.messages[4].fontSize = 24
+        this.messages[4].zIndex = 0
+
+        for (let i = 0; i < this.messages.length; i++) {
+            this.advancedTexture.addControl(this.messages[i])
         }
 
     }
 
-    confirmPickPhaseHUD() {
-        this.button.throw.isEnabled = false
-        this.button.throw.isVisible = false
-        this.button.nextTurn.isEnabled = true
-        this.button.nextTurn.isVisible = true
-        this.button.confirmPick.isEnabled = true
-        this.button.confirmPick.isVisible = true
-
+    throwPhaseHUD(roll) {//eslint-disable-line
+        this.messages[0].isVisible = false
+        this.messages[1].isVisible = false
+        this.button[1].isEnabled = true
+        this.button[1].isVisible = true
+        console.log(roll, "roll")
+        if (roll >= 1) {
+            console.log("throw phase passer true")
+            this.button[0].isVisible = true
+            this.button[0].isEnabled = true
+        }
     }
 
-    waitingHUD(localPlayer) {
-        this.button.confirmPick.isEnabled = false
-        this.button.confirmPick.isVisible = false
-        this.button.throw.isEnabled = false
-        this.button.throw.isVisible = false
-        this.button.nextTurn.isEnabled = false
-        this.button.nextTurn.isVisible = false
-        console.log(this.button.wait)
-        this.button.wait.text = localPlayer
-        this.button.wait.isEnabled = true
-        this.button.wait.isVisible = true
+    gameInfo(tokenPile, players) {
+        this.messages[2].text = "Jetons restants:" + tokenPile
+        this.messages[3].text = players[0].name + ": " + players[0].token
+        this.messages[4].text = players[1].name + ": " + players[1].token
+        this.messages[2].zIndex = 300
+        this.messages[3].zIndex = 300
+        this.messages[4].zIndex = 300
     }
 
-    currentPlayer(players) {
-        return players.find(player => player.name == this.localPlayer)
+    pickPhase() {
+        this.button[0].isEnabled = true
+        this.button[0].isVisible = true
+        this.button[2].isEnabled = true
+        this.button[2].isVisible = true
+        this.button[3].isEnabled = true
+        this.button[3].isVisible = true
+        this.messages[0].isVisible = true
+    }
+
+    waiting(localPlayer) {//eslint-disable-line
+        this.messages[1].text = localPlayer + " est en train de jouer !"
+        this.messages[1].isVisible = true
+        // this.advancedTexture.addControl(this.messages[1])
     }
 
 }
