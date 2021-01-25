@@ -16,53 +16,16 @@ export class HUDPurple {
             { bouton: Button.CreateSimpleButton("button", "Superieur"), value: "Superieur" },
             { bouton: Button.CreateSimpleButton("button", "Passer"), value: "Passer" },
         ]
+        this.messages = [
+            { message: new TextBlock(), value: "currentPlayer" },
+            { message: new TextBlock(), value: "name" },
+            { message: new TextBlock(), value: "hp" },
+            { message: new TextBlock(), value: "goodAnswers" },
+        ]
         this.initQuestions()
     }
 
     initQuestions() {
-            // this.button.rouge.top = "0px";
-            // this.button.rouge.left = "0px";
-            // this.button.rouge.width = "150px";
-            // this.button.rouge.height = "50px";
-            // this.button.rouge.cornerRadius = 20;
-            // this.button.rouge.thickness = 4;
-            // this.button.rouge.children[0].color = "#DFF9FB";
-            // this.button.rouge.children[0].fontSize = 24;
-            // this.button.rouge.color = "#FF7979";
-            // this.button.rouge.background = "#EB4D4B";
-            // this.button.rouge.onPointerClickObservable.add(() => {
-            //     console.log("ououiuiuouiouoi")
-            //     this.button.rouge.isEnabled = false
-            //     this.button.rouge.isVisible = false
-            //     this.socket.emit("purplePlayTurn", this.lobbyId, 'Rouge')
-
-            // })
-            // this.button.rouge.isEnabled = true
-            // this.button.rouge.isVisible = true
-            // this.advancedTexture.addControl(this.button.rouge)
-
-            // this.button.noir.top = "300px";
-            // this.button.noir.left = "200px";
-            // this.button.noir.width = "250px";
-            // this.button.noir.height = "50px";
-            // this.button.noir.cornerRadius = 20;
-            // this.button.noir.thickness = 4;
-            // this.button.noir.children[0].color = "#DFF9FB";
-            // this.button.noir.children[0].fontSize = 24;
-            // this.button.noir.color = "#FF7979";
-            // this.button.noir.background = "#EB4D4B";
-        //     this.button.noir.onPointerClickObservable.add(() => {
-        //         console.log("NONONNONONON")
-        //         this.button.noir.isEnabled = false
-        //         this.button.noir.isVisible = false
-        //         this.socket.emit("purplePlayTurn", this.lobbyId, 'Noir')
-
-        //     })
-        //     this.button.noir.isEnabled = true
-        //     this.button.noir.isVisible = true
-        //     this.advancedTexture.addControl(this.button.noir)
-
-
         let left = -200
         let top = -350
         console.log("HUD LOCAL PLAYER", this.localPlayer)
@@ -94,53 +57,56 @@ export class HUDPurple {
 
     }
 
-    // askQuestion(questions) {
-
-    // }
-    // initQuestions() {
-    //     var selectBox = new SelectionPanel("sp");
-    //     selectBox.width = 0.25;
-    //     selectBox.height = 0.48;
-    //     selectBox.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-    //     selectBox.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-         
-    //     this.advancedTexture.addControl(selectBox);
-    
-    //     var transformGroup = new CheckboxGroup("Transformation");
-    //     transformGroup.addCheckbox("Small", null);
-    //     transformGroup.addCheckbox("High", null);
-
-    //     selectBox.addGroup(transformGroup);
-    // }
-    
     displayInfos(infos) {
         let top = -350
         let left = 650
         for (const info in infos) {
             console.log(info)
-            let message = new TextBlock()
+
             switch (info) {
                 case ('name'):
-                    message.text = `Nom: ${infos[info]}`
+                    this.messages[1].message.text = `Nom: ${infos[info]}`
+                    this.messages[1].message.color = "white";
+                    this.messages[1].message.top = top;
+                    this.messages[1].message.left = left;
+                    this.messages[1].message.fontSize = 24;
+                    console.log(this.messages[1].message)
+                    this.advancedTexture.addControl(this.messages[1].message);
                     break
                 case ('hp'):
-                    message.text = `Points de vies  ${infos[info]}`;
+                    this.messages[2].message.text = `Points de vies  ${infos[info]}`;
+                    this.messages[2].message.color = "white";
+                    this.messages[2].message.top = top;
+                    this.messages[2].message.left = left;
+                    this.messages[2].message.fontSize = 24;
+                    console.log(this.messages[2].message)
+                    this.advancedTexture.addControl(this.messages[2].message);
                     break
                 case ('goodAnswers'):
-                    message.text = `Bonnes reponses :   ${infos[info]}`;
+                    this.messages[3].message.text = `Bonnes reponses :   ${infos[info]}`;
+                    this.messages[3].message.color = "white";
+                    this.messages[3].message.top = top;
+                    this.messages[3].message.left = left;
+                    this.messages[3].message.fontSize = 24;
+                    console.log(this.messages[3].message)
+                    this.advancedTexture.addControl(this.messages[3].message);
                     break
 
             }
-
-            message.color = "white";
-            message.top = top;
-            message.left = left;
-            message.fontSize = 24;
-            console.log()
-            this.advancedTexture.addControl(message);
             top += 50
-
         }
+    }
+    displayCurrentPlayer(currentPlayer) {
+        let top = -350
+        let left = -600
+        this.messages[0].message.text = "C'est le tour de : " + currentPlayer.name;
+        this.messages[0].message.color = "white";
+        this.messages[0].message.top = top;
+        this.messages[0].message.left = left;
+        this.messages[0].message.fontSize = 24;
+        console.log(this.messages[0].message)
+        this.advancedTexture.addControl(this.messages[0].message);
+
     }
     hideButtons() {
         console.log("hide")
@@ -149,10 +115,7 @@ export class HUDPurple {
             button.bouton.isEnabled = false
             button.bouton.isVisible = false
         })
-        //     for (const button in this.buttons) {
-        //     this.buttons.button.isEnabled = false
-        //     this.buttons[button].button.isVisible = false
-        // }
+    
     }
     displayQuestions(questions) {
         for (let i = 0; i < questions.length; i++) {

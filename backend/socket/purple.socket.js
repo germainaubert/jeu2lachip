@@ -22,9 +22,11 @@ class PurpleSocket {
             
             let targetLobby = lobbyContainer.lobbies.find(lobby => lobby.id == idLobby)
             
-            targetLobby.purple.checkStateOfQuestions()
+            
             targetLobby.purple.checkAnswer(answer)
             targetLobby.purple.checkDeadPlayers()
+            targetLobby.purple.checkStateOfQuestions()
+            targetLobby.purple.turns += 1
             console.log('game play')
             
             shareEvent(socketList(targetLobby.users), 'purplePlayTurn', targetLobby.purple)

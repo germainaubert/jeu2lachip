@@ -23,6 +23,7 @@ class Game {
         this.turns = 0
         this.deck = new Deck()
         this.playerAlive = true
+        this.cardDrawed = []
     }
     checkStateOfQuestions() {
         if (this.deck.bomb.length == 0) {
@@ -69,6 +70,8 @@ class Game {
             return
         }
         let card = this.deck.drawCard()
+        this.cardDrawed = []
+        this.cardDrawed.push(card)
         let lastCard = null
         console.log('Joueur : ', this.currentPlayer)
         console.log('la réponse est : ', answer)
@@ -92,6 +95,8 @@ class Game {
                 break
             case 'Purple':
                 let anotherCard = this.deck.drawCard()
+                this.turns += 1
+                this.cardDrawed.push(card)
                 console.log("La deuxième carte piochée est :", anotherCard)
 
                 if (card.color.group != anotherCard.color.group) {
