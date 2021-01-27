@@ -26,6 +26,7 @@ class Game {
         this.cardDrawed = []
     }
     checkStateOfQuestions() {
+        console.log("this.deck.bomb.length", this.deck.bomb.length)
         if (this.deck.bomb.length == 0) {
             this.questions[3].active = false
             this.questions[4].active = false
@@ -96,7 +97,7 @@ class Game {
             case 'Purple':
                 let anotherCard = this.deck.drawCard()
                 this.turns += 1
-                this.cardDrawed.push(card)
+                this.cardDrawed.push(anotherCard)
                 console.log("La deuxième carte piochée est :", anotherCard)
 
                 if (card.color.group != anotherCard.color.group) {

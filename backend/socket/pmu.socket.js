@@ -25,6 +25,11 @@ class PmuSocket {
             
             shareEvent(socketList(targetLobby.users), 'pmuPlayed', targetLobby.pmu)
         })
+        socket.on("endPmu", (idLobby) => {
+            let targetLobby = lobbyContainer.lobbies.find(lobby => lobby.id == idLobby)
+            console.log("game end")
+            shareEvent(socketList(targetLobby.users), 'endPmu', targetLobby.pmu.ranking)
+        })
     }
 
 }

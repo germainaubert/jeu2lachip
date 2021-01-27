@@ -1,55 +1,49 @@
-import {AdvancedDynamicTexture, TextBlock} from '@babylonjs/gui';
+import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui';
 
 
 export class UserInformations {
 
-    constructor(localPlayer, scene) {
-        
+    constructor(localPlayer) {
+
         this.localPlayer = localPlayer
-        this.scene = scene
-
-        this.init()
-
-    }
-
-    init() {
-        console.log(this.localPlayer)
+        this.advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, this.scene)
+        this.messages = [
+            new TextBlock(),
+            new TextBlock(),
+        ]
         
-        let advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, this.scene);
-        displayInfos(advancedTexture,  this.localPlayer)
-        // let pseudo = new TextBlock();
-        // pseudo.text = this.localPlayer.name;
-        // pseudo.color = "white";
-        // pseudo.fontSize = 24;
-        // advancedTexture.addControl(pseudo);    
-        // console.log("is foreground : ", advancedTexture.isForeground)
     }
 
-}
-
-function displayInfos(advancedTexture, infos) {
-    let top = -350
-    let left = 650
-    for (const info in infos) {
-        console.log(info)
-        let message = new TextBlock()
-        switch(info) {
-            case('name'):
-            message.text = `Nom: ${infos[info]}`
-            break
-            case('horse'):
-            message.text = `Cheval: as de ${infos[info].color}`; 
-            break
-        }
-          
-        message.color = "white";
-        message.top = top ;
-        message.left = left;
-        message.fontSize = 24;
-        advancedTexture.addControl(message);
+    displayInfos(player) {
+        let top = -350
+        console.log("DISPLAY IJNFOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+        console.log(this.messages[0])
+        let left = 650
+        this.messages[0].text = `Nom: ${player.name}`
+        this.messages[0].color = "white";
+        this.messages[0].top = top;
+        this.messages[0].left = left;
+        this.messages[0].fontSize = 24;
+        this.advancedTexture.addControl(this.messages[0]);
         top += 50
-        
-}
+        console.log(this.messages[0])
+
+        this.messages[1].text = `Cheval: ${player.horse.color}`
+        this.messages[1].color = "white";
+        this.messages[1].top = top;
+        this.messages[1].left = left;
+        this.messages[1].fontSize = 24;
+        this.advancedTexture.addControl(this.messages[1]);
+        top += 50
+    }
+
+    pmuEnd(michelDruker) {
+        let message = new TextBlock()
+        message.text = michelDruker + " a perdu !"
+        message.color = "white"
+        message.fontSize = 72;
+        this.advancedTexture.addControl(message);
+    }
     // infos.forEach(info => {
     //     let message = new TextBlock()
     //     message.text = info;
@@ -57,5 +51,4 @@ function displayInfos(advancedTexture, infos) {
     //     message.fontSize = 24;
     //     advancedTexture.addControl(message);
     //  })
-    
 }

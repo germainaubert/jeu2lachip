@@ -179,7 +179,7 @@ export class HUD {
     }
 
     gameInfo(tokenPile, players) {
-        this.messages[2].text = "Jetons restants:" + tokenPile
+        this.messages[2].text = "Jetons restants: " + tokenPile
         this.messages[3].text = players[0].name + ": " + players[0].token
         this.messages[4].text = players[1].name + ": " + players[1].token
         this.messages[2].zIndex = 300

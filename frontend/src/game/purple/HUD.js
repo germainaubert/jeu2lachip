@@ -26,7 +26,7 @@ export class HUDPurple {
     }
 
     initQuestions() {
-        let left = -200
+        let left = -500
         let top = -350
         console.log("HUD LOCAL PLAYER", this.localPlayer)
         this.buttons.forEach(button => {
@@ -57,8 +57,26 @@ export class HUDPurple {
 
     }
 
+    endMessage(name) {
+        console.log("SALUT LES AMIS")
+        this.hideButtons()
+        this.messages.forEach(message => {
+            message.message.text = ""
+        });
+
+        let text = new TextBlock()
+        
+        text.text = name + " a perdu !"
+        text.color = "white";
+        // text.top = top;
+        // text.left = left;
+        text.fontSize = 72;
+        console.log(text)
+        this.advancedTexture.addControl(text);
+    }
+
     displayInfos(infos) {
-        let top = -350
+        let top = 320
         let left = 650
         for (const info in infos) {
             console.log(info)
@@ -85,7 +103,7 @@ export class HUDPurple {
                 case ('goodAnswers'):
                     this.messages[3].message.text = `Bonnes reponses :   ${infos[info]}`;
                     this.messages[3].message.color = "white";
-                    this.messages[3].message.top = top;
+                    this.messages[3].message.top = 430;
                     this.messages[3].message.left = left;
                     this.messages[3].message.fontSize = 24;
                     console.log(this.messages[3].message)
@@ -97,7 +115,7 @@ export class HUDPurple {
         }
     }
     displayCurrentPlayer(currentPlayer) {
-        let top = -350
+        let top = 320
         let left = -600
         this.messages[0].message.text = "C'est le tour de : " + currentPlayer.name;
         this.messages[0].message.color = "white";
@@ -115,7 +133,7 @@ export class HUDPurple {
             button.bouton.isEnabled = false
             button.bouton.isVisible = false
         })
-    
+
     }
     displayQuestions(questions) {
         for (let i = 0; i < questions.length; i++) {

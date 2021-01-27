@@ -130,9 +130,9 @@ export default {
       this.rotate();
     },
     rotate() {
-      this.rotation1.z += 0.01;
-      this.rotation2.x += 0.01;
-      this.rotation3.z -= 0.01;
+      this.rotation1.z += 0.001;
+      this.rotation2.x += 0.001;
+      this.rotation3.z -= 0.001;
       requestAnimationFrame(this.rotate);
     },
     checkInfo: async function () {
@@ -182,69 +182,69 @@ export default {
       console.log(this.validityPseudo)
     },
 
-    // errCleaner: function () {
-    //   if (this.pseudo.length === 0) {
-    //     this.validityPseudo = "";
-    //   }
-    // },
-    // lookAtPseudo: async function () {
-    //   if (this.pseudo) {
-    //     await this.pseudoValidity();
-    //   } else {
-    //     this.validityPseudo = "";
-    //   }
-    // },
-    // passwordValidation: function () {
-    //   let flag = true
-    //   // 6 caracatères min
-    //   if (this.password.length > 5) {
-    //     this.validPassword[0].state = true
-    //     this.validPassword[0].icon = "done"
-    //   } else {
-    //     this.validPassword[0].state = false
-    //     this.validPassword[0].icon = "clear"
-    //     flag = false
-    //   }
+    errCleaner: function () {
+      if (this.pseudo.length === 0) {
+        this.validityPseudo = "";
+      }
+    },
+    lookAtPseudo: async function () {
+      if (this.pseudo) {
+        await this.pseudoValidity();
+      } else {
+        this.validityPseudo = "";
+      }
+    },
+    passwordValidation: function () {
+      let flag = true
+      // 6 caracatères min
+      if (this.password.length > 5) {
+        this.validPassword[0].state = true
+        this.validPassword[0].icon = "done"
+      } else {
+        this.validPassword[0].state = false
+        this.validPassword[0].icon = "clear"
+        flag = false
+      }
       
-    //   // Majuscule
-    //   const majRegex = new RegExp('(?=.*[A-Z])')
+      // Majuscule
+      const majRegex = new RegExp('(?=.*[A-Z])')
 
-    //   if (majRegex.test(this.password)) {
-    //     this.validPassword[1].state = true
-    //     this.validPassword[1].icon = "done"
-    //   } else {
-    //     this.validPassword[1].state = false
-    //     this.validPassword[1].icon = "clear"
-    //     flag = false
-    //   }
+      if (majRegex.test(this.password)) {
+        this.validPassword[1].state = true
+        this.validPassword[1].icon = "done"
+      } else {
+        this.validPassword[1].state = false
+        this.validPassword[1].icon = "clear"
+        flag = false
+      }
 
-    //   // Caractère spécial
-    //   const specialRegex = new RegExp('(?=.*[!@#$%^&*?])')
+      // Caractère spécial
+      const specialRegex = new RegExp('(?=.*[!@#$%^&*?])')
       
-    //   if (specialRegex.test(this.password)) {
-    //     this.validPassword[2].state = true
-    //     this.validPassword[2].icon = "done"
-    //   } else {
-    //     this.validPassword[2].state = false
-    //     this.validPassword[2].icon = "clear"
-    //     flag = false
-    //   }
+      if (specialRegex.test(this.password)) {
+        this.validPassword[2].state = true
+        this.validPassword[2].icon = "done"
+      } else {
+        this.validPassword[2].state = false
+        this.validPassword[2].icon = "clear"
+        flag = false
+      }
 
-    //   // Chiffre
-    //   const digitRegex = new RegExp('(?=.*[0-9])')
+      // Chiffre
+      const digitRegex = new RegExp('(?=.*[0-9])')
       
-    //   if (digitRegex.test(this.password)) {
-    //     this.validPassword[3].state = true
-    //     this.validPassword[3].icon = "done"
-    //   } else {
-    //     this.validPassword[3].state = false
-    //     this.validPassword[3].icon = "clear"
-    //     flag = false
-    //   }
+      if (digitRegex.test(this.password)) {
+        this.validPassword[3].state = true
+        this.validPassword[3].icon = "done"
+      } else {
+        this.validPassword[3].state = false
+        this.validPassword[3].icon = "clear"
+        flag = false
+      }
 
-    //   this.validButton = flag
+      this.validButton = flag
 
-    // }
+    }
   },
 };
 

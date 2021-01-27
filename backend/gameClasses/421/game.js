@@ -5,9 +5,10 @@ class Game {
     constructor(users) {
         this.indexPlaying = 0
         this.players = new Array()
-        for (let i = 0; i < users.length; i++) {
-            this.players.push(new Players(users[i].pseudo))
-        }
+        
+        this.players.push(new Players(users[0].pseudo))
+        this.players.push(new Players(users[1].pseudo))
+        
         this.gameIsOn = true
         this.dices = new Array()
         for (let i = 0; i < 3; i++) {

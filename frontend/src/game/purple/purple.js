@@ -12,19 +12,13 @@ export class Purple {
         this.engine = engine
         this.socket = socket
         this.gameLeader = gameLeader
-        console.log("purple.js")
         this.scene = new Scene(this.engine)
         this.players = null
         this.lobbyId = lobbyId
         this.localPlayer = localPlayer
         this.tasks = {}
-        this.hud = new HUDPurple(this.localPlayer, this.scene,this.socket,this.lobbyId)
-
-        if (this.gameLeader) {
-            this.socket.emit("purpleInit", this.lobbyId)
-        }
-
-        this.basicInit()
+        this.hud = null
+        
     }
 
     basicInit() {
@@ -35,6 +29,7 @@ export class Purple {
         this.helperCamera.radius = 32;
         this.helperCamera.alpha = Math.PI / -2;
         this.helperCamera.beta = Math.PI / 4;
+        this.hud = new HUDPurple(this.localPlayer, this.scene,this.socket,this.lobbyId)
 
     }
     userInformations(player) {
@@ -114,7 +109,7 @@ export class Purple {
 
         })
         assetsManager.onFinish = (tasks) => {
-            console.log(tasks)
+            console.log(tasks, "card on finish")
             this.tasks.cards = tasks
             this.engine.runRenderLoop(() => {
                 this.scene.render()
@@ -124,6 +119,7 @@ export class Purple {
     }
     drawCard(cardName, modifier) {
         console.log("   PIOOOOOCHE     ")
+        console.log(cardName)
         let card = this.tasks.cards.find(mesh => mesh.name === cardName)
         console.log(card)
         let frameRate = 10
@@ -170,7 +166,7 @@ export class Purple {
                 frame: 0,
                 value: card.loadedMeshes[0].position.y
             });
-            card.loadedMeshes[0].position.y += -2.1 + 0.05 * modifier
+            card.loadedMeshes[0].position.y += -2.1 + 0.1 * modifier
             keyFramesTransY.push({
                 frame: frameRate,
                 value: card.loadedMeshes[0].position.y
@@ -199,7 +195,7 @@ export class Purple {
                     let cardName = advancement.drawedCard[i].card.name + "_de_" + advancement.drawedCard[i].card.color
                     console.log("nom de la carte", cardName)
                     this.drawCard(cardName, i)
-                }, 200)
+                }, 1000)
             }
             i++
         }, 2000)

@@ -39,6 +39,21 @@ const routes = [
     name: 'Game',
     component: () => import('../views/Game.vue')
   },
+  {
+    path: "/Pmu",
+    name: 'Pmu',
+    component: () => import('../views/Pmu.vue')
+  },
+  {
+    path: "/Purple",
+    name: 'Purple',
+    component: () => import('../views/Purple.vue')
+  },
+  {
+    path: "/Quatre",
+    name: 'Quatre',
+    component: () => import('../views/Quatre.vue')
+  },
 ]
 
 const router = new VueRouter({

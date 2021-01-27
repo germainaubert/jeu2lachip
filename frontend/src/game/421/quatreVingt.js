@@ -32,12 +32,8 @@ export class QuatreVingt {
             false,
             false
         ]
-        if (this.gameLeader) {
-            console.log("INIT 421")
-            this.socket.emit("init421", this.lobbyId)
-        }
-        this.HUD = new HUD(this.localPlayer, this.scene, this.socket, this.lobbyId)
-        this.basicInit()
+        
+        this.HUD = null
     }
 
     basicInit() {
@@ -56,7 +52,7 @@ export class QuatreVingt {
 
         this.newDices([true, true, true])
         this.init = true
-
+        this.HUD = new HUD(this.localPlayer, this.scene, this.socket, this.lobbyId)
     }
 
     newDices(newDiceTab) {

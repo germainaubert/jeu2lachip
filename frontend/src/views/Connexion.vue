@@ -104,9 +104,9 @@ export default {
       this.rotate();
     },
     rotate() {
-      this.rotation1.z += 1;
-      this.rotation2.x += 1;
-      this.rotation3.z -= 1;
+      this.rotation1.z += 0.001;
+      this.rotation2.x += 0.001;
+      this.rotation3.z -= 0.001;
       requestAnimationFrame(this.rotate);
     },
     connexionRequest: async function () {

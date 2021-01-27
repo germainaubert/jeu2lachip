@@ -12,23 +12,22 @@ export class Pmu {
         this.engine = engine
         this.socket = socket
         this.gameLeader = gameLeader
-        console.log("pmu.js")
         // this.initSocket(socket)
         this.scene = new Scene(this.engine)
         this.players = null
         this.lobbyId = lobbyId
         this.localPlayer = localPlayer
         this.tasks = {}
-
-        if (this.gameLeader) {
-            this.socket.emit("pmuInit", this.lobbyId)
-        }
-
+        
+        this.hud = new UserInformations(this.localPlayer),
+        this.flag = true
         this.basicInit()
-        //new UserInformations(this.localPlayer)
     }
 
     basicInit() {
+        if (this.gameLeader) {
+            this.socket.emit("pmuInit", this.lobbyId)
+        }
         console.log('local player : ', this.localPlayer, "id lobby : ", this.lobbyId, "game leader : ", this.gameLeader)
         
         let layer = new BABYLON.Layer('','http://localhost:3000/static/background.jpg', this.scene, true); //eslint-disable-line
@@ -50,6 +49,7 @@ export class Pmu {
         new UserInformations(player, this.scene)
     }
     displayPlayers(players) {
+        
         console.log("display PLAYERS")
 
         let x = 0
@@ -58,7 +58,7 @@ export class Pmu {
 
         let assetsManager = new BABYLON.AssetsManager(this.scene)
         players.forEach(player => {
-
+            
             let meshTask = assetsManager.addMeshTask(player.horse.color, "", "http://localhost:3000/static/pmu/cards/", "As_de_" + player.horse.color + ".gltf")
 
             meshTask.onSuccess = (task) => {
@@ -69,7 +69,7 @@ export class Pmu {
                 task.loadedMeshes[0].position.z = z
                 task.loadedMeshes[0].rotation = new Vector3(0,0, 0);
 
-                x += 10
+                x += 5
             }
             meshTask.onError = (task, message, exception) => {
                 console.warn(message, exception)
@@ -78,12 +78,32 @@ export class Pmu {
         assetsManager.onFinish = (tasks) => {
             console.log("taches on finish", tasks)
             this.tasks.players = tasks
-
-            this.engine.runRenderLoop(() => {
-                this.scene.render()
-            })
+            
+            // this.engine.runRenderLoop(() => {
+            //     this.scene.render()
+            // })
         }
         assetsManager.load()
+    }
+
+    end() {
+        if (this.gameLeader) {
+            let cpt = 0
+            for (let i = 0; i < this.tasks.players.length; i++) {
+                console.log("ma bite est bleue",this.tasks.players[i].loadedMeshes[0].position.z)
+                if (this.tasks.players[i].loadedMeshes[0].position.z >= 22) {
+                    cpt++
+                }
+            }
+            console.log("COMPTEUR", cpt)
+            if (cpt >= 3) {
+                this.socket.emit("endPmu", this.lobbyId)
+                this.flag = false
+            }
+        }
+        
+        
+        
     }
 
     displayMalus(malus) {
@@ -91,7 +111,7 @@ export class Pmu {
 
         let x = -5
         let y = 0.05
-        let z = -5
+        let z = 0
 
         let assetsManager = new BABYLON.AssetsManager(this.scene)
         malus.malus.forEach(malus => {
@@ -116,9 +136,9 @@ export class Pmu {
             console.log("taches on finish", tasks)
             this.tasks.malus = tasks
 
-            this.engine.runRenderLoop(() => {
-                this.scene.render()
-            })
+            // this.engine.runRenderLoop(() => {
+            //     this.scene.render()
+            // })
         }
         assetsManager.load()
     }
@@ -150,14 +170,17 @@ export class Pmu {
         assetsManager.onFinish = (tasks) => {
             console.log(tasks)
             this.tasks.cards = tasks
-            this.engine.runRenderLoop(() => {
-                this.scene.render()
-            })
+            // this.engine.runRenderLoop(() => {
+            //     this.scene.render()
+            // })
         }
         assetsManager.load()
     }
     playerProgress(playerColor) {
-
+        if (this.flag) {
+            this.end()
+        }
+        
         let player = this.tasks.players.find(mesh => mesh.name === playerColor)
         console.log(player)
 
@@ -170,8 +193,8 @@ export class Pmu {
             value: player.loadedMeshes[0].position.z
         });
         player.loadedMeshes[0].position.z += 5
-        if (player.loadedMeshes[0].position.z >= 35) {
-            player.loadedMeshes[0].position.z = 35
+        if (player.loadedMeshes[0].position.z >= 25) {
+            player.loadedMeshes[0].position.z = 25
         }
         keyFrames.push({
             frame: frameRate,
@@ -322,13 +345,13 @@ export class Pmu {
                     let cardName = advancement.drawedCard[i].card.name + "_de_" + advancement.drawedCard[i].card.color
                     console.log("nom de la carte", cardName)
                     this.drawCard(cardName, i)
-                }, 200)
+                }, 400)
             }
             if (advancement.winner[i]) {
                 setTimeout(() => {
                     let winnerColor = advancement.winner[i].winner.horse.color
                     this.playerProgress(winnerColor)
-                }, 1400)
+                }, 2400)
             }
             if (advancement.looser[j] && advancement.looser[j].turn == i) {
                 setTimeout(() => {
@@ -340,7 +363,7 @@ export class Pmu {
                 j++
             }
             i++
-        }, 2000)
+        }, 4000)
     }
 }
 
